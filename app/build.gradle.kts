@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "pl.tinks.budgetbuddy"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "pl.tinks.budgetbuddy"
