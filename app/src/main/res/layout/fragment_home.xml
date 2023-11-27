@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textColor="@color/green"
+            android:textColor="@color/light_primary"
             android:textSize="@dimen/text_size_large"
             android:gravity="center"
             app:layout_constraintBottom_toTopOf="@id/text_home_tagline"
@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/app_tagline"
-            android:textColor="@color/green"
+            android:textColor="@color/light_primary"
             android:gravity="center"
             app:layout_constraintBottom_toTopOf="@id/image_logo_calendar"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +67,6 @@
             android:text="@string/upcoming_payments"
             android:textSize="@dimen/text_size_medium"
             android:padding="@dimen/padding_medium"
-            android:backgroundTint="@color/green"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_right_24_white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -79,7 +78,6 @@
             android:text="@string/shopping_list"
             android:textSize="@dimen/text_size_medium"
             android:padding="@dimen/padding_medium"
-            android:backgroundTint="@color/green"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_right_24_white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_upcoming_payments"/>
@@ -91,7 +89,7 @@
             android:text="@string/uk_bank_holidays"
             android:textSize="@dimen/text_size_medium"
             android:padding="@dimen/padding_medium"
-            android:backgroundTint="@color/purple"
+            android:backgroundTint="@color/light_secondary"
             android:drawableEnd="@drawable/baseline_keyboard_arrow_right_24_white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_shopping_list"/>
