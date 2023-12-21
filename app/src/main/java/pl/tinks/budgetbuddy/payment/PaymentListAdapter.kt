@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payments
+package pl.tinks.budgetbuddy.payment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payments
+package pl.tinks.budgetbuddy.payment.list
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
