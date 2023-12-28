@@ -4,4 +4,5 @@
     <string name="upcoming_payments">Upcoming Payments</string>
     <string name="shopping_list">Shopping List</string>
     <string name="uk_bank_holidays">UK Bank Holidays</string>
+    <string name="add_payment_fab_content_desc">Add payment</string>
 </resources>
