@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
+    kotlin("kapt")
 }
 
 android {
@@ -53,6 +54,7 @@ android {
 dependencies {
     val roomVersion = "2.6.0"
     val navVersion = "2.7.6"
+    val hiltVersion = "2.50"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -65,6 +67,8 @@ dependencies {
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
     implementation("org.joda:joda-money:1.0.4")
     implementation("org.joda:joda-convert:2.2.3")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$roomVersion")
