@@ -5,8 +5,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import pl.tinks.budgetbuddy.Result
 import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PaymentRepositoryImpl(private val paymentDao: PaymentDao) : PaymentRepository {
+@Singleton
+class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentDao) :
+    PaymentRepository {
 
     override fun getAllPayments(): Flow<Result<List<Payment>>> {
         return paymentDao.getAllPayments().map { list ->

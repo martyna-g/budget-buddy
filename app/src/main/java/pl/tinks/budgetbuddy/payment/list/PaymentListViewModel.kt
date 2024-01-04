@@ -2,6 +2,7 @@ package pl.tinks.budgetbuddy.payment.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +11,11 @@ import kotlinx.coroutines.flow.stateIn
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import javax.inject.Inject
 
-class PaymentListViewModel(private val paymentRepository: PaymentRepository) : ViewModel() {
+@HiltViewModel
+class PaymentListViewModel @Inject constructor(private val paymentRepository: PaymentRepository) :
+    ViewModel() {
 
     private var _uiState: StateFlow<PaymentUiState<List<Payment>>> =
         paymentRepository.getAllPayments().map { result ->

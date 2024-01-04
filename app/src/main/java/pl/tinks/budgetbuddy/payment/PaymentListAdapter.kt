@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class PaymentListAdapter :
+class PaymentListAdapter @Inject constructor() :
     ListAdapter<Payment, PaymentListAdapter.PaymentListViewHolder>(PaymentDiffCallback()) {
 
     class PaymentListViewHolder(private val binding: ItemPaymentBinding) :
