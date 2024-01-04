@@ -22,3 +22,11 @@ object PaymentDatabaseModule {
     }
 }
 
+@InstallIn(SingletonComponent::class)
+@Module
+object PaymentDaoModule {
+
+    @Singleton
+    @Provides
+    fun providePaymentDao(paymentDatabase: PaymentDatabase) = paymentDatabase.getPaymentDao()
+}
