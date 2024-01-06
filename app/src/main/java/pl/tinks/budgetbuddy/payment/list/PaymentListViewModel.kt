@@ -17,7 +17,7 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(private val paymentRepository: PaymentRepository) :
     ViewModel() {
 
-    private var _uiState: StateFlow<PaymentUiState<List<Payment>>> =
+    private var _uiState: StateFlow<PaymentUiState> =
         paymentRepository.getAllPayments().map { result ->
             when (result) {
                 is Result.Success -> PaymentUiState.Success(result.data)
@@ -25,11 +25,11 @@ class PaymentListViewModel @Inject constructor(private val paymentRepository: Pa
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentUiState.Loading)
 
-    val uiState: Flow<PaymentUiState<List<Payment>>> = _uiState
+    val uiState: Flow<PaymentUiState> = _uiState
 }
 
-sealed class PaymentUiState<out T> {
-    data object Loading : PaymentUiState<Nothing>()
-    data class Success<T>(val data: T) : PaymentUiState<T>()
-    data class Error(val e: Throwable) : PaymentUiState<Nothing>()
+sealed class PaymentUiState {
+    data object Loading : PaymentUiState()
+    data class Success(val data: List<Payment>) : PaymentUiState()
+    data class Error(val e: Throwable) : PaymentUiState()
 }
