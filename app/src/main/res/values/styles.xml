@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BudgetBuddy.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:layout_marginTop">@dimen/margin_large</item>
+        <item name="android:layout_width">300dp</item>
+    </style>
+
+    <style name="BudgetBuddy.DropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:layout_marginTop">@dimen/margin_large</item>
+        <item name="android:layout_width">300dp</item>
+    </style>
+</resources>

@@ -7,4 +7,10 @@
     <string name="add_payment_fab_content_desc">Add payment</string>
     <string name="payments_loading_error_message">There was an error loading your payments. Please try again later.</string>
     <string name="payments_loading_error_ok">OK</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="payment_title">Payment title</string>
+    <string name="payment_amount">Payment amount</string>
+    <string name="next_payment_date">Next payment date</string>
+    <string name="payment_frequency">Payment frequency</string>
 </resources>
