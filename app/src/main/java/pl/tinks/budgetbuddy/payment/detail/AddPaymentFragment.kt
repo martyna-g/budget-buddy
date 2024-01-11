@@ -1,19 +1,28 @@
 package pl.tinks.budgetbuddy.payment.detail
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.databinding.FragmentAddPaymentBinding
 
 class AddPaymentFragment : DialogFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add_payment, container, false)
+    private lateinit var binding: FragmentAddPaymentBinding
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val builder = AlertDialog.Builder(requireActivity(), R.style.BudgetBuddy_FullScreenDialog)
+
+        binding = FragmentAddPaymentBinding.inflate(layoutInflater)
+
+        builder.setView(binding.root)
+
+        return builder.create()
     }
 
 }

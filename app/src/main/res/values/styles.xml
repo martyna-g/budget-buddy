@@ -10,4 +10,10 @@
         <item name="android:layout_marginTop">@dimen/margin_large</item>
         <item name="android:layout_width">300dp</item>
     </style>
+
+    <style name="BudgetBuddy.FullScreenDialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
