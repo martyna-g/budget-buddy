@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,6 +58,8 @@ class PaymentListFragment : Fragment() {
             it.addItemDecoration(dividerItemDecoration)
         }
 
+        floatingActionButton.setOnClickListener { navigateToAddPaymentFragment() }
+
         return binding.root
     }
 
@@ -98,6 +101,11 @@ class PaymentListFragment : Fragment() {
             .setMessage(R.string.payments_loading_error_message)
             .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
             .show()
+    }
+
+    private fun navigateToAddPaymentFragment() {
+        val action = PaymentListFragmentDirections.actionPaymentListFragmentToAddPaymentFragment()
+        findNavController().navigate(action)
     }
 
 }
