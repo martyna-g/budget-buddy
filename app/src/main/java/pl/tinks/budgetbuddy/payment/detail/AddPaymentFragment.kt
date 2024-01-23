@@ -18,6 +18,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+private const val DATE_PICKER_ADD_PAYMENT = "DATE_PICKER_ADD_PAYMENT"
+
 class AddPaymentFragment : DialogFragment() {
 
     private lateinit var binding: FragmentAddPaymentBinding
@@ -26,6 +28,7 @@ class AddPaymentFragment : DialogFragment() {
     private lateinit var paymentDateEditText: EditText
     private lateinit var paymentFrequencyTextView: AutoCompleteTextView
     private lateinit var datePicker: MaterialDatePicker<Long>
+    private lateinit var selectedDate: LocalDateTime
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +60,18 @@ class AddPaymentFragment : DialogFragment() {
             .build()
 
         datePicker.addOnPositiveButtonClickListener { dateInMillis ->
-            paymentDateEditText.setText(
+            selectedDate =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(dateInMillis), ZoneId.of("UTC"))
-                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+
+            paymentDateEditText.setText(
+                selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            )
+        }
+
+        paymentDateEditText.setOnClickListener {
+            datePicker.show(
+                parentFragmentManager,
+                DATE_PICKER_ADD_PAYMENT
             )
         }
 
