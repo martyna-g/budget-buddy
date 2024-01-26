@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import pl.tinks.budgetbuddy.DecimalDigitsInputFilter
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentAddPaymentBinding
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter
 
 private const val DATE_PICKER_ADD_PAYMENT = "DATE_PICKER_ADD_PAYMENT"
 
+@AndroidEntryPoint
 class AddPaymentFragment : DialogFragment() {
 
     private lateinit var binding: FragmentAddPaymentBinding
