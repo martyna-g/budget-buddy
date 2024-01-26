@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import javax.inject.Inject
 
@@ -17,6 +18,18 @@ class AddPaymentViewModel @Inject constructor(
         viewModelScope.launch {
             paymentRepository.addPayment(payment)
         }
+    }
+
+    fun getFrequencies(): Map<PaymentFrequency, String> {
+        return mapOf(
+            PaymentFrequency.SINGLE_PAYMENT to "Single payment",
+            PaymentFrequency.DAILY to "Daily",
+            PaymentFrequency.WEEKLY to "Weekly",
+            PaymentFrequency.MONTHLY to "Monthly",
+            PaymentFrequency.QUARTERLY to "Quarterly",
+            PaymentFrequency.BIANNUALLY to "Biannually",
+            PaymentFrequency.ANNUALLY to "Annually",
+        )
     }
 
 }
