@@ -46,10 +46,10 @@ class AddPaymentFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentAddPaymentBinding.inflate(inflater, container, false)
-
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
+
+        binding = FragmentAddPaymentBinding.inflate(inflater, container, false)
 
         paymentTitleEditText = binding.textInputEditTextPaymentTitle
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
@@ -65,15 +65,17 @@ class AddPaymentFragment : DialogFragment() {
             )
         )
 
-        with(paymentAmountEditText) {
-            addTextChangedListener(DecimalDigitsInputFilter(this))
-        }
-
         datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select date")
             .setCalendarConstraints(constraintsBuilder.build())
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         datePicker.addOnPositiveButtonClickListener { dateInMillis ->
             selectedDate =
@@ -91,7 +93,9 @@ class AddPaymentFragment : DialogFragment() {
             )
         }
 
-        return binding.root
+        with(paymentAmountEditText) {
+            addTextChangedListener(DecimalDigitsInputFilter(this))
+        }
     }
 
     override fun onStart() {
