@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -40,6 +41,7 @@ class AddPaymentFragment : DialogFragment() {
     private lateinit var datePicker: MaterialDatePicker<Long>
     private lateinit var selectedDate: LocalDateTime
     private lateinit var paymentFrequencies: Map<PaymentFrequency, String>
+    private lateinit var toolbar: MaterialToolbar
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +63,9 @@ class AddPaymentFragment : DialogFragment() {
         paymentDateEditText = binding.textInputEditTextPaymentDate
         paymentFrequencyTextView = binding.autocompleteTextviewPaymentFrequency
         paymentFrequencies = viewModel.getFrequencies()
+        toolbar = binding.toolbarAddPayment
+
+        toolbar.inflateMenu(R.menu.add_payment_menu)
 
         paymentFrequencyTextView.setAdapter(
             ArrayAdapter(
@@ -81,6 +86,20 @@ class AddPaymentFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_save -> {
+                    addPayment()
+                    dismiss()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        toolbar.setNavigationOnClickListener { dismiss() }
 
         datePicker.addOnPositiveButtonClickListener { dateInMillis ->
             selectedDate =

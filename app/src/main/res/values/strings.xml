@@ -13,4 +13,5 @@
     <string name="payment_amount">Payment amount</string>
     <string name="next_payment_date">Next payment date</string>
     <string name="payment_frequency">Payment frequency</string>
+    <string name="save">Save</string>
 </resources>
