@@ -12,5 +12,5 @@ data class Payment(
     val title: String,
     val amount: Money,
     val date: LocalDateTime,
-    val frequency: Int,
+    val frequency: PaymentFrequency,
 )
