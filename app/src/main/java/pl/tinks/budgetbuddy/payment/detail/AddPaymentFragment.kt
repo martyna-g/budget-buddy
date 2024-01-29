@@ -1,6 +1,8 @@
 package pl.tinks.budgetbuddy.payment.detail
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +68,7 @@ class AddPaymentFragment : DialogFragment() {
         toolbar = binding.toolbarAddPayment
 
         toolbar.inflateMenu(R.menu.add_payment_menu)
+        toolbar.menu.findItem(R.id.action_save).setVisible(false)
 
         paymentFrequencyTextView.setAdapter(
             ArrayAdapter(
@@ -120,6 +123,12 @@ class AddPaymentFragment : DialogFragment() {
         with(paymentAmountEditText) {
             addTextChangedListener(DecimalDigitsInputFilter(this))
         }
+
+        paymentTitleEditText.addTextChangedListener(validateFieldsTextWatcher)
+        paymentAmountEditText.addTextChangedListener(validateFieldsTextWatcher)
+        paymentDateEditText.addTextChangedListener(validateFieldsTextWatcher)
+        paymentFrequencyTextView.addTextChangedListener(validateFieldsTextWatcher)
+
     }
 
     override fun onStart() {
@@ -151,6 +160,42 @@ class AddPaymentFragment : DialogFragment() {
                 paymentFrequency
             )
         )
+    }
+
+    private fun areFieldsValid(): Boolean {
+
+        val valid: Boolean
+
+        val title = paymentTitleEditText.text.toString()
+        val amount = paymentAmountEditText.text.toString()
+        val date = paymentDateEditText.text.toString()
+        val frequency = paymentFrequencyTextView.text.toString()
+
+        valid = !(title.isBlank() ||
+                amount.isBlank() ||
+                date.isBlank() ||
+                frequency.isBlank())
+
+        return valid
+    }
+
+    private val validateFieldsTextWatcher = object : TextWatcher {
+
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+        override fun afterTextChanged(p0: Editable?) {
+
+            val valid = areFieldsValid()
+
+            if (valid) {
+                toolbar.menu.findItem(R.id.action_save).setVisible(true)
+            } else {
+                toolbar.menu.findItem(R.id.action_save).setVisible(false)
+            }
+        }
+
     }
 
 }
