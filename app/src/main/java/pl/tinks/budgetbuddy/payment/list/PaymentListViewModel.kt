@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
@@ -17,33 +20,15 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(private val paymentRepository: PaymentRepository) :
     ViewModel() {
 
-    private lateinit var job: Job
-    private var _uiState: MutableStateFlow<PaymentUiState> =
-        MutableStateFlow(PaymentUiState.Loading)
-    val uiState: StateFlow<PaymentUiState> = _uiState
-
-    init {
-        loadPayments()
-    }
-
-    private fun loadPayments() {
-        job = viewModelScope.launch {
-            _uiState.value = PaymentUiState.Loading
-            paymentRepository.getAllPayments().map { result ->
-                when (result) {
-                    is Result.Success -> PaymentUiState.Success(result.data)
-                    is Result.Error -> PaymentUiState.Error(result.e)
-                }
-            }.collect {
-                _uiState.value = it
+    private var _uiState: StateFlow<PaymentUiState> =
+        paymentRepository.getAllPayments().map { result ->
+            when (result) {
+                is Result.Success -> PaymentUiState.Success(result.data)
+                is Result.Error -> PaymentUiState.Error(result.e)
             }
-        }
-    }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentUiState.Loading)
 
-    fun reloadPayments() {
-        job.cancel()
-        loadPayments()
-    }
+    val uiState: Flow<PaymentUiState> = _uiState
 
 }
 
