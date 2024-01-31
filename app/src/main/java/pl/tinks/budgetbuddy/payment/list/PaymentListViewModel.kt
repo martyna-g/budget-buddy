@@ -23,7 +23,7 @@ class PaymentListViewModel @Inject constructor(private val paymentRepository: Pa
     private var _uiState: StateFlow<PaymentUiState> =
         paymentRepository.getAllPayments().map { result ->
             when (result) {
-                is Result.Success -> PaymentUiState.Success(result.data)
+                is Result.Success -> PaymentUiState.Success(result.data.sortedBy { it.date })
                 is Result.Error -> PaymentUiState.Error(result.e)
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentUiState.Loading)
