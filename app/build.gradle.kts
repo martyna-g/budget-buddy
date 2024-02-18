@@ -56,6 +56,7 @@ dependencies {
     val roomVersion = "2.6.1"
     val navVersion = "2.7.6"
     val hiltVersion = "2.50"
+    val workVersion = "2.9.0"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -69,6 +70,8 @@ dependencies {
     implementation("org.joda:joda-money:1.0.4")
     implementation("org.joda:joda-convert:2.2.3")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    implementation("androidx.work:work-gcm:$workVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     testImplementation("junit:junit:4.13.2")
@@ -76,4 +79,5 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
+    androidTestImplementation("androidx.work:work-testing:$workVersion")
 }
