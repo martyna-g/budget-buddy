@@ -72,6 +72,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("androidx.work:work-runtime-ktx:$workVersion")
     implementation("androidx.work:work-gcm:$workVersion")
+    implementation("androidx.hilt:hilt-work:1.1.0")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
     testImplementation("junit:junit:4.13.2")
