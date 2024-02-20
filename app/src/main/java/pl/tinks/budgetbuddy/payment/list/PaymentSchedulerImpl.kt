@@ -3,6 +3,7 @@ package pl.tinks.budgetbuddy.payment.list
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -19,17 +20,20 @@ class PaymentSchedulerImpl @Inject constructor(
 
         val payment = repository.getPaymentById(paymentId)
 
-        val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
-        val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        if (payment.frequency != PaymentFrequency.SINGLE_PAYMENT) {
 
-        val delay = nextPaymentDateEpochSeconds - nowEpochSeconds
-        val id = paymentId.toString()
+            val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
+            val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
 
-        val workRequest = OneTimeWorkRequestBuilder<RecurringPaymentWorker>()
-            .setInitialDelay(delay, TimeUnit.SECONDS)
-            .setInputData(workDataOf("paymentId" to id))
-            .build()
+            val delay = nextPaymentDateEpochSeconds - nowEpochSeconds
+            val id = paymentId.toString()
 
-        workManager.enqueue(workRequest)
+            val workRequest = OneTimeWorkRequestBuilder<RecurringPaymentWorker>()
+                .setInitialDelay(delay, TimeUnit.SECONDS)
+                .setInputData(workDataOf("paymentId" to id))
+                .build()
+
+            workManager.enqueue(workRequest)
+        }
     }
 }
