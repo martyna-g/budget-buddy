@@ -6,12 +6,12 @@ import javax.inject.Inject
 
 class PaymentDateCalculator @Inject constructor() {
 
-    fun calculateNextScheduleDate(
+    fun calculateNextPaymentDate(
         paymentDate: LocalDate,
         paymentFrequency: PaymentFrequency
     ): LocalDate? {
 
-        val nextScheduleDate = when (paymentFrequency) {
+        val nextPaymentDate = when (paymentFrequency) {
             PaymentFrequency.SINGLE_PAYMENT -> paymentDate
             PaymentFrequency.DAILY -> paymentDate.plusDays(1)
             PaymentFrequency.WEEKLY -> paymentDate.plusDays(7)
@@ -21,7 +21,7 @@ class PaymentDateCalculator @Inject constructor() {
             PaymentFrequency.ANNUALLY -> paymentDate.plusMonths(12)
         }
 
-        return nextScheduleDate
+        return nextPaymentDate
 
     }
 
