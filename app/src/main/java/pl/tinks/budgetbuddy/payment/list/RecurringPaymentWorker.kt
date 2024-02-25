@@ -1,15 +1,44 @@
 package pl.tinks.budgetbuddy.payment.list
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import pl.tinks.budgetbuddy.payment.PaymentRepository
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.util.UUID
 
-class RecurringPaymentWorker(
-    appContext: Context,
-    workerParams: WorkerParameters,
+@HiltWorker
+class RecurringPaymentWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
+    private val repository: PaymentRepository,
+    private val calculator: PaymentDateCalculator,
+    private val paymentScheduler: PaymentScheduler
+
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        TODO("Not yet implemented")
+
+        val input = inputData.getString("paymentId")
+        val id = UUID.fromString(input)
+
+        val payment = repository.getPaymentById(id)
+
+        val nextDate = calculator.calculateNextPaymentDate(
+            payment.date.toLocalDate(),
+            payment.frequency
+        )
+
+        val newPaymentId = UUID.randomUUID()
+        val newPaymentDate = LocalDateTime.of(nextDate, LocalTime.MIDNIGHT)
+
+        repository.addPayment(payment.copy(id = newPaymentId, date = newPaymentDate))
+        paymentScheduler.scheduleRecurringPayment(newPaymentId)
+
+        return Result.success()
     }
 }
