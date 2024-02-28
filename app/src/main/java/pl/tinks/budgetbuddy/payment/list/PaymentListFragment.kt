@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -27,7 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PaymentListFragment : Fragment() {
 
-    private val viewModel: PaymentListViewModel by viewModels()
+    private val viewModel: PaymentListViewModel by activityViewModels()
     private lateinit var binding: FragmentPaymentListBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: MaterialToolbar

@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
@@ -23,6 +23,7 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentAddPaymentBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -34,7 +35,7 @@ private const val DATE_PICKER_ADD_PAYMENT = "DATE_PICKER_ADD_PAYMENT"
 @AndroidEntryPoint
 class AddPaymentFragment : DialogFragment() {
 
-    private val viewModel: AddPaymentViewModel by viewModels()
+    private val viewModel: PaymentListViewModel by activityViewModels()
     private lateinit var binding: FragmentAddPaymentBinding
     private lateinit var paymentTitleEditText: EditText
     private lateinit var paymentAmountEditText: EditText
@@ -64,7 +65,7 @@ class AddPaymentFragment : DialogFragment() {
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
         paymentDateEditText = binding.textInputEditTextPaymentDate
         paymentFrequencyTextView = binding.autocompleteTextviewPaymentFrequency
-        paymentFrequencies = viewModel.getFrequencies()
+        paymentFrequencies = getFrequencies()
         toolbar = binding.toolbarAddPayment
 
         toolbar.inflateMenu(R.menu.add_payment_menu)
@@ -79,7 +80,7 @@ class AddPaymentFragment : DialogFragment() {
         )
 
         datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("Select date")
+            .setTitleText(getString(R.string.select_date))
             .setCalendarConstraints(constraintsBuilder.build())
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
@@ -177,6 +178,18 @@ class AddPaymentFragment : DialogFragment() {
                 frequency.isBlank())
 
         return valid
+    }
+
+    private fun getFrequencies(): Map<PaymentFrequency, String> {
+        return mapOf(
+            PaymentFrequency.SINGLE_PAYMENT to getString(R.string.single_payment),
+            PaymentFrequency.DAILY to getString(R.string.daily),
+            PaymentFrequency.WEEKLY to getString(R.string.weekly),
+            PaymentFrequency.MONTHLY to getString(R.string.monthly),
+            PaymentFrequency.QUARTERLY to getString(R.string.quarterly),
+            PaymentFrequency.BIANNUALLY to getString(R.string.biannually),
+            PaymentFrequency.ANNUALLY to getString(R.string.annually),
+        )
     }
 
     private val validateFieldsTextWatcher = object : TextWatcher {
