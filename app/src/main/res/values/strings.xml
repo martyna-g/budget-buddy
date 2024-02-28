@@ -14,4 +14,12 @@
     <string name="next_payment_date">Next payment date</string>
     <string name="payment_frequency">Payment frequency</string>
     <string name="save">Save</string>
+    <string name="single_payment">"Single payment"</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="quarterly">Quarterly</string>
+    <string name="biannually">Biannually</string>
+    <string name="annually">Annually</string>
+    <string name="select_date">Select date</string>
 </resources>
