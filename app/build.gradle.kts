@@ -62,19 +62,25 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+
     implementation("org.joda:joda-money:1.0.4")
     implementation("org.joda:joda-convert:2.2.3")
+
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("androidx.work:work-runtime-ktx:$workVersion")
     implementation("androidx.work:work-gcm:$workVersion")
-    implementation("androidx.hilt:hilt-work:1.1.0")
-    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$roomVersion")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
