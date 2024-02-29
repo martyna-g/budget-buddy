@@ -11,16 +11,6 @@
         <item name="colorOnSecondary">@color/light_on_secondary</item>
         <item name="colorSecondaryContainer">@color/light_secondary_container</item>
         <item name="colorOnSecondaryContainer">@color/light_on_secondary_container</item>
-        <item name="colorTertiary">@color/light_tertiary</item>
-        <item name="colorOnTertiary">@color/light_on_tertiary</item>
-        <item name="colorTertiaryContainer">@color/light_tertiary_container</item>
-        <item name="colorOnTertiaryContainer">@color/light_on_tertiary_container</item>
-        <item name="colorError">@color/light_error</item>
-        <item name="colorOnError">@color/light_on_error</item>
-        <item name="colorErrorContainer">@color/light_error_container</item>
-        <item name="colorOnErrorContainer">@color/light_on_error_container</item>
-        <item name="colorSurface">@color/light_surface</item>
-        <item name="colorOnSurface">@color/light_on_surface</item>
     </style>
 
     <style name="Theme.BudgetBuddy" parent="Base.Theme.BudgetBuddy" />
