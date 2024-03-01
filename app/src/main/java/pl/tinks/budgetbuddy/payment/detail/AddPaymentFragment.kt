@@ -43,7 +43,7 @@ class AddPaymentFragment : DialogFragment() {
     private lateinit var paymentFrequencyTextView: AutoCompleteTextView
     private lateinit var datePicker: MaterialDatePicker<Long>
     private lateinit var selectedDate: LocalDateTime
-    private lateinit var paymentFrequencies: Map<PaymentFrequency, String>
+    private lateinit var paymentFrequencies: Array<out String>
     private lateinit var toolbar: MaterialToolbar
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
 
@@ -56,8 +56,8 @@ class AddPaymentFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        val constraintsBuilder = CalendarConstraints.Builder()
-            .setValidator(DateValidatorPointForward.now())
+        val constraintsBuilder =
+            CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
 
         binding = FragmentAddPaymentBinding.inflate(inflater, container, false)
 
@@ -65,25 +65,22 @@ class AddPaymentFragment : DialogFragment() {
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
         paymentDateEditText = binding.textInputEditTextPaymentDate
         paymentFrequencyTextView = binding.autocompleteTextviewPaymentFrequency
-        paymentFrequencies = getFrequencies()
         toolbar = binding.toolbarAddPayment
+        paymentFrequencies = resources.getStringArray(R.array.payment_frequencies)
 
         toolbar.inflateMenu(R.menu.add_payment_menu)
         toolbar.menu.findItem(R.id.action_save).setVisible(false)
 
         paymentFrequencyTextView.setAdapter(
             ArrayAdapter(
-                requireContext(),
-                R.layout.item_payment_frequency,
-                paymentFrequencies.values.toList()
+                requireContext(), R.layout.item_payment_frequency, paymentFrequencies
             )
         )
 
-        datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText(getString(R.string.select_date))
-            .setCalendarConstraints(constraintsBuilder.build())
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-            .build()
+        datePicker =
+            MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.select_date))
+                .setCalendarConstraints(constraintsBuilder.build())
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
 
         return binding.root
     }
@@ -116,8 +113,7 @@ class AddPaymentFragment : DialogFragment() {
 
         paymentDateEditText.setOnClickListener {
             datePicker.show(
-                parentFragmentManager,
-                DATE_PICKER_ADD_PAYMENT
+                parentFragmentManager, DATE_PICKER_ADD_PAYMENT
             )
         }
 
@@ -135,8 +131,7 @@ class AddPaymentFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         )
     }
 
@@ -149,16 +144,12 @@ class AddPaymentFragment : DialogFragment() {
         val frequency = paymentFrequencyTextView.text.toString()
 
         val amountMoney: Money = Money.of(currencyGbp, amount.toDoubleOrNull() ?: 0.00)
-        val paymentFrequency: PaymentFrequency =
-            paymentFrequencies.entries.find { it.value == frequency }?.key!!
+        val paymentFrequency: PaymentFrequency = mapPaymentFrequency(frequency)
+
 
         viewModel.addPayment(
             Payment(
-                uuid,
-                title,
-                amountMoney,
-                selectedDate,
-                paymentFrequency
+                uuid, title, amountMoney, selectedDate, paymentFrequency
             )
         )
     }
@@ -172,24 +163,22 @@ class AddPaymentFragment : DialogFragment() {
         val date = paymentDateEditText.text.toString()
         val frequency = paymentFrequencyTextView.text.toString()
 
-        valid = !(title.isBlank() ||
-                amount.isBlank() ||
-                date.isBlank() ||
-                frequency.isBlank())
+        valid = !(title.isBlank() || amount.isBlank() || date.isBlank() || frequency.isBlank())
 
         return valid
     }
 
-    private fun getFrequencies(): Map<PaymentFrequency, String> {
-        return mapOf(
-            PaymentFrequency.SINGLE_PAYMENT to getString(R.string.single_payment),
-            PaymentFrequency.DAILY to getString(R.string.daily),
-            PaymentFrequency.WEEKLY to getString(R.string.weekly),
-            PaymentFrequency.MONTHLY to getString(R.string.monthly),
-            PaymentFrequency.QUARTERLY to getString(R.string.quarterly),
-            PaymentFrequency.BIANNUALLY to getString(R.string.biannually),
-            PaymentFrequency.ANNUALLY to getString(R.string.annually),
-        )
+    private fun mapPaymentFrequency(frequencyInput: String): PaymentFrequency {
+        return when (frequencyInput) {
+            getString(R.string.single_payment) -> PaymentFrequency.SINGLE_PAYMENT
+            getString(R.string.daily) -> PaymentFrequency.DAILY
+            getString(R.string.weekly) -> PaymentFrequency.WEEKLY
+            getString(R.string.monthly) -> PaymentFrequency.MONTHLY
+            getString(R.string.quarterly) -> PaymentFrequency.QUARTERLY
+            getString(R.string.biannually) -> PaymentFrequency.BIANNUALLY
+            getString(R.string.annually) -> PaymentFrequency.ANNUALLY
+            else -> throw IllegalArgumentException("Invalid payment frequency")
+        }
     }
 
     private val validateFieldsTextWatcher = object : TextWatcher {
