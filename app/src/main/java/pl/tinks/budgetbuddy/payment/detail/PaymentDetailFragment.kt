@@ -20,7 +20,7 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.DecimalDigitsInputFilter
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.databinding.FragmentAddPaymentBinding
+import pl.tinks.budgetbuddy.databinding.FragmentPaymentDetailBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
@@ -33,10 +33,10 @@ import java.util.UUID
 private const val DATE_PICKER_ADD_PAYMENT = "DATE_PICKER_ADD_PAYMENT"
 
 @AndroidEntryPoint
-class AddPaymentFragment : DialogFragment() {
+class PaymentDetailFragment : DialogFragment() {
 
     private val viewModel: PaymentListViewModel by activityViewModels()
-    private lateinit var binding: FragmentAddPaymentBinding
+    private lateinit var binding: FragmentPaymentDetailBinding
     private lateinit var paymentTitleEditText: EditText
     private lateinit var paymentAmountEditText: EditText
     private lateinit var paymentDateEditText: EditText
@@ -59,7 +59,7 @@ class AddPaymentFragment : DialogFragment() {
         val constraintsBuilder =
             CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
 
-        binding = FragmentAddPaymentBinding.inflate(inflater, container, false)
+        binding = FragmentPaymentDetailBinding.inflate(inflater, container, false)
 
         paymentTitleEditText = binding.textInputEditTextPaymentTitle
         paymentAmountEditText = binding.textInputEditTextPaymentAmount

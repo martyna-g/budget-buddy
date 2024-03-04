@@ -57,7 +57,7 @@ class PaymentListFragment : Fragment() {
             it.addItemDecoration(dividerItemDecoration)
         }
 
-        floatingActionButton.setOnClickListener { navigateToAddPaymentFragment() }
+        floatingActionButton.setOnClickListener { navigateToPaymentDetailFragment() }
 
         return binding.root
     }
@@ -102,8 +102,9 @@ class PaymentListFragment : Fragment() {
             .show()
     }
 
-    private fun navigateToAddPaymentFragment() {
-        val action = PaymentListFragmentDirections.actionPaymentListFragmentToAddPaymentFragment()
+    private fun navigateToPaymentDetailFragment() {
+        val action =
+            PaymentListFragmentDirections.actionPaymentListFragmentToPaymentDetailFragment()
         findNavController().navigate(action)
     }
 
