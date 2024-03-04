@@ -144,7 +144,7 @@ class PaymentDetailFragment : DialogFragment() {
         val frequency = paymentFrequencyTextView.text.toString()
 
         val amountMoney: Money = Money.of(currencyGbp, amount.toDoubleOrNull() ?: 0.00)
-        val paymentFrequency: PaymentFrequency = mapPaymentFrequency(frequency)
+        val paymentFrequency: PaymentFrequency = mapStringToPaymentFrequency(frequency)
 
 
         viewModel.addPayment(
@@ -168,7 +168,7 @@ class PaymentDetailFragment : DialogFragment() {
         return valid
     }
 
-    private fun mapPaymentFrequency(frequencyInput: String): PaymentFrequency {
+    private fun mapStringToPaymentFrequency(frequencyInput: String): PaymentFrequency {
         return when (frequencyInput) {
             getString(R.string.single_payment) -> PaymentFrequency.SINGLE_PAYMENT
             getString(R.string.daily) -> PaymentFrequency.DAILY
@@ -178,6 +178,18 @@ class PaymentDetailFragment : DialogFragment() {
             getString(R.string.biannually) -> PaymentFrequency.BIANNUALLY
             getString(R.string.annually) -> PaymentFrequency.ANNUALLY
             else -> throw IllegalArgumentException("Invalid payment frequency")
+        }
+    }
+
+    private fun mapPaymentFrequencyToString(frequencyInput: PaymentFrequency): String {
+        return when (frequencyInput) {
+            PaymentFrequency.SINGLE_PAYMENT -> getString(R.string.single_payment)
+            PaymentFrequency.DAILY -> getString(R.string.daily)
+            PaymentFrequency.WEEKLY -> getString(R.string.weekly)
+            PaymentFrequency.MONTHLY -> getString(R.string.monthly)
+            PaymentFrequency.QUARTERLY -> getString(R.string.quarterly)
+            PaymentFrequency.BIANNUALLY -> getString(R.string.biannually)
+            PaymentFrequency.ANNUALLY -> getString(R.string.annually)
         }
     }
 
