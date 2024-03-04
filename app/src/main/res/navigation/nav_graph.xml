@@ -30,5 +30,13 @@
         android:id="@+id/paymentDetailFragment"
         android:name="pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment"
         android:label="fragment_add_payment"
-        tools:layout="@layout/fragment_payment_detail" />
+        tools:layout="@layout/fragment_payment_detail" >
+        <argument
+            android:name="buttonType"
+            app:argType="pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment$Companion$ActionButtonType" />
+        <argument
+            android:name="paymentId"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
 </navigation>

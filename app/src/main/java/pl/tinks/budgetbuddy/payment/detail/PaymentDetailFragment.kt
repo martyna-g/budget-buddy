@@ -200,4 +200,13 @@ class PaymentDetailFragment : DialogFragment() {
 
     }
 
+    companion object {
+        enum class ActionButtonType {
+            INFO,
+            EDIT,
+            DELETE,
+            ADD,
+        }
+    }
+
 }

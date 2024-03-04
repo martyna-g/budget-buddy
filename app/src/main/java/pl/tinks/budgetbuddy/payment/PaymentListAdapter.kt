@@ -11,9 +11,9 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import javax.inject.Inject
+import java.util.UUID
 
-class PaymentListAdapter @Inject constructor() :
+class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> Unit) :
     ListAdapter<Payment, PaymentListAdapter.PaymentListViewHolder>(PaymentDiffCallback()) {
 
     private var lastClickedPosition: Int = RecyclerView.NO_POSITION
@@ -47,6 +47,16 @@ class PaymentListAdapter @Inject constructor() :
 
                     lastClickedPosition = adapterPosition
 
+                }
+
+                buttonItemInfo.setOnClickListener {
+                    actionButtonClickCallback(buttonItemInfo.id, payment.id)
+                }
+                buttonItemEdit.setOnClickListener {
+                    actionButtonClickCallback(buttonItemEdit.id, payment.id)
+                }
+                buttonItemDelete.setOnClickListener {
+                    actionButtonClickCallback(buttonItemDelete.id, payment.id)
                 }
             }
         }

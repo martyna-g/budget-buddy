@@ -22,6 +22,8 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
 import pl.tinks.budgetbuddy.payment.PaymentListAdapter
+import pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment
+import java.util.UUID
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,9 +35,8 @@ class PaymentListFragment : Fragment() {
     private lateinit var toolbar: MaterialToolbar
     private lateinit var floatingActionButton: FloatingActionButton
     private lateinit var progressIndicator: CircularProgressIndicator
+    private val adapter: PaymentListAdapter = PaymentListAdapter(::handleActionButtonClick)
 
-    @Inject
-    lateinit var adapter: PaymentListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -57,7 +58,9 @@ class PaymentListFragment : Fragment() {
             it.addItemDecoration(dividerItemDecoration)
         }
 
-        floatingActionButton.setOnClickListener { navigateToPaymentDetailFragment() }
+        floatingActionButton.setOnClickListener {
+            navigateToPaymentDetailFragment(null, null)
+        }
 
         return binding.root
     }
@@ -102,9 +105,19 @@ class PaymentListFragment : Fragment() {
             .show()
     }
 
-    private fun navigateToPaymentDetailFragment() {
-        val action =
-            PaymentListFragmentDirections.actionPaymentListFragmentToPaymentDetailFragment()
+    private fun handleActionButtonClick(buttonId: Int, paymentId: UUID) {
+        navigateToPaymentDetailFragment(buttonId, paymentId.toString())
+    }
+
+    private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {
+        val actionButtonType = when (buttonId) {
+            R.id.button_item_info -> PaymentDetailFragment.Companion.ActionButtonType.INFO
+            R.id.button_item_edit -> PaymentDetailFragment.Companion.ActionButtonType.EDIT
+            R.id.button_item_delete -> PaymentDetailFragment.Companion.ActionButtonType.DELETE
+            else -> PaymentDetailFragment.Companion.ActionButtonType.ADD
+        }
+        val action = PaymentListFragmentDirections
+            .actionPaymentListFragmentToPaymentDetailFragment(actionButtonType, paymentId)
         findNavController().navigate(action)
     }
 
