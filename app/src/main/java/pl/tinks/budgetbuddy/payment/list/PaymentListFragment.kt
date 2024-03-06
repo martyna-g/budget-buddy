@@ -22,9 +22,8 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
 import pl.tinks.budgetbuddy.payment.PaymentListAdapter
-import pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment
+import pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment
 import java.util.UUID
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class PaymentListFragment : Fragment() {
@@ -111,13 +110,13 @@ class PaymentListFragment : Fragment() {
 
     private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {
         val actionButtonType = when (buttonId) {
-            R.id.button_item_info -> PaymentDetailFragment.Companion.ActionButtonType.INFO
-            R.id.button_item_edit -> PaymentDetailFragment.Companion.ActionButtonType.EDIT
-            R.id.button_item_delete -> PaymentDetailFragment.Companion.ActionButtonType.DELETE
-            else -> PaymentDetailFragment.Companion.ActionButtonType.ADD
+            R.id.button_item_info -> PaymentDetailsFragment.Companion.ActionButtonType.INFO
+            R.id.button_item_edit -> PaymentDetailsFragment.Companion.ActionButtonType.EDIT
+            R.id.button_item_delete -> PaymentDetailsFragment.Companion.ActionButtonType.DELETE
+            else -> PaymentDetailsFragment.Companion.ActionButtonType.ADD
         }
         val action = PaymentListFragmentDirections
-            .actionPaymentListFragmentToPaymentDetailFragment(actionButtonType, paymentId)
+            .actionPaymentListFragmentToPaymentDetailsFragment(actionButtonType, paymentId)
         findNavController().navigate(action)
     }
 

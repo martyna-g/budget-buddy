@@ -23,17 +23,17 @@
             android:id="@+id/action_paymentListFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
         <action
-            android:id="@+id/action_paymentListFragment_to_paymentDetailFragment"
-            app:destination="@id/paymentDetailFragment" />
+            android:id="@+id/action_paymentListFragment_to_paymentDetailsFragment"
+            app:destination="@id/paymentDetailsFragment" />
     </fragment>
     <dialog
-        android:id="@+id/paymentDetailFragment"
-        android:name="pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment"
+        android:id="@+id/paymentDetailsFragment"
+        android:name="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment"
         android:label="fragment_add_payment"
-        tools:layout="@layout/fragment_payment_detail" >
+        tools:layout="@layout/fragment_payment_details" >
         <argument
             android:name="buttonType"
-            app:argType="pl.tinks.budgetbuddy.payment.detail.PaymentDetailFragment$Companion$ActionButtonType" />
+            app:argType="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment$Companion$ActionButtonType" />
         <argument
             android:name="paymentId"
             app:argType="string"

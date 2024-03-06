@@ -23,7 +23,7 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.DecimalDigitsInputFilter
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.databinding.FragmentPaymentDetailBinding
+import pl.tinks.budgetbuddy.databinding.FragmentPaymentDetailsBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
@@ -36,10 +36,10 @@ import java.util.UUID
 private const val DATE_PICKER_ADD_PAYMENT = "DATE_PICKER_ADD_PAYMENT"
 
 @AndroidEntryPoint
-class PaymentDetailFragment : DialogFragment() {
+class PaymentDetailsFragment : DialogFragment() {
 
     private val viewModel: PaymentListViewModel by activityViewModels()
-    private lateinit var binding: FragmentPaymentDetailBinding
+    private lateinit var binding: FragmentPaymentDetailsBinding
     private lateinit var paymentTitleEditText: EditText
     private lateinit var paymentAmountEditText: EditText
     private lateinit var paymentDateEditText: EditText
@@ -49,7 +49,7 @@ class PaymentDetailFragment : DialogFragment() {
     private lateinit var paymentFrequencies: Array<out String>
     private lateinit var toolbar: MaterialToolbar
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
-    private val args: PaymentDetailFragmentArgs by navArgs()
+    private val args: PaymentDetailsFragmentArgs by navArgs()
     private lateinit var actionButtonType: ActionButtonType
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +67,7 @@ class PaymentDetailFragment : DialogFragment() {
         val constraintsBuilder =
             CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
 
-        binding = FragmentPaymentDetailBinding.inflate(inflater, container, false)
+        binding = FragmentPaymentDetailsBinding.inflate(inflater, container, false)
 
         paymentTitleEditText = binding.textInputEditTextPaymentTitle
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
