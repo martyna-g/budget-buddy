@@ -11,11 +11,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.DecimalDigitsInputFilter
@@ -46,6 +49,8 @@ class PaymentDetailFragment : DialogFragment() {
     private lateinit var paymentFrequencies: Array<out String>
     private lateinit var toolbar: MaterialToolbar
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
+    private val args: PaymentDetailFragmentArgs by navArgs()
+    private lateinit var actionButtonType: ActionButtonType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +60,9 @@ class PaymentDetailFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+
+        actionButtonType = args.buttonType
+        val paymentId: UUID? = if (args.paymentId != null) UUID.fromString(args.paymentId) else null
 
         val constraintsBuilder =
             CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
@@ -81,6 +89,15 @@ class PaymentDetailFragment : DialogFragment() {
             MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.select_date))
                 .setCalendarConstraints(constraintsBuilder.build())
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
+
+        if (paymentId != null) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.initPaymentDetails(paymentId)
+                viewModel.selectedPayment.collect {
+                    populateFields(it)
+                }
+            }
+        }
 
         return binding.root
     }
@@ -151,6 +168,16 @@ class PaymentDetailFragment : DialogFragment() {
             Payment(
                 uuid, title, amountMoney, selectedDate, paymentFrequency
             )
+        )
+    }
+
+    private fun populateFields(payment: Payment) {
+        val frequency = mapPaymentFrequencyToString(payment.frequency)
+        paymentFrequencyTextView.setText(frequency, false)
+        paymentTitleEditText.setText(payment.title)
+        paymentAmountEditText.setText(payment.amount.amount.toPlainString())
+        paymentDateEditText.setText(
+            payment.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         )
     }
 
