@@ -28,7 +28,9 @@ import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -51,6 +53,7 @@ class PaymentDetailsFragment : DialogFragment() {
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
     private val args: PaymentDetailsFragmentArgs by navArgs()
     private lateinit var actionButtonType: ActionButtonType
+    private var paymentId: UUID? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +65,7 @@ class PaymentDetailsFragment : DialogFragment() {
     ): View {
 
         actionButtonType = args.buttonType
-        val paymentId: UUID? = if (args.paymentId != null) UUID.fromString(args.paymentId) else null
+        paymentId = if (args.paymentId != null) UUID.fromString(args.paymentId) else null
 
         val constraintsBuilder =
             CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
@@ -92,7 +95,7 @@ class PaymentDetailsFragment : DialogFragment() {
 
         if (paymentId != null) {
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.initPaymentDetails(paymentId)
+                viewModel.initPaymentDetails(paymentId!!)
                 viewModel.selectedPayment.collect {
                     populateFields(it)
                 }
@@ -107,9 +110,16 @@ class PaymentDetailsFragment : DialogFragment() {
 
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
+
                 R.id.action_save -> {
-                    addPayment()
-                    dismiss()
+
+                    if (actionButtonType == ActionButtonType.ADD) {
+                        addPayment()
+                        dismiss()
+                    } else {
+                        updatePayment(paymentId!!)
+                        dismiss()
+                    }
                     true
                 }
 
@@ -168,6 +178,26 @@ class PaymentDetailsFragment : DialogFragment() {
             Payment(
                 uuid, title, amountMoney, selectedDate, paymentFrequency
             )
+        )
+    }
+
+    private fun updatePayment(id: UUID) {
+        viewModel.updatePayment(createPaymentFromUserInput(id))
+    }
+
+    private fun createPaymentFromUserInput(id: UUID): Payment {
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val title = paymentTitleEditText.text.toString()
+        val amount = paymentAmountEditText.text.toString()
+        val localDate = LocalDate.parse(paymentDateEditText.text, formatter)
+        val frequency = paymentFrequencyTextView.text.toString()
+
+        val amountMoney: Money = Money.of(currencyGbp, amount.toDoubleOrNull() ?: 0.00)
+        val paymentFrequency: PaymentFrequency = mapStringToPaymentFrequency(frequency)
+        val date = LocalDateTime.of(localDate, LocalTime.MIDNIGHT)
+
+        return Payment(
+            id, title, amountMoney, date, paymentFrequency
         )
     }
 
@@ -267,10 +297,7 @@ class PaymentDetailsFragment : DialogFragment() {
 
     companion object {
         enum class ActionButtonType {
-            INFO,
-            EDIT,
-            DELETE,
-            ADD,
+            INFO, EDIT, DELETE, ADD,
         }
     }
 
