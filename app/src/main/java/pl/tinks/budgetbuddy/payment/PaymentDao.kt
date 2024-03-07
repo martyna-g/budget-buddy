@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -18,6 +19,9 @@ interface PaymentDao {
 
     @Insert
     suspend fun addPayment(payment: Payment)
+
+    @Update
+    suspend fun updatePayment(payment: Payment)
 
     @Delete
     suspend fun deletePayment(payment: Payment)
