@@ -26,6 +26,10 @@ class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentD
         paymentDao.addPayment(payment)
     }
 
+    override suspend fun updatePayment(payment: Payment) {
+        paymentDao.updatePayment(payment)
+    }
+
     override suspend fun deletePayment(payment: Payment) {
         paymentDao.deletePayment(payment)
     }

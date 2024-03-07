@@ -50,6 +50,12 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
+    fun updatePayment(payment: Payment) {
+        viewModelScope.launch {
+            paymentRepository.updatePayment(payment)
+        }
+    }
+
 }
 
 sealed class PaymentUiState {
