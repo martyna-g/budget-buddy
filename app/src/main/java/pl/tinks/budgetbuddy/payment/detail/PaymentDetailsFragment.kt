@@ -163,22 +163,8 @@ class PaymentDetailsFragment : DialogFragment() {
     }
 
     private fun addPayment() {
-
-        val uuid = UUID.randomUUID()
-
-        val title = paymentTitleEditText.text.toString()
-        val amount = paymentAmountEditText.text.toString()
-        val frequency = paymentFrequencyTextView.text.toString()
-
-        val amountMoney: Money = Money.of(currencyGbp, amount.toDoubleOrNull() ?: 0.00)
-        val paymentFrequency: PaymentFrequency = mapStringToPaymentFrequency(frequency)
-
-
-        viewModel.addPayment(
-            Payment(
-                uuid, title, amountMoney, selectedDate, paymentFrequency
-            )
-        )
+        val id = UUID.randomUUID()
+        viewModel.addPayment(createPaymentFromUserInput(id))
     }
 
     private fun updatePayment(id: UUID) {
