@@ -220,6 +220,15 @@ class PaymentDetailsFragment : DialogFragment() {
         }
     }
 
+    private fun disableFieldInteractions() {
+        paymentTitleEditText.isFocusable = false
+        paymentAmountEditText.isFocusable = false
+        paymentDateEditText.setOnClickListener(null)
+        paymentFrequencyTextView.isFocusable = false
+        paymentFrequencyTextView.setAdapter(null)
+
+    }
+
     private val validateFieldsTextWatcher = object : TextWatcher {
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -231,7 +240,24 @@ class PaymentDetailsFragment : DialogFragment() {
             val valid = areFieldsValid()
 
             if (valid) {
-                toolbar.menu.findItem(R.id.action_save).setVisible(true)
+                when (actionButtonType) {
+                    ActionButtonType.DELETE -> {
+                        toolbar.menu.findItem(R.id.action_save).isVisible = false
+                        toolbar.menu.findItem(R.id.action_delete).isVisible = true
+                        disableFieldInteractions()
+                    }
+
+                    ActionButtonType.INFO -> {
+                        toolbar.menu.findItem(R.id.action_save).isVisible = false
+                        toolbar.menu.findItem(R.id.action_delete).isVisible = false
+                        disableFieldInteractions()
+                    }
+
+                    else -> {
+                        toolbar.menu.findItem(R.id.action_save).isVisible = true
+                        toolbar.menu.findItem(R.id.action_delete).isVisible = false
+                    }
+                }
             } else {
                 toolbar.menu.findItem(R.id.action_save).setVisible(false)
             }

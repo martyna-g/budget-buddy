@@ -22,4 +22,5 @@
     <string name="biannually">Biannually</string>
     <string name="annually">Annually</string>
     <string name="select_date">Select date</string>
+    <string name="delete">Delete</string>
 </resources>
