@@ -56,6 +56,13 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
+    fun deletePayment(payment: Payment) {
+        viewModelScope.launch {
+            paymentRepository.deletePayment(payment)
+            paymentScheduler.cancelUpcomingPayments(payment.id)
+        }
+    }
+
 }
 
 sealed class PaymentUiState {
