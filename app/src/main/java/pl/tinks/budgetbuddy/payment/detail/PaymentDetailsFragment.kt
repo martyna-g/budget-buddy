@@ -54,6 +54,7 @@ class PaymentDetailsFragment : DialogFragment() {
     private val args: PaymentDetailsFragmentArgs by navArgs()
     private lateinit var actionButtonType: ActionButtonType
     private var paymentId: UUID? = null
+    private lateinit var payment: Payment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +99,7 @@ class PaymentDetailsFragment : DialogFragment() {
                 viewModel.initPaymentDetails(paymentId!!)
                 viewModel.selectedPayment.collect {
                     populateFields(it)
+                    payment = it
                 }
             }
         }
@@ -120,6 +122,12 @@ class PaymentDetailsFragment : DialogFragment() {
                         updatePayment(paymentId!!)
                         dismiss()
                     }
+                    true
+                }
+
+                R.id.action_delete -> {
+                    deletePayment(payment)
+                    dismiss()
                     true
                 }
 
@@ -169,6 +177,10 @@ class PaymentDetailsFragment : DialogFragment() {
 
     private fun updatePayment(id: UUID) {
         viewModel.updatePayment(createPaymentFromUserInput(id))
+    }
+
+    private fun deletePayment(payment: Payment) {
+        viewModel.deletePayment(payment)
     }
 
     private fun createPaymentFromUserInput(id: UUID): Payment {
