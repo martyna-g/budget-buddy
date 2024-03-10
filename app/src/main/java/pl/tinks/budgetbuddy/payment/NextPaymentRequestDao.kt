@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy.payment
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import java.util.UUID
@@ -13,4 +14,8 @@ interface NextPaymentRequestDao {
 
     @Insert
     suspend fun addNextPaymentRequest(nextPaymentRequest: NextPaymentRequest)
+
+    @Delete
+    suspend fun deleteNextPaymentRequest(nextPaymentRequest: NextPaymentRequest)
+
 }
