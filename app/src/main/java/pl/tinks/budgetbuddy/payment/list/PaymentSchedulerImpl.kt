@@ -5,6 +5,8 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import pl.tinks.budgetbuddy.payment.NextPaymentRequestDao
+import pl.tinks.budgetbuddy.payment.NextPaymentRequest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 class PaymentSchedulerImpl @Inject constructor(
     private val repository: PaymentRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val nextPaymentRequestDao: NextPaymentRequestDao,
 ) : PaymentScheduler {
 
     override suspend fun scheduleRecurringPayment(paymentId: UUID) {
@@ -32,6 +35,13 @@ class PaymentSchedulerImpl @Inject constructor(
                 .setInitialDelay(delay, TimeUnit.SECONDS)
                 .setInputData(workDataOf("paymentId" to id))
                 .build()
+
+            nextPaymentRequestDao.addNextPaymentRequest(
+                NextPaymentRequest(
+                    workRequest.id,
+                    paymentId
+                )
+            )
 
             workManager.enqueue(workRequest)
         }
