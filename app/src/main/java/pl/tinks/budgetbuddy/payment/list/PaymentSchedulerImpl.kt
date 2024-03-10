@@ -46,4 +46,11 @@ class PaymentSchedulerImpl @Inject constructor(
             workManager.enqueue(workRequest)
         }
     }
+
+    override suspend fun cancelUpcomingPayments(paymentId: UUID) {
+        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(paymentId)
+        workManager.cancelWorkById(nextPaymentRequest.requestId)
+        nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
+    }
+
 }
