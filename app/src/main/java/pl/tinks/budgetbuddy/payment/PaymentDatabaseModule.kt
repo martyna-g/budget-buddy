@@ -30,3 +30,13 @@ object PaymentDaoModule {
     @Provides
     fun providePaymentDao(paymentDatabase: PaymentDatabase) = paymentDatabase.getPaymentDao()
 }
+
+@InstallIn(SingletonComponent::class)
+@Module
+object NextPaymentRequestDaoModule {
+
+    @Singleton
+    @Provides
+    fun provideNextPaymentRequestDao(paymentDatabase: PaymentDatabase) =
+        paymentDatabase.getNextPaymentRequestDao()
+}
