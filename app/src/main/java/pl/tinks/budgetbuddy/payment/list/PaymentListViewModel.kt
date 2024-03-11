@@ -53,6 +53,7 @@ class PaymentListViewModel @Inject constructor(
     fun updatePayment(payment: Payment) {
         viewModelScope.launch {
             paymentRepository.updatePayment(payment)
+            paymentScheduler.updateRecurringPayment(payment.id)
         }
     }
 
