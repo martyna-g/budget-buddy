@@ -53,4 +53,9 @@ class PaymentSchedulerImpl @Inject constructor(
         nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
     }
 
+    override suspend fun updateRecurringPayment(paymentId: UUID) {
+        cancelUpcomingPayments(paymentId)
+        scheduleRecurringPayment(paymentId)
+    }
+
 }
