@@ -1,13 +1,13 @@
 package pl.tinks.budgetbuddy.payment.list
 
-import java.util.UUID
+import pl.tinks.budgetbuddy.payment.Payment
 
 interface PaymentScheduler {
 
-    suspend fun scheduleRecurringPayment(paymentId: UUID)
+    suspend fun scheduleRecurringPayment(payment: Payment)
 
-    suspend fun cancelUpcomingPayments(paymentId: UUID)
+    suspend fun cancelUpcomingPayment(payment: Payment)
 
-    suspend fun updateRecurringPayment(paymentId: UUID)
+    suspend fun updateRecurringPayment(payment: Payment)
 
 }

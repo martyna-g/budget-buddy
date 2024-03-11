@@ -46,21 +46,21 @@ class PaymentListViewModel @Inject constructor(
     fun addPayment(payment: Payment) {
         viewModelScope.launch {
             paymentRepository.addPayment(payment)
-            paymentScheduler.scheduleRecurringPayment(payment.id)
+            paymentScheduler.scheduleRecurringPayment(payment)
         }
     }
 
     fun updatePayment(payment: Payment) {
         viewModelScope.launch {
             paymentRepository.updatePayment(payment)
-            paymentScheduler.updateRecurringPayment(payment.id)
+            paymentScheduler.updateRecurringPayment(payment)
         }
     }
 
     fun deletePayment(payment: Payment) {
         viewModelScope.launch {
             paymentRepository.deletePayment(payment)
-            paymentScheduler.cancelUpcomingPayments(payment.id)
+            paymentScheduler.cancelUpcomingPayment(payment)
         }
     }
 

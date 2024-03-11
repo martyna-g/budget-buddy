@@ -7,21 +7,18 @@ import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.NextPaymentRequestDao
 import pl.tinks.budgetbuddy.payment.NextPaymentRequest
+import pl.tinks.budgetbuddy.payment.Payment
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PaymentSchedulerImpl @Inject constructor(
-    private val repository: PaymentRepository,
     private val workManager: WorkManager,
     private val nextPaymentRequestDao: NextPaymentRequestDao,
 ) : PaymentScheduler {
 
-    override suspend fun scheduleRecurringPayment(paymentId: UUID) {
-
-        val payment = repository.getPaymentById(paymentId)
+    override suspend fun scheduleRecurringPayment(payment: Payment) {
 
         if (payment.frequency != PaymentFrequency.SINGLE_PAYMENT) {
 
@@ -29,7 +26,7 @@ class PaymentSchedulerImpl @Inject constructor(
             val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
 
             val delay = nextPaymentDateEpochSeconds - nowEpochSeconds
-            val id = paymentId.toString()
+            val id = payment.id.toString()
 
             val workRequest = OneTimeWorkRequestBuilder<RecurringPaymentWorker>()
                 .setInitialDelay(delay, TimeUnit.SECONDS)
@@ -39,7 +36,7 @@ class PaymentSchedulerImpl @Inject constructor(
             nextPaymentRequestDao.addNextPaymentRequest(
                 NextPaymentRequest(
                     workRequest.id,
-                    paymentId
+                    payment.id
                 )
             )
 
@@ -47,15 +44,15 @@ class PaymentSchedulerImpl @Inject constructor(
         }
     }
 
-    override suspend fun cancelUpcomingPayments(paymentId: UUID) {
-        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(paymentId)
+    override suspend fun cancelUpcomingPayment(payment: Payment) {
+        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
         workManager.cancelWorkById(nextPaymentRequest.requestId)
         nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
     }
 
-    override suspend fun updateRecurringPayment(paymentId: UUID) {
-        cancelUpcomingPayments(paymentId)
-        scheduleRecurringPayment(paymentId)
+    override suspend fun updateRecurringPayment(payment: Payment) {
+        cancelUpcomingPayment(payment)
+        scheduleRecurringPayment(payment)
     }
 
 }

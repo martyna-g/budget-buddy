@@ -28,16 +28,18 @@ class RecurringPaymentWorker @AssistedInject constructor(
 
         val payment = repository.getPaymentById(id)
 
-        val nextDate = calculator.calculateNextPaymentDate(
+        val nextPaymentDate = calculator.calculateNextPaymentDate(
             payment.date.toLocalDate(),
             payment.frequency
         )
 
         val newPaymentId = UUID.randomUUID()
-        val newPaymentDate = LocalDateTime.of(nextDate, LocalTime.MIDNIGHT)
+        val newPaymentDate = LocalDateTime.of(nextPaymentDate, LocalTime.MIDNIGHT)
 
-        repository.addPayment(payment.copy(id = newPaymentId, date = newPaymentDate))
-        paymentScheduler.scheduleRecurringPayment(newPaymentId)
+        val newPayment = payment.copy(id = newPaymentId, date = newPaymentDate)
+
+        repository.addPayment(newPayment)
+        paymentScheduler.scheduleRecurringPayment(newPayment)
 
         return Result.success()
     }
