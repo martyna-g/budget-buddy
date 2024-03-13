@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -26,7 +27,11 @@ class PaymentListViewModel @Inject constructor(
     private var _uiState: StateFlow<PaymentUiState> =
         paymentRepository.getAllPayments().map { result ->
             when (result) {
-                is Result.Success -> PaymentUiState.Success(result.data.sortedBy { it.date })
+                is Result.Success -> PaymentUiState.Success(
+                    result.data.filter {
+                        it.date.toLocalDate() >= LocalDateTime.now().toLocalDate()
+                    }.sortedBy { it.date })
+
                 is Result.Error -> PaymentUiState.Error(result.e)
             }
         }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentUiState.Loading)
