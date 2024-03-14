@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/payment_list_fragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_calendar_month_24"
+        android:title="@string/next_payments"/>
+    <item
+        android:id="@+id/payment_history_fragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_fact_check_24"
+        android:title="@string/payment_history"/>
+    <item
+        android:id="@+id/shopping_list_fragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_shopping_cart_24"
+        android:title="@string/shopping_list"/>
+    <item
+        android:id="@+id/bank_holidays_fragment"
+        android:enabled="true"
+        android:icon="@drawable/outline_luggage_24"
+        android:title="@string/bank_holidays"/>
+</menu>

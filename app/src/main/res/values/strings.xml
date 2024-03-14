@@ -23,5 +23,7 @@
     <string name="annually">Annually</string>
     <string name="select_date">Select date</string>
     <string name="delete">Delete</string>
-    <string name="payment_history">Payment history</string>
+    <string name="payment_history">Payment History</string>
+    <string name="next_payments">Next Payments</string>
+    <string name="bank_holidays">Bank Holidays</string>
 </resources>
