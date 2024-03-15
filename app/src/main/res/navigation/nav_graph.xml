@@ -3,34 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/payment_list_fragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="pl.tinks.budgetbuddy.home.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_paymentListFragment"
-            app:destination="@id/paymentListFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/paymentListFragment"
+        android:id="@+id/payment_list_fragment"
         android:name="pl.tinks.budgetbuddy.payment.list.PaymentListFragment"
         android:label="fragment_payment_list"
-        tools:layout="@layout/fragment_payment_list" >
-        <action
-            android:id="@+id/action_paymentListFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+        tools:layout="@layout/fragment_payment_list">
         <action
             android:id="@+id/action_paymentListFragment_to_paymentDetailsFragment"
-            app:destination="@id/paymentDetailsFragment" />
+            app:destination="@id/payment_details_fragment" />
     </fragment>
+
     <dialog
-        android:id="@+id/paymentDetailsFragment"
+        android:id="@+id/payment_details_fragment"
         android:name="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment"
         android:label="fragment_add_payment"
-        tools:layout="@layout/fragment_payment_details" >
+        tools:layout="@layout/fragment_payment_details">
         <argument
             android:name="buttonType"
             app:argType="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment$Companion$ActionButtonType" />
@@ -39,4 +28,11 @@
             app:argType="string"
             app:nullable="true" />
     </dialog>
+
+    <fragment
+        android:id="@+id/payment_history_fragment"
+        android:name="pl.tinks.budgetbuddy.payment.history.PaymentHistoryFragment"
+        android:label="fragment_payment_history"
+        tools:layout="@layout/fragment_payment_history" />
+
 </navigation>
