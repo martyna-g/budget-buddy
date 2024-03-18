@@ -14,4 +14,11 @@
     </style>
 
     <style name="Theme.BudgetBuddy" parent="Base.Theme.BudgetBuddy" />
+
+    <style name="Theme.BudgetBuddy.SplashScreen" parent="Theme.SplashScreen" >
+        <item name="windowSplashScreenBackground">@color/green</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/budget_buddy_splash_screen</item>
+        <item name="postSplashScreenTheme">@style/Base.Theme.BudgetBuddy</item>
+
+    </style>
 </resources>
