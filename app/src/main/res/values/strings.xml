@@ -26,4 +26,5 @@
     <string name="payment_history">Payment History</string>
     <string name="next_payments">Next Payments</string>
     <string name="bank_holidays">Bank Holidays</string>
+    <string name="add_shopping_item">Add shopping item</string>
 </resources>
