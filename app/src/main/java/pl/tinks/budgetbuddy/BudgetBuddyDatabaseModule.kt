@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy
 
 import android.content.Context
 import androidx.room.Room
@@ -11,13 +11,13 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object PaymentDatabaseModule {
+object BudgetBuddyDatabaseModule {
 
     @Singleton
     @Provides
-    fun providePaymentDatabase(@ApplicationContext context: Context): PaymentDatabase {
+    fun provideBudgetDatabase(@ApplicationContext context: Context): BudgetBuddyDatabase {
         return Room.databaseBuilder(
-            context, PaymentDatabase::class.java, "payment_database"
+            context, BudgetBuddyDatabase::class.java, "budget_buddy_database"
         ).build()
     }
 }
