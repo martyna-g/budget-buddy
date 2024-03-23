@@ -1,7 +1,13 @@
 package pl.tinks.budgetbuddy.shopping.list
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.shopping.ShoppingItem
 import pl.tinks.budgetbuddy.shopping.ShoppingRepository
 import javax.inject.Inject
@@ -10,6 +16,15 @@ import javax.inject.Inject
 class ShoppingListViewModel @Inject constructor(
     private val shoppingRepository: ShoppingRepository
 ) : ViewModel() {
+
+    private var _uiState = shoppingRepository.getAllShoppingItems().map { result ->
+        when (result) {
+            is Result.Success -> ShoppingListUiState.Success(result.data)
+            is Result.Error -> ShoppingListUiState.Error(result.e)
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, ShoppingListUiState.Loading)
+
+    val uiState: Flow<ShoppingListUiState> = _uiState
 
 }
 
