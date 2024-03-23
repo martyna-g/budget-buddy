@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy
 
 import androidx.room.TypeConverter
 import org.joda.money.Money
@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 
-class PaymentRoomConverters {
+class RoomTypeConverter {
 
     @TypeConverter
     fun fromMoney(money: Money): String = money.toString()
