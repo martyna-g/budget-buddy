@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.shopping.ShoppingItem
 import pl.tinks.budgetbuddy.shopping.ShoppingRepository
@@ -25,6 +26,12 @@ class ShoppingListViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, ShoppingListUiState.Loading)
 
     val uiState: Flow<ShoppingListUiState> = _uiState
+
+    fun addShoppingItem(shoppingItem: ShoppingItem) {
+        viewModelScope.launch {
+            shoppingRepository.addShoppingItem(shoppingItem)
+        }
+    }
 
 }
 
