@@ -33,7 +33,6 @@ class PaymentListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: MaterialToolbar
     private lateinit var floatingActionButton: FloatingActionButton
-    private lateinit var progressIndicator: CircularProgressIndicator
     private val adapter: PaymentListAdapter = PaymentListAdapter(::handleActionButtonClick)
 
 
@@ -45,7 +44,6 @@ class PaymentListFragment : Fragment() {
         recyclerView = binding.recyclerviewPaymentList
         toolbar = binding.toolbarPaymentList
         floatingActionButton = binding.fabPaymentList
-        progressIndicator = binding.progressIndicatorPaymentList
 
         val layoutManager = LinearLayoutManager(requireActivity())
         val dividerItemDecoration =
@@ -91,7 +89,6 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun enableUserInteractions() {
-        progressIndicator.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         toolbar.visibility = View.VISIBLE
         floatingActionButton.visibility = View.VISIBLE

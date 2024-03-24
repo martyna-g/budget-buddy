@@ -27,7 +27,6 @@ class PaymentHistoryFragment : Fragment() {
     private lateinit var binding: FragmentPaymentHistoryBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: MaterialToolbar
-    private lateinit var progressIndicator: CircularProgressIndicator
     private val paymentHistoryAdapter = PaymentHistoryAdapter()
 
     override fun onCreateView(
@@ -38,7 +37,6 @@ class PaymentHistoryFragment : Fragment() {
         binding = FragmentPaymentHistoryBinding.inflate(inflater, container, false)
 
         toolbar = binding.toolbarPaymentHistory
-        progressIndicator = binding.progressIndicatorPaymentHistory
         recyclerView = binding.recyclerviewPaymentHistory
         recyclerView.adapter = paymentHistoryAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
@@ -72,7 +70,6 @@ class PaymentHistoryFragment : Fragment() {
     }
 
     private fun enableUserInteractions() {
-        progressIndicator.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         toolbar.visibility = View.VISIBLE
     }
