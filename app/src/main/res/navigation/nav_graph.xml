@@ -34,5 +34,10 @@
         android:name="pl.tinks.budgetbuddy.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
         tools:layout="@layout/fragment_payment_history" />
+    <fragment
+        android:id="@+id/shopping_list_fragment"
+        android:name="pl.tinks.budgetbuddy.shopping.list.ShoppingListFragment"
+        android:label="fragment_shopping_list"
+        tools:layout="@layout/fragment_shopping_list" />
 
 </navigation>
