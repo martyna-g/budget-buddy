@@ -19,7 +19,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentShoppingListBinding
+import pl.tinks.budgetbuddy.shopping.ShoppingItem
 import pl.tinks.budgetbuddy.shopping.ShoppingListAdapter
+import java.util.UUID
 
 @AndroidEntryPoint
 class ShoppingListFragment : Fragment() {
@@ -40,6 +42,7 @@ class ShoppingListFragment : Fragment() {
         addItemEditText = binding.editTextShoppingItem
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
+
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(
@@ -47,6 +50,8 @@ class ShoppingListFragment : Fragment() {
                 recyclerView.context, layoutManager.orientation
             )
         )
+
+        binding.buttonAddNewItem.setOnClickListener { addNewItem() }
 
         return binding.root
     }
@@ -66,6 +71,23 @@ class ShoppingListFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun addNewItem() {
+        val textInput = binding.editTextShoppingItem
+        val itemName = textInput.text.toString()
+
+        if (itemName.isNotBlank()) {
+            viewModel.addShoppingItem(
+                ShoppingItem(UUID.randomUUID(), itemName)
+            )
+
+            textInput.setText("")
+
+            binding.recyclerviewShoppingList.post {
+                binding.recyclerviewShoppingList.smoothScrollToPosition(adapter.itemCount )
             }
         }
     }
