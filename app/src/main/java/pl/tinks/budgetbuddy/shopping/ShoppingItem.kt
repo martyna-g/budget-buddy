@@ -9,5 +9,5 @@ import java.util.UUID
 data class ShoppingItem(
     @PrimaryKey val id: UUID,
     @ColumnInfo(name = "item_name") val itemName: String,
-    @ColumnInfo(name = "is_collected") val isCollected: Boolean = false,
+    @ColumnInfo(name = "is_collected") var isCollected: Boolean = false,
 )
