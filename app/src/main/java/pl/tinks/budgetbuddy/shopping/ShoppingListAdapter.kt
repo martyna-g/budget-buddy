@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy.shopping
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +16,12 @@ class ShoppingListAdapter(private val shoppingItemClickCallback: (ShoppingItem) 
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(shoppingItem: ShoppingItem) {
+            binding.textShoppingItemName.text = shoppingItem.itemName
+            if (shoppingItem.isCollected) {
+                binding.imageShoppingItemChecked.visibility = View.VISIBLE
+            } else {
+                binding.imageShoppingItemChecked.visibility = View.GONE
+            }
             itemView.setOnClickListener {
                 shoppingItemClickCallback(shoppingItem)
             }
