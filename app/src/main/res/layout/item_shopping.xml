@@ -17,12 +17,24 @@
         tools:text="toothpaste"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_shopping_item_check"
+        android:id="@+id/image_shopping_item_unchecked"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/baseline_check_circle_outline_24"
         android:tint="@color/light_grey"
         android:layout_marginEnd="@dimen/margin_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_shopping_item_name"
+        app:layout_constraintBottom_toBottomOf="@id/text_shopping_item_name" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_shopping_item_checked"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_check_circle_outline_24"
+        android:tint="@color/green"
+        android:layout_marginEnd="@dimen/margin_large"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_shopping_item_name"
         app:layout_constraintBottom_toBottomOf="@id/text_shopping_item_name" />
