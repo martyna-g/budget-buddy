@@ -33,6 +33,12 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
+    fun updateShoppingItem(shoppingItem: ShoppingItem) {
+        viewModelScope.launch {
+            shoppingRepository.updateShoppingItem(shoppingItem)
+        }
+    }
+
 }
 
 sealed class ShoppingListUiState {
