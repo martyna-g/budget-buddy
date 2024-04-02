@@ -27,7 +27,7 @@ import java.util.UUID
 class ShoppingListFragment : Fragment() {
 
     private val viewModel: ShoppingListViewModel by viewModels()
-    private val adapter = ShoppingListAdapter()
+    private lateinit var adapter: ShoppingListAdapter
     private lateinit var binding: FragmentShoppingListBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var addItemEditText: TextInputEditText
@@ -39,6 +39,7 @@ class ShoppingListFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(requireActivity())
         binding = FragmentShoppingListBinding.inflate(inflater, container, false)
+        adapter = ShoppingListAdapter(::toggleItemCollectedStatus)
         addItemEditText = binding.editTextShoppingItem
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
@@ -90,6 +91,14 @@ class ShoppingListFragment : Fragment() {
                 binding.recyclerviewShoppingList.smoothScrollToPosition(adapter.itemCount )
             }
         }
+    }
+
+    private fun toggleItemCollectedStatus(shoppingItem: ShoppingItem) {
+        viewModel.updateShoppingItem(
+            shoppingItem.copy(
+                isCollected = !shoppingItem.isCollected
+            )
+        )
     }
 
     private fun disableUserInteractions() {
