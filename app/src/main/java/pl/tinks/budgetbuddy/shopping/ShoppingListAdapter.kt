@@ -7,15 +7,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pl.tinks.budgetbuddy.databinding.ItemShoppingBinding
 
-class ShoppingListAdapter :
+class ShoppingListAdapter(private val shoppingItemClickCallback: (ShoppingItem) -> Unit) :
     ListAdapter<ShoppingItem, ShoppingListAdapter.ShoppingListViewHolder>(ShoppingDiffCallback()) {
 
-    class ShoppingListViewHolder(
+    inner class ShoppingListViewHolder(
         private val binding: ItemShoppingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(shoppingItem: ShoppingItem) {
-            binding.textShoppingItemName.text = shoppingItem.itemName
+            itemView.setOnClickListener {
+                shoppingItemClickCallback(shoppingItem)
+            }
         }
     }
 
