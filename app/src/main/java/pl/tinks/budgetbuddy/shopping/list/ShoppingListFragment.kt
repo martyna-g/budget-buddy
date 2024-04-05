@@ -1,8 +1,11 @@
 package pl.tinks.budgetbuddy.shopping.list
 
 import android.os.Bundle
+import android.view.ActionMode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +35,33 @@ class ShoppingListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var addItemEditText: TextInputEditText
     private lateinit var toolbar: MaterialToolbar
+
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            requireActivity().menuInflater.inflate(R.menu.shopping_list_action_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
+            when (menuItem?.itemId) {
+                R.id.action_delete_selected -> {
+                    for (item in adapter.selectedItems) {
+                        viewModel.deleteShoppingItem(item)
+                    }
+                    addItemEditText.visibility = View.VISIBLE
+                    mode?.finish()
+                    return true
+                }
+            }
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {}
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -88,7 +118,7 @@ class ShoppingListFragment : Fragment() {
             textInput.setText("")
 
             binding.recyclerviewShoppingList.post {
-                binding.recyclerviewShoppingList.smoothScrollToPosition(adapter.itemCount )
+                binding.recyclerviewShoppingList.smoothScrollToPosition(adapter.itemCount)
             }
         }
     }
