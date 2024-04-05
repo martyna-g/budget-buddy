@@ -39,6 +39,12 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
+    fun deleteShoppingItem(shoppingItem: ShoppingItem) {
+        viewModelScope.launch {
+            shoppingRepository.deleteShoppingItem(shoppingItem)
+        }
+    }
+
 }
 
 sealed class ShoppingListUiState {
