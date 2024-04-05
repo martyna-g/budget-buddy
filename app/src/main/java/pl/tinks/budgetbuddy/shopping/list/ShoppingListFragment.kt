@@ -35,6 +35,7 @@ class ShoppingListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var addItemEditText: TextInputEditText
     private lateinit var toolbar: MaterialToolbar
+    private var actionMode: ActionMode? = null
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -69,7 +70,12 @@ class ShoppingListFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(requireActivity())
         binding = FragmentShoppingListBinding.inflate(inflater, container, false)
-        adapter = ShoppingListAdapter(::toggleItemCollectedStatus)
+        adapter = ShoppingListAdapter(
+            ::toggleItemCollectedStatus,
+            ::startActionMode,
+            ::finishActionMode
+        )
+
         addItemEditText = binding.editTextShoppingItem
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
@@ -130,6 +136,17 @@ class ShoppingListFragment : Fragment() {
             )
         )
     }
+
+    private fun startActionMode() {
+        addItemEditText.visibility = View.GONE
+        actionMode = requireActivity().startActionMode(actionModeCallback)
+    }
+
+    private fun finishActionMode() {
+        actionMode?.finish()
+        addItemEditText.visibility = View.VISIBLE
+    }
+
 
     private fun disableUserInteractions() {
         recyclerView.visibility = View.GONE
