@@ -6,24 +6,54 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.ItemShoppingBinding
 
-class ShoppingListAdapter(private val shoppingItemClickCallback: (ShoppingItem) -> Unit) :
-    ListAdapter<ShoppingItem, ShoppingListAdapter.ShoppingListViewHolder>(ShoppingDiffCallback()) {
+class ShoppingListAdapter(
+    private val shoppingItemClickCallback: (ShoppingItem) -> Unit,
+    private val shoppingItemLongClickCallback: () -> Unit,
+    private val emptyListCallback: () -> Unit
+) : ListAdapter<ShoppingItem, ShoppingListAdapter.ShoppingListViewHolder>(ShoppingDiffCallback()) {
+
+     val selectedItems = mutableListOf<ShoppingItem>()
 
     inner class ShoppingListViewHolder(
         private val binding: ItemShoppingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(shoppingItem: ShoppingItem) {
+
             binding.textShoppingItemName.text = shoppingItem.itemName
+            itemView.background = null
             if (shoppingItem.isCollected) {
                 binding.imageShoppingItemChecked.visibility = View.VISIBLE
             } else {
                 binding.imageShoppingItemChecked.visibility = View.GONE
             }
+
             itemView.setOnClickListener {
-                shoppingItemClickCallback(shoppingItem)
+                if (selectedItems.isEmpty()) {
+                    shoppingItemClickCallback(shoppingItem)
+                } else {
+
+                    if (selectedItems.contains(shoppingItem)) {
+                        selectedItems.remove(shoppingItem)
+                        itemView.background = null
+                        if (selectedItems.isEmpty()) emptyListCallback()
+                    } else {
+                        selectedItems.add(shoppingItem)
+                        itemView.setBackgroundResource(R.color.light_grey)
+                    }
+                }
+            }
+
+            itemView.setOnLongClickListener {
+                if (selectedItems.isEmpty()) {
+                    selectedItems.add(shoppingItem)
+                    itemView.setBackgroundResource(R.color.light_grey)
+                    shoppingItemLongClickCallback()
+                }
+                true
             }
         }
     }
