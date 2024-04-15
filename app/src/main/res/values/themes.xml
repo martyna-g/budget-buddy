@@ -11,12 +11,23 @@
         <item name="colorOnSecondary">@color/light_on_secondary</item>
         <item name="colorSecondaryContainer">@color/light_secondary_container</item>
         <item name="colorOnSecondaryContainer">@color/light_on_secondary_container</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
+        <item name="colorSurfaceContainer">@color/light_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/light_surface_container_high</item>
+        <item name="colorItemBackground">@color/light_item_background</item>
+        <item name="colorItemPaymentDateBackground">@color/light_background</item>
+        <item name="colorPaymentDetailActionBarBackground">@color/light_item_background</item>
+        <item name="android:windowBackground">@color/light_background</item>
+        <item name="android:textColor">@color/light_on_background</item>
+
     </style>
 
     <style name="Theme.BudgetBuddy" parent="Base.Theme.BudgetBuddy" />
 
     <style name="Theme.BudgetBuddy.SplashScreen" parent="Theme.SplashScreen" >
-        <item name="windowSplashScreenBackground">@color/green</item>
+        <item name="windowSplashScreenBackground">@color/light_primary</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/budget_buddy_splash_screen</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.BudgetBuddy</item>
 

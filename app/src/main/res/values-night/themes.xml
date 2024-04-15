@@ -11,5 +11,11 @@
         <item name="colorOnSecondary">@color/dark_on_secondary</item>
         <item name="colorSecondaryContainer">@color/dark_secondary_container</item>
         <item name="colorOnSecondaryContainer">@color/dark_on_secondary_container</item>
+        <item name="colorSurface">@color/dark_background</item>
+        <item name="colorSurfaceContainer">@color/dark_surface_container</item>
+        <item name="colorItemBackground">@color/dark_item_background</item>
+        <item name="colorItemPaymentDateBackground">@color/dark_background</item>
+        <item name="colorPaymentDetailActionBarBackground">@color/dark_item_background</item>
+        <item name="android:windowBackground">@color/dark_background</item>
     </style>
 </resources>
