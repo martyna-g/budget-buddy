@@ -12,7 +12,6 @@
     </style>
 
     <style name="FullScreenDialog" >
-        <item name="android:windowBackground">@color/white</item>
         <item name="android:windowIsFloating">false</item>
     </style>
 
