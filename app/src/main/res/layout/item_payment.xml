@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/margin_small"
-    android:layout_marginEnd="@dimen/margin_small"
     android:layout_marginTop="@dimen/margin_extra_small"
+    android:layout_marginEnd="@dimen/margin_small"
+    android:background="@drawable/item_view_background"
     android:padding="@dimen/padding_small">
 
 
@@ -56,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/outline_info_i_24"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_item_edit"/>
+            app:layout_constraintEnd_toStartOf="@id/button_item_edit"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_edit"
@@ -65,9 +66,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/outline_edit_24"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_delete"
@@ -75,8 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/outline_delete_24"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_item_edit"/>
+            app:layout_constraintStart_toEndOf="@id/button_item_edit"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
