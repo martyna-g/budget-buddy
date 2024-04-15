@@ -17,5 +17,6 @@
         <item name="colorItemPaymentDateBackground">@color/dark_background</item>
         <item name="colorPaymentDetailActionBarBackground">@color/dark_item_background</item>
         <item name="android:windowBackground">@color/dark_background</item>
+        <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
     </style>
 </resources>

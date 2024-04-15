@@ -21,7 +21,7 @@
         <item name="colorPaymentDetailActionBarBackground">@color/light_item_background</item>
         <item name="android:windowBackground">@color/light_background</item>
         <item name="android:textColor">@color/light_on_background</item>
-
+        <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
     </style>
 
     <style name="Theme.BudgetBuddy" parent="Base.Theme.BudgetBuddy" />
@@ -31,5 +31,9 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/budget_buddy_splash_screen</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.BudgetBuddy</item>
 
+    </style>
+
+    <style name="BudgetBuddy.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">@style/BudgetBuddy.ToolbarTitleTextAppearance</item>
     </style>
 </resources>
