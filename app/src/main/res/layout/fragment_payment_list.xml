@@ -14,7 +14,6 @@
             android:id="@+id/toolbar_payment_list"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:title="@string/upcoming_payments" />
 
     </com.google.android.material.appbar.AppBarLayout>
