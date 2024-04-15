@@ -45,14 +45,9 @@ class PaymentListFragment : Fragment() {
         toolbar = binding.toolbarPaymentList
         floatingActionButton = binding.fabPaymentList
 
-        val layoutManager = LinearLayoutManager(requireActivity())
-        val dividerItemDecoration =
-            DividerItemDecoration(recyclerView.context, layoutManager.orientation)
-
         recyclerView.also {
             it.adapter = adapter
-            it.layoutManager = layoutManager
-            it.addItemDecoration(dividerItemDecoration)
+            it.layoutManager = LinearLayoutManager(requireActivity())
         }
 
         floatingActionButton.setOnClickListener {

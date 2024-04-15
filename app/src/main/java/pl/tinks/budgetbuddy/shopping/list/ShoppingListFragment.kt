@@ -68,7 +68,6 @@ class ShoppingListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        val layoutManager = LinearLayoutManager(requireActivity())
         binding = FragmentShoppingListBinding.inflate(inflater, container, false)
         adapter = ShoppingListAdapter(
             ::toggleItemCollectedStatus,
@@ -80,13 +79,8 @@ class ShoppingListFragment : Fragment() {
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
 
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                recyclerView.context, layoutManager.orientation
-            )
-        )
 
         binding.buttonAddNewItem.setOnClickListener { addNewItem() }
 
