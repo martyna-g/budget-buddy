@@ -19,7 +19,9 @@
             android:layout_height="?attr/actionBarSize"
             android:paddingStart="6dp"
             android:paddingEnd="@dimen/padding_medium"
-            app:navigationIcon="@drawable/baseline_close_24" />
+            android:background="?attr/colorSurfaceContainer"
+            app:navigationIcon="@drawable/baseline_close_24"
+            app:navigationIconTint="?attr/colorOnSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:drawableEnd="@drawable/baseline_edit_calendar_24"
+            android:drawableTint="?attr/colorOnSurface"
             android:focusable="false"
             android:hint="@string/next_payment_date"
             android:inputType="none" />
