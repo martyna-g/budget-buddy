@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/margin_small"
+    android:layout_marginEnd="@dimen/margin_small"
+    android:layout_marginTop="@dimen/margin_extra_small"
     android:padding="@dimen/padding_small">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_payment_date"
@@ -20,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/light_on_secondary_container"
-            android:textSize="@dimen/text_size_large"
+            android:textSize="@dimen/text_size_medium_18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="28" />
@@ -31,7 +35,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/light_on_secondary_container"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_medium_16"
             app:layout_constraintEnd_toEndOf="@id/text_payment_date_day"
             app:layout_constraintStart_toStartOf="@id/text_payment_date_day"
             app:layout_constraintTop_toBottomOf="@id/text_payment_date_day"
@@ -90,7 +94,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/padding_medium"
             android:paddingEnd="@dimen/padding_medium"
-            android:textSize="@dimen/text_size_large"
+            android:textSize="@dimen/text_size_medium_18"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -102,7 +106,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/padding_medium"
             android:paddingEnd="@dimen/padding_medium"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/text_size_medium_16"
             app:layout_constraintEnd_toEndOf="@id/text_payment_title"
             app:layout_constraintStart_toStartOf="@id/text_payment_title"
             app:layout_constraintTop_toBottomOf="@id/text_payment_title"
