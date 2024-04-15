@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_medium">16sp</dimen>
-    <dimen name="text_size_large">21sp</dimen>
-    <dimen name="text_size_extra_large">29sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium_16">16sp</dimen>
+    <dimen name="text_size_medium_18">18sp</dimen>
+    <dimen name="text_size_large_20">20sp</dimen>
+    <dimen name="text_size_large_22">22sp</dimen>
+    <dimen name="text_size_extra_large">28sp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="padding_medium">12dp</dimen>
     <dimen name="padding_large">30dp</dimen>
