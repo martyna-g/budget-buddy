@@ -2,4 +2,5 @@
 <resources>
     <attr name="colorItemBackground" format="color"/>
     <attr name="colorItemPaymentDateBackground" format="color" />
+    <attr name="colorPaymentDetailActionBarBackground" format="color"/>
 </resources>
