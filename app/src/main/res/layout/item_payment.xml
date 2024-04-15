@@ -15,7 +15,7 @@
         android:id="@+id/layout_payment_date"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_date_item"
+        android:background="@drawable/item_view_payment_date_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
