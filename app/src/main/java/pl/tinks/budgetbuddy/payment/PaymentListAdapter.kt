@@ -3,6 +3,10 @@ package pl.tinks.budgetbuddy.payment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,6 +24,16 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
 
     inner class PaymentListViewHolder(private val binding: ItemPaymentBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private val alphaAnimationIn = AlphaAnimation(0f, 1f)
+        private val alphaAnimationOut = AlphaAnimation(1f, 0f)
+
+        init {
+            alphaAnimationIn.duration = 500
+            alphaAnimationIn.interpolator = AccelerateDecelerateInterpolator()
+            alphaAnimationOut.duration = 170
+            alphaAnimationOut.interpolator = AccelerateInterpolator()
+        }
 
         fun bind(payment: Payment) {
             val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
@@ -42,8 +56,19 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
                             View.GONE
                     }
 
-                    actionButtonsLayout.visibility =
-                        if (actionButtonsLayout.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+                    if (actionButtonsLayout.visibility == View.VISIBLE) {
+                        actionButtonsLayout.startAnimation(alphaAnimationOut)
+                        alphaAnimationOut.setAnimationListener(object : Animation.AnimationListener {
+                            override fun onAnimationStart(animation: Animation?) {}
+                            override fun onAnimationRepeat(animation: Animation?) {}
+                            override fun onAnimationEnd(animation: Animation?) {
+                                actionButtonsLayout.visibility = View.GONE
+                            }
+                        })
+                    } else {
+                        actionButtonsLayout.startAnimation(alphaAnimationIn)
+                        actionButtonsLayout.visibility = View.VISIBLE
+                    }
 
                     lastClickedPosition = adapterPosition
 
