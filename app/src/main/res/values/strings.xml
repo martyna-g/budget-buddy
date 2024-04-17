@@ -29,5 +29,8 @@
     <string name="add_shopping_item">Add shopping item</string>
     <string name="add_new_item">Add new item</string>
     <string name="shopping_loading_error_message">There was an error loading your shopping list. Please try again later.</string>
+    <string name="payments">Payments</string>
+    <string name="history">History</string>
+    <string name="shopping">Shopping</string>
 
 </resources>
