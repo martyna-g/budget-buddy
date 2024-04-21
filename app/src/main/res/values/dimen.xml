@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_small_8">8sp</dimen>
+    <dimen name="text_size_small_12">12sp</dimen>
     <dimen name="text_size_medium_16">16sp</dimen>
     <dimen name="text_size_medium_18">18sp</dimen>
     <dimen name="text_size_large_20">20sp</dimen>
     <dimen name="text_size_large_22">22sp</dimen>
-    <dimen name="text_size_extra_large">28sp</dimen>
-    <dimen name="padding_small">8dp</dimen>
-    <dimen name="padding_medium">12dp</dimen>
-    <dimen name="padding_large">30dp</dimen>
-    <dimen name="margin_extra_small">4dp</dimen>
-    <dimen name="margin_small">8dp</dimen>
-    <dimen name="margin_medium">16dp</dimen>
-    <dimen name="margin_large">32dp</dimen>
+    <dimen name="text_size_extra_large_28">28sp</dimen>
+    <dimen name="padding_small_8">8dp</dimen>
+    <dimen name="padding_small_12">12dp</dimen>
+    <dimen name="padding_medium_16">16dp</dimen>
+    <dimen name="padding_extra_large_30">30dp</dimen>
+    <dimen name="margin_extra_small_4">4dp</dimen>
+    <dimen name="margin_small_8">8dp</dimen>
+    <dimen name="margin_small_12">12dp</dimen>
+    <dimen name="margin_medium_16">16dp</dimen>
+    <dimen name="margin_extra_large_32">32dp</dimen>
 </resources>

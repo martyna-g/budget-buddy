@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/margin_small"
-    android:layout_marginTop="@dimen/margin_extra_small"
-    android:layout_marginEnd="@dimen/margin_small"
+    android:layout_marginStart="@dimen/margin_medium_16"
+    android:layout_marginTop="@dimen/margin_extra_small_4"
+    android:layout_marginEnd="@dimen/margin_medium_16"
     android:background="@drawable/item_view_background"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/padding_small_8">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -93,8 +93,8 @@
             android:id="@+id/text_payment_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/padding_medium"
-            android:paddingEnd="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_small_12"
+            android:paddingEnd="@dimen/padding_small_12"
             android:textSize="@dimen/text_size_medium_18"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -105,8 +105,8 @@
             android:id="@+id/text_payment_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/padding_medium"
-            android:paddingEnd="@dimen/padding_medium"
+            android:paddingStart="@dimen/padding_small_12"
+            android:paddingEnd="@dimen/padding_small_12"
             android:textSize="@dimen/text_size_medium_16"
             app:layout_constraintEnd_toEndOf="@id/text_payment_title"
             app:layout_constraintStart_toStartOf="@id/text_payment_title"

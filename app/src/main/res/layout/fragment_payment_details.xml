@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:paddingStart="6dp"
-            android:paddingEnd="@dimen/padding_medium"
+            android:paddingEnd="@dimen/padding_small_12"
             android:background="?attr/colorSurfaceContainer"
             app:navigationIcon="@drawable/baseline_close_24"
             app:navigationIconTint="?attr/colorOnSurface" />
