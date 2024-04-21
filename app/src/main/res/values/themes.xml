@@ -16,6 +16,7 @@
         <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
         <item name="colorSurfaceContainer">@color/light_surface_container</item>
         <item name="colorSurfaceContainerHigh">@color/light_surface_container_high</item>
+        <item name="colorOnBackground">@color/light_on_background</item>
         <item name="colorItemBackground">@color/light_item_background</item>
         <item name="colorItemPaymentDateBackground">@color/light_background</item>
         <item name="colorPaymentDetailActionBarBackground">@color/light_item_background</item>
