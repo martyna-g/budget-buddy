@@ -39,9 +39,12 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun deleteShoppingItem(shoppingItem: ShoppingItem) {
+    fun deleteSelectedItems(selectedItems: List<ShoppingItem>) {
+        val items = ArrayList(selectedItems)
         viewModelScope.launch {
-            shoppingRepository.deleteShoppingItem(shoppingItem)
+            items.forEach {
+                shoppingRepository.deleteShoppingItem(it)
+            }
         }
     }
 

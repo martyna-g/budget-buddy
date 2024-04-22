@@ -53,9 +53,8 @@ class ShoppingListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected -> {
-                    for (item in adapter.selectedItems) {
-                        viewModel.deleteShoppingItem(item)
-                    }
+                    viewModel.deleteSelectedItems(adapter.selectedItems)
+                    adapter.selectedItems.clear()
                     addItemEditText.visibility = View.VISIBLE
                     mode?.finish()
                     return true
