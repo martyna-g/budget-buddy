@@ -21,6 +21,10 @@
         <item name="android:layout_margin">@dimen/margin_small_8</item>
     </style>
 
+    <style name="BudgetBuddy.Button.IconOnly.Outlined" parent="Widget.Material3.Button.IconButton">
+        <item name="iconTint">@color/light_primary</item>
+    </style>
+
     <style name="BudgetBuddy.ToolbarTitleTextAppearance" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:textSize">@dimen/text_size_large_22</item>
         <item name="android:textStyle">bold</item>
