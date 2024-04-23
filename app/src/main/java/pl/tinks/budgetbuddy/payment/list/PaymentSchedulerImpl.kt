@@ -45,6 +45,7 @@ class PaymentSchedulerImpl @Inject constructor(
     }
 
     override suspend fun cancelUpcomingPayment(payment: Payment) {
+        if (payment.frequency == PaymentFrequency.SINGLE_PAYMENT) return
         val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
         workManager.cancelWorkById(nextPaymentRequest.requestId)
         nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
