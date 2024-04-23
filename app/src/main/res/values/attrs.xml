@@ -3,4 +3,5 @@
     <attr name="colorItemBackground" format="color"/>
     <attr name="colorItemPaymentDateBackground" format="color" />
     <attr name="colorPaymentDetailActionBarBackground" format="color"/>
+    <attr name="colorSelectedItemBackground" format="color"/>
 </resources>

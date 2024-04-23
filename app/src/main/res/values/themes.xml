@@ -18,6 +18,7 @@
         <item name="colorSurfaceContainerHigh">@color/light_surface_container_high</item>
         <item name="colorOnBackground">@color/light_on_background</item>
         <item name="colorItemBackground">@color/light_item_background</item>
+        <item name="colorSelectedItemBackground">@color/light_selected_item_background</item>
         <item name="colorItemPaymentDateBackground">@color/light_background</item>
         <item name="colorPaymentDetailActionBarBackground">@color/light_item_background</item>
         <item name="android:windowBackground">@color/light_background</item>

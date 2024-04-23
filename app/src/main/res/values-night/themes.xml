@@ -15,6 +15,7 @@
         <item name="colorSurfaceContainer">@color/dark_surface_container</item>
         <item name="colorOnBackground">@color/dark_on_background</item>
         <item name="colorItemBackground">@color/dark_item_background</item>
+        <item name="colorSelectedItemBackground">@color/dark_selected_item_background</item>
         <item name="colorItemPaymentDateBackground">@color/dark_background</item>
         <item name="colorPaymentDetailActionBarBackground">@color/dark_item_background</item>
         <item name="android:windowBackground">@color/dark_background</item>

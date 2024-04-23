@@ -3,6 +3,7 @@ package pl.tinks.budgetbuddy.shopping
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +24,17 @@ class ShoppingListAdapter(
 
         fun bind(shoppingItem: ShoppingItem) {
 
+            val itemBackground = ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background)
+            val selectedItemBackground = ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background_selected)
+
             binding.textShoppingItemName.text = shoppingItem.itemName
-            itemView.background = null
+
+            if (selectedItems.contains(shoppingItem)) {
+                itemView.background = selectedItemBackground
+            } else {
+                itemView.background = itemBackground
+            }
+
             if (shoppingItem.isCollected) {
                 binding.imageShoppingItemChecked.visibility = View.VISIBLE
             } else {
@@ -38,11 +48,11 @@ class ShoppingListAdapter(
 
                     if (selectedItems.contains(shoppingItem)) {
                         selectedItems.remove(shoppingItem)
-                        itemView.background = null
+                        itemView.background = itemBackground
                         if (selectedItems.isEmpty()) emptyListCallback()
                     } else {
                         selectedItems.add(shoppingItem)
-                        itemView.setBackgroundResource(R.color.light_grey)
+                        itemView.background = selectedItemBackground
                     }
                 }
             }
@@ -50,7 +60,7 @@ class ShoppingListAdapter(
             itemView.setOnLongClickListener {
                 if (selectedItems.isEmpty()) {
                     selectedItems.add(shoppingItem)
-                    itemView.setBackgroundResource(R.color.light_grey)
+                    itemView.background = selectedItemBackground
                     shoppingItemLongClickCallback()
                 }
                 true
