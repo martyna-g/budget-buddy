@@ -14,18 +14,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
+import pl.tinks.budgetbuddy.payment.PaymentHeaderAdapter
+import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentListAdapter
 import pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment
+import java.time.LocalDateTime
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -36,8 +38,6 @@ class PaymentListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: MaterialToolbar
     private lateinit var floatingActionButton: FloatingActionButton
-    private val adapter: PaymentListAdapter = PaymentListAdapter(::handleActionButtonClick)
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,10 +48,7 @@ class PaymentListFragment : Fragment() {
         toolbar = binding.toolbarPaymentList
         floatingActionButton = binding.fabPaymentList
 
-        recyclerView.also {
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(requireActivity())
-        }
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
         floatingActionButton.setOnClickListener {
             navigateToPaymentDetailFragment(null, null)
@@ -82,7 +79,7 @@ class PaymentListFragment : Fragment() {
                         is PaymentUiState.Loading -> disableUserInteractions()
                         is PaymentUiState.Success -> {
                             enableUserInteractions()
-                            adapter.submitList(uiState.data)
+                            setupConcatAdapter(uiState.data)
                         }
 
                         is PaymentUiState.Error -> showErrorDialog()
@@ -91,6 +88,38 @@ class PaymentListFragment : Fragment() {
             }
         }
     }
+
+    private fun setupConcatAdapter(payments: List<Payment>) {
+        val today = LocalDateTime.now().toLocalDate()
+
+        val paymentsDueToday = payments.filter { it.date.toLocalDate() == today }
+        val upcomingPayments = payments.filter { it.date.toLocalDate() > today }
+
+        val paymentAdapterDueToday = PaymentListAdapter(::handleActionButtonClick)
+        paymentAdapterDueToday.submitList(paymentsDueToday)
+
+        val paymentAdapterUpcoming = PaymentListAdapter(::handleActionButtonClick)
+        paymentAdapterUpcoming.submitList(upcomingPayments)
+
+        val newConcatAdapter = ConcatAdapter()
+
+        if (paymentsDueToday.isNotEmpty()) {
+            newConcatAdapter.addAdapter(
+                PaymentHeaderAdapter(resources.getString(R.string.payments_due_today))
+            )
+            newConcatAdapter.addAdapter(paymentAdapterDueToday)
+        }
+
+        if (upcomingPayments.isNotEmpty()) {
+            newConcatAdapter.addAdapter(
+                PaymentHeaderAdapter(resources.getString(R.string.upcoming_payments))
+            )
+            newConcatAdapter.addAdapter(paymentAdapterUpcoming)
+        }
+
+        recyclerView.adapter = newConcatAdapter
+    }
+
 
     private fun disableUserInteractions() {
         recyclerView.visibility = View.GONE
@@ -105,8 +134,7 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun showErrorDialog() {
-        AlertDialog.Builder(requireActivity())
-            .setMessage(R.string.payments_loading_error_message)
+        AlertDialog.Builder(requireActivity()).setMessage(R.string.payments_loading_error_message)
             .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
             .show()
     }
@@ -122,8 +150,10 @@ class PaymentListFragment : Fragment() {
             R.id.button_item_delete -> PaymentDetailsFragment.Companion.ActionButtonType.DELETE
             else -> PaymentDetailsFragment.Companion.ActionButtonType.ADD
         }
-        val action = PaymentListFragmentDirections
-            .actionPaymentListFragmentToPaymentDetailsFragment(actionButtonType, paymentId)
+        val action =
+            PaymentListFragmentDirections.actionPaymentListFragmentToPaymentDetailsFragment(
+                actionButtonType, paymentId
+            )
         findNavController().navigate(action)
     }
 

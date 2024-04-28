@@ -52,7 +52,7 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
                 textPaymentDateMonth.text = date.month.toString().substring(0..2)
                 root.setOnClickListener {
 
-                    if (lastClickedPosition != adapterPosition && lastClickedPosition != RecyclerView.NO_POSITION) {
+                    if (lastClickedPosition != bindingAdapterPosition && lastClickedPosition != RecyclerView.NO_POSITION) {
                         notifyItemChanged(lastClickedPosition)
                     }
 
@@ -73,7 +73,7 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
                         lastClickedPayment = payment
                     }
 
-                    lastClickedPosition = adapterPosition
+                    lastClickedPosition = bindingAdapterPosition
 
                 }
 

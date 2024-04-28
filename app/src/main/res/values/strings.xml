@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Budget Buddy</string>
     <string name="app_tagline">Control your finances easier</string>
-    <string name="upcoming_payments">Upcoming Payments</string>
+    <string name="upcoming_payments">Upcoming payments</string>
     <string name="shopping_list">Shopping List</string>
     <string name="uk_bank_holidays">UK Bank Holidays</string>
     <string name="add_payment_fab_content_desc">Add payment</string>
@@ -32,5 +32,6 @@
     <string name="payments">Payments</string>
     <string name="history">History</string>
     <string name="shopping">Shopping</string>
+    <string name="payments_due_today">Payments due today</string>
 
 </resources>
