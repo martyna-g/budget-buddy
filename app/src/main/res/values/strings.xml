@@ -33,5 +33,6 @@
     <string name="history">History</string>
     <string name="shopping">Shopping</string>
     <string name="payments_due_today">Payments due today</string>
+    <string name="overdue_payments">Overdue payments</string>
 
 </resources>

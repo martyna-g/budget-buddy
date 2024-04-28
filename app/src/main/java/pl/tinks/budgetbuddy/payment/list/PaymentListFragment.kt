@@ -92,8 +92,12 @@ class PaymentListFragment : Fragment() {
     private fun setupConcatAdapter(payments: List<Payment>) {
         val today = LocalDateTime.now().toLocalDate()
 
+        val overduePayments = payments.filter { it.date.toLocalDate() < today }
         val paymentsDueToday = payments.filter { it.date.toLocalDate() == today }
         val upcomingPayments = payments.filter { it.date.toLocalDate() > today }
+
+        val paymentAdapterOverdue = PaymentListAdapter(::handleActionButtonClick)
+        paymentAdapterOverdue.submitList(overduePayments)
 
         val paymentAdapterDueToday = PaymentListAdapter(::handleActionButtonClick)
         paymentAdapterDueToday.submitList(paymentsDueToday)
@@ -102,6 +106,13 @@ class PaymentListFragment : Fragment() {
         paymentAdapterUpcoming.submitList(upcomingPayments)
 
         val newConcatAdapter = ConcatAdapter()
+
+        if (overduePayments.isNotEmpty()) {
+            newConcatAdapter.addAdapter(
+                PaymentHeaderAdapter(resources.getString(R.string.overdue_payments))
+            )
+            newConcatAdapter.addAdapter(paymentAdapterOverdue)
+        }
 
         if (paymentsDueToday.isNotEmpty()) {
             newConcatAdapter.addAdapter(
