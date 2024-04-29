@@ -1,6 +1,5 @@
 package pl.tinks.budgetbuddy.payment.history
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.stateIn
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +22,7 @@ class PaymentHistoryViewModel @Inject constructor(
             is Result.Success -> {
                 PaymentHistoryUiState.Success(
                     result.data.filter { payment ->
-                        payment.date.toLocalDate() < LocalDateTime.now().toLocalDate()
+                        payment.paymentCompleted
                     }.sortedBy { it.date }.reversed()
                 )
             }
