@@ -11,11 +11,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> Unit) :
+class PaymentListAdapter(
+    private val actionButtonClickCallback: (Int, UUID) -> Unit,
+    private val actionMoveToHistoryButtonClickCallback: (Payment) -> Unit,
+) :
     ListAdapter<Payment, PaymentListAdapter.PaymentListViewHolder>(PaymentDiffCallback()) {
 
     private var lastClickedPayment: Payment? = null
@@ -38,11 +42,21 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
 
             val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
             val actionButtonsLayout = binding.layoutItemActionButtons
+            val actionButtonsLayoutPaymentsDue = binding.layoutItemActionButtonsPaymentDue
+
+            val today = LocalDateTime.now().toLocalDate()
+            val isUpcoming = payment.date.toLocalDate() > today
+            val isDue = payment.date.toLocalDate() <= today
+
+            actionButtonsLayout.visibility = View.GONE
+            actionButtonsLayoutPaymentsDue.visibility = View.GONE
 
             if (lastClickedPayment == payment) {
-                actionButtonsLayout.visibility = View.VISIBLE
-            } else {
-                actionButtonsLayout.visibility = View.GONE
+                if (isUpcoming) {
+                    actionButtonsLayout.visibility = View.VISIBLE
+                } else if (isDue) {
+                    actionButtonsLayoutPaymentsDue.visibility = View.VISIBLE
+                }
             }
 
             with(binding) {
@@ -56,21 +70,10 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
                         notifyItemChanged(lastClickedPosition)
                     }
 
-                    if (actionButtonsLayout.visibility == View.VISIBLE) {
-                        actionButtonsLayout.startAnimation(alphaAnimationOut)
-                        alphaAnimationOut.setAnimationListener(object :
-                            Animation.AnimationListener {
-                            override fun onAnimationStart(animation: Animation?) {}
-                            override fun onAnimationRepeat(animation: Animation?) {}
-                            override fun onAnimationEnd(animation: Animation?) {
-                                actionButtonsLayout.visibility = View.GONE
-                                lastClickedPayment = null
-                            }
-                        })
-                    } else {
-                        actionButtonsLayout.startAnimation(alphaAnimationIn)
-                        actionButtonsLayout.visibility = View.VISIBLE
-                        lastClickedPayment = payment
+                    if (isUpcoming) {
+                        toggleLayoutVisibility(actionButtonsLayout, payment)
+                    } else if (isDue) {
+                        toggleLayoutVisibility(actionButtonsLayoutPaymentsDue, payment)
                     }
 
                     lastClickedPosition = bindingAdapterPosition
@@ -80,14 +83,39 @@ class PaymentListAdapter(private val actionButtonClickCallback: (Int, UUID) -> U
                 buttonItemInfo.setOnClickListener {
                     actionButtonClickCallback(buttonItemInfo.id, payment.id)
                 }
+                buttonItemInfoPaymentDue.setOnClickListener {
+                    actionButtonClickCallback(buttonItemInfo.id, payment.id)
+                }
                 buttonItemEdit.setOnClickListener {
                     actionButtonClickCallback(buttonItemEdit.id, payment.id)
                 }
                 buttonItemDelete.setOnClickListener {
                     actionButtonClickCallback(buttonItemDelete.id, payment.id)
                 }
+                buttonItemMoveToHistory.setOnClickListener {
+                    actionMoveToHistoryButtonClickCallback(payment)
+                }
             }
         }
+
+        private fun toggleLayoutVisibility(layout: View, payment: Payment) {
+            if (layout.visibility == View.VISIBLE) {
+                layout.startAnimation(alphaAnimationOut)
+                alphaAnimationOut.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {}
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                    override fun onAnimationEnd(animation: Animation?) {
+                        layout.visibility = View.GONE
+                        lastClickedPayment = null
+                    }
+                })
+            } else {
+                layout.startAnimation(alphaAnimationIn)
+                layout.visibility = View.VISIBLE
+                lastClickedPayment = payment
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaymentListViewHolder {

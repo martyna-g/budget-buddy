@@ -96,13 +96,22 @@ class PaymentListFragment : Fragment() {
         val paymentsDueToday = payments.filter { it.date.toLocalDate() == today }
         val upcomingPayments = payments.filter { it.date.toLocalDate() > today }
 
-        val paymentAdapterOverdue = PaymentListAdapter(::handleActionButtonClick)
+        val paymentAdapterOverdue = PaymentListAdapter(
+            ::handleActionButtonClick,
+            ::handleMoveToHistoryButtonClick,
+        )
         paymentAdapterOverdue.submitList(overduePayments)
 
-        val paymentAdapterDueToday = PaymentListAdapter(::handleActionButtonClick)
+        val paymentAdapterDueToday = PaymentListAdapter(
+            ::handleActionButtonClick,
+            ::handleMoveToHistoryButtonClick,
+        )
         paymentAdapterDueToday.submitList(paymentsDueToday)
 
-        val paymentAdapterUpcoming = PaymentListAdapter(::handleActionButtonClick)
+        val paymentAdapterUpcoming = PaymentListAdapter(
+            ::handleActionButtonClick,
+            ::handleMoveToHistoryButtonClick,
+        )
         paymentAdapterUpcoming.submitList(upcomingPayments)
 
         val newConcatAdapter = ConcatAdapter()
@@ -152,6 +161,10 @@ class PaymentListFragment : Fragment() {
 
     private fun handleActionButtonClick(buttonId: Int, paymentId: UUID) {
         navigateToPaymentDetailFragment(buttonId, paymentId.toString())
+    }
+
+    private fun handleMoveToHistoryButtonClick(payment: Payment) {
+        viewModel.moveToHistory(payment.copy(paymentCompleted = true))
     }
 
     private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {

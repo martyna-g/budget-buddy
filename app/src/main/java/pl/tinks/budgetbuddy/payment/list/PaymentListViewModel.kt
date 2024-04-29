@@ -61,6 +61,12 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
+    fun moveToHistory(payment: Payment) {
+        viewModelScope.launch {
+            paymentRepository.updatePayment(payment)
+        }
+    }
+
     fun deletePayment(payment: Payment) {
         viewModelScope.launch {
             paymentRepository.deletePayment(payment)
