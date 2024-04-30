@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -65,7 +66,9 @@ class ShoppingListFragment : Fragment() {
             return false
         }
 
-        override fun onDestroyActionMode(mode: ActionMode?) {}
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+        }
     }
 
     override fun onCreateView(
@@ -94,6 +97,12 @@ class ShoppingListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navController = findNavController()
+
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            actionMode?.finish()
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
