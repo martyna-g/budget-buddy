@@ -46,6 +46,9 @@ class ShoppingListFragment : Fragment() {
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             requireActivity().menuInflater.inflate(R.menu.shopping_list_action_menu, menu)
+            toolbar.visibility = View.GONE
+            addItemEditText.visibility = View.GONE
+            addItemButton.visibility = View.GONE
             return true
         }
 
@@ -67,6 +70,11 @@ class ShoppingListFragment : Fragment() {
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            adapter.selectedItems.clear()
+            adapter.notifyDataSetChanged()
+            addItemEditText.visibility = View.VISIBLE
+            addItemButton.visibility = View.VISIBLE
+            toolbar.visibility = View.VISIBLE
             actionMode = null
         }
     }
@@ -158,15 +166,11 @@ class ShoppingListFragment : Fragment() {
     }
 
     private fun startActionMode() {
-        addItemEditText.visibility = View.GONE
-        addItemButton.visibility = View.GONE
         actionMode = requireActivity().startActionMode(actionModeCallback)
     }
 
     private fun finishActionMode() {
         actionMode?.finish()
-        addItemEditText.visibility = View.VISIBLE
-        addItemButton.visibility = View.VISIBLE
     }
 
 
