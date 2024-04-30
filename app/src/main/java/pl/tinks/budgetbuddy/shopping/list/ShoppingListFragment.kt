@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -37,6 +38,7 @@ class ShoppingListFragment : Fragment() {
     private lateinit var binding: FragmentShoppingListBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var addItemEditText: TextInputEditText
+    private lateinit var addItemButton: Button
     private lateinit var toolbar: MaterialToolbar
     private var actionMode: ActionMode? = null
 
@@ -78,6 +80,7 @@ class ShoppingListFragment : Fragment() {
         )
 
         addItemEditText = binding.editTextShoppingItem
+        addItemButton = binding.buttonAddNewItem
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
 
@@ -147,12 +150,14 @@ class ShoppingListFragment : Fragment() {
 
     private fun startActionMode() {
         addItemEditText.visibility = View.GONE
+        addItemButton.visibility = View.GONE
         actionMode = requireActivity().startActionMode(actionModeCallback)
     }
 
     private fun finishActionMode() {
         actionMode?.finish()
         addItemEditText.visibility = View.VISIBLE
+        addItemButton.visibility = View.VISIBLE
     }
 
 
@@ -160,12 +165,14 @@ class ShoppingListFragment : Fragment() {
         recyclerView.visibility = View.GONE
         toolbar.visibility = View.GONE
         addItemEditText.visibility = View.GONE
+        addItemButton.visibility = View.GONE
     }
 
     private fun enableUserInteractions() {
         recyclerView.visibility = View.VISIBLE
         toolbar.visibility = View.VISIBLE
         addItemEditText.visibility = View.VISIBLE
+        addItemButton.visibility = View.VISIBLE
     }
 
     private fun showErrorDialog() {
