@@ -30,4 +30,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
+
+    <style name="ToolbarSubtitleTextAppearance">
+        <item name="android:textSize">@dimen/text_size_medium_18</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
 </resources>

@@ -15,7 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:title="@string/upcoming_payments" />
+            app:title="@string/app_name"
+            app:subtitle="@string/app_tagline"
+            app:titleCentered="true"
+            app:subtitleCentered="true"
+            app:subtitleTextAppearance="@style/ToolbarSubtitleTextAppearance"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
