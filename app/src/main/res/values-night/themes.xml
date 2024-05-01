@@ -23,6 +23,7 @@
         <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/baseline_close_24</item>
+        <item name="fontFamily">@font/budget_buddy</item>
     </style>
 
     <style name="Theme.BudgetBuddy.SplashScreen" parent="Theme.SplashScreen" >
