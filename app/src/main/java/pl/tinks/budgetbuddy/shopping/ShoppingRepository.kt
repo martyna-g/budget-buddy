@@ -8,7 +8,7 @@ interface ShoppingRepository {
 
     fun getAllShoppingItems(): Flow<Result<List<ShoppingItem>>>
 
-    fun getShoppingItemsByCollectedStatus(collected: Boolean): Flow<Result<List<ShoppingItem>>>
+    fun getShoppingItemsByInBasketStatus(inBasket: Boolean): Flow<Result<List<ShoppingItem>>>
 
     suspend fun getShoppingItemById(id: UUID): ShoppingItem
 

@@ -19,8 +19,8 @@ class ShoppingRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getShoppingItemsByCollectedStatus(collected: Boolean): Flow<Result<List<ShoppingItem>>> {
-        return shoppingDao.getItemsByCollectedStatus(collected).map { shoppingList ->
+    override fun getShoppingItemsByInBasketStatus(inBasket: Boolean): Flow<Result<List<ShoppingItem>>> {
+        return shoppingDao.getShoppingItemsByInBasketStatus(inBasket).map { shoppingList ->
             Result.Success(shoppingList) as Result<List<ShoppingItem>>
         }.catch { e ->
             emit(Result.Error(e))
