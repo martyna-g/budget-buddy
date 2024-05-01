@@ -35,7 +35,7 @@ class ShoppingListAdapter(
                 itemView.background = itemBackground
             }
 
-            if (shoppingItem.isCollected) {
+            if (shoppingItem.inBasket) {
                 binding.imageShoppingItemChecked.visibility = View.VISIBLE
             } else {
                 binding.imageShoppingItemChecked.visibility = View.GONE

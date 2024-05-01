@@ -14,8 +14,8 @@ interface ShoppingDao {
     @Query("SELECT * FROM shopping_items")
     fun getAllShoppingItems(): Flow<List<ShoppingItem>>
 
-    @Query("SELECT * FROM shopping_items WHERE is_collected LIKE :isCollected")
-    fun getItemsByCollectedStatus(isCollected: Boolean): Flow<List<ShoppingItem>>
+    @Query("SELECT * FROM shopping_items WHERE in_basket LIKE :inBasket")
+    fun getItemsByCollectedStatus(inBasket: Boolean): Flow<List<ShoppingItem>>
 
     @Query("SELECT * FROM shopping_items WHERE id LIKE :itemId")
     suspend fun getShoppingItemById(itemId: UUID): ShoppingItem
