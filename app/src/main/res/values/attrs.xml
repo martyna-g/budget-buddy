@@ -4,4 +4,5 @@
     <attr name="colorItemPaymentDateBackground" format="color" />
     <attr name="colorPaymentDetailActionBarBackground" format="color"/>
     <attr name="colorSelectedItemBackground" format="color"/>
+    <attr name="colorTextGreyedOut" type="color" />
 </resources>

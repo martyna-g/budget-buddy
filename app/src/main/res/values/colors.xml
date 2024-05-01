@@ -21,6 +21,7 @@
     <color name="light_on_background">#6e6e6e</color>
     <color name="light_item_background">#fff9f5</color>
     <color name="light_selected_item_background">#ede7e4</color>
+    <color name="light_greyed_out_text">#c7c7c7</color>
 
     <color name="dark_primary">#ff5900</color>
     <color name="dark_on_primary">#ffede3</color>
@@ -39,5 +40,6 @@
     <color name="dark_on_background">#d9d9d9</color>
     <color name="dark_item_background">#171717</color>
     <color name="dark_selected_item_background">#0f0f0f</color>
+    <color name="dark_greyed_out_text">#4f4f4f</color>
 
 </resources>

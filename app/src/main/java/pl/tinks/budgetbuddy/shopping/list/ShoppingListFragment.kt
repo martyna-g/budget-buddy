@@ -1,6 +1,9 @@
 package pl.tinks.budgetbuddy.shopping.list
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.ActionMode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,11 +21,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
@@ -40,15 +43,15 @@ class ShoppingListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var addItemEditText: TextInputEditText
     private lateinit var addItemButton: Button
+    private lateinit var addItemLayout: TextInputLayout
+    private var addItemLayoutHintColor: ColorStateList? = null
     private lateinit var toolbar: MaterialToolbar
     private var actionMode: ActionMode? = null
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
             requireActivity().menuInflater.inflate(R.menu.shopping_list_action_menu, menu)
-            toolbar.visibility = View.GONE
-            addItemEditText.visibility = View.GONE
-            addItemButton.visibility = View.GONE
+            disableTextInput()
             return true
         }
 
@@ -72,9 +75,7 @@ class ShoppingListFragment : Fragment() {
         override fun onDestroyActionMode(mode: ActionMode?) {
             adapter.selectedItems.clear()
             adapter.notifyDataSetChanged()
-            addItemEditText.visibility = View.VISIBLE
-            addItemButton.visibility = View.VISIBLE
-            toolbar.visibility = View.VISIBLE
+            enableTextInput()
             actionMode = null
         }
     }
@@ -92,6 +93,7 @@ class ShoppingListFragment : Fragment() {
 
         addItemEditText = binding.editTextShoppingItem
         addItemButton = binding.buttonAddNewItem
+        addItemLayout = binding.textInputLayoutAddShoppingItem
         toolbar = binding.toolbarShoppingList
         recyclerView = binding.recyclerviewShoppingList
 
@@ -192,6 +194,31 @@ class ShoppingListFragment : Fragment() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.shopping_loading_error_message)
             .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
             .show()
+    }
+
+    private fun getColorFromAttr(context: Context, attr: Int): Int {
+        val typedValue = TypedValue()
+        val theme = context.theme
+        theme.resolveAttribute(attr, typedValue, true)
+        return typedValue.data
+    }
+
+    private fun disableTextInput() {
+        val greyedOut = getColorFromAttr(requireContext(), R.attr.colorTextGreyedOut)
+        addItemLayoutHintColor = addItemLayout.defaultHintTextColor
+
+        addItemLayout.defaultHintTextColor = ColorStateList.valueOf(greyedOut)
+        addItemEditText.isEnabled = false
+        addItemButton.visibility = View.GONE
+    }
+
+    private fun enableTextInput() {
+
+        if (addItemLayoutHintColor != null) {
+            addItemLayout.defaultHintTextColor = addItemLayoutHintColor
+        }
+
+        addItemButton.visibility = View.VISIBLE
     }
 
 }

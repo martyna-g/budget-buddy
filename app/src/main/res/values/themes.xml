@@ -23,7 +23,10 @@
         <item name="colorPaymentDetailActionBarBackground">@color/light_item_background</item>
         <item name="android:windowBackground">@color/light_background</item>
         <item name="android:textColor">@color/light_on_background</item>
+        <item name="colorTextGreyedOut">@color/light_greyed_out_text</item>
         <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/baseline_close_24</item>
     </style>
 
     <style name="Theme.BudgetBuddy" parent="Base.Theme.BudgetBuddy" />

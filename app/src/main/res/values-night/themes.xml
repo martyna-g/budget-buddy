@@ -18,8 +18,11 @@
         <item name="colorSelectedItemBackground">@color/dark_selected_item_background</item>
         <item name="colorItemPaymentDateBackground">@color/dark_background</item>
         <item name="colorPaymentDetailActionBarBackground">@color/dark_item_background</item>
+        <item name="colorTextGreyedOut">@color/dark_greyed_out_text</item>
         <item name="android:windowBackground">@color/dark_background</item>
         <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/baseline_close_24</item>
     </style>
 
     <style name="Theme.BudgetBuddy.SplashScreen" parent="Theme.SplashScreen" >
