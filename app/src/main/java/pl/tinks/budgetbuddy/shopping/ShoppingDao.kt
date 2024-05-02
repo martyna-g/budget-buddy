@@ -32,4 +32,7 @@ interface ShoppingDao {
     @Query("DELETE FROM shopping_items WHERE in_basket = :inBasket")
     suspend fun deleteShoppingItemsByInBasketStatus(inBasket: Boolean)
 
+    @Query("DELETE FROM shopping_items")
+    suspend fun deleteAllShoppingItems()
+
 }
