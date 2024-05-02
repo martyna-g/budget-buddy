@@ -5,12 +5,14 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.ActionMode
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -150,6 +152,19 @@ class ShoppingListFragment : Fragment() {
             }
 
             WindowInsetsCompat.CONSUMED
+        }
+
+        addItemEditText.setOnEditorActionListener { _, actionId, keyEvent ->
+            val actionDone = actionId == EditorInfo.IME_ACTION_DONE ||
+                    (keyEvent?.action == KeyEvent.ACTION_DOWN
+                            && keyEvent.keyCode == KeyEvent.KEYCODE_ENTER)
+
+            if (actionDone) {
+                addNewItem()
+                true
+            } else {
+                false
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
