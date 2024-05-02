@@ -15,7 +15,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <style name="BudgedBuddy.Button.IconOnly" parent="Widget.Material3.Button.IconButton.Filled">
+    <style name="BudgetBuddy.Button.IconOnly" parent="Widget.Material3.Button.IconButton.Filled">
         <item name="backgroundTint">?attr/colorSecondary</item>
         <item name="iconTint">?attr/colorItemBackground</item>
         <item name="android:layout_margin">@dimen/margin_small_8</item>

@@ -53,7 +53,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_info"
-            style="@style/BudgedBuddy.Button.IconOnly"
+            style="@style/BudgetBuddy.Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/baseline_info_24"
@@ -62,7 +62,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_edit"
-            style="@style/BudgedBuddy.Button.IconOnly"
+            style="@style/BudgetBuddy.Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/baseline_edit_24"
@@ -72,7 +72,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_delete"
-            style="@style/BudgedBuddy.Button.IconOnly"
+            style="@style/BudgetBuddy.Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/baseline_delete_24"
@@ -126,7 +126,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_info_payment_due"
-            style="@style/BudgedBuddy.Button.IconOnly"
+            style="@style/BudgetBuddy.Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/baseline_info_24"
@@ -138,7 +138,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_item_move_to_history"
-            style="@style/BudgedBuddy.Button.IconOnly"
+            style="@style/BudgetBuddy.Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/baseline_fact_check_24"
