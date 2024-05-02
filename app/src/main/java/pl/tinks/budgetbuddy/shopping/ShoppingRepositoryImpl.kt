@@ -42,4 +42,9 @@ class ShoppingRepositoryImpl @Inject constructor(
     override suspend fun deleteShoppingItem(shoppingItem: ShoppingItem) {
         shoppingDao.deleteShoppingItem(shoppingItem)
     }
+
+    override suspend fun deleteShoppingItemsByInBasketStatus(inBasket: Boolean) {
+        shoppingDao.deleteShoppingItemsByInBasketStatus(inBasket)
+    }
+
 }
