@@ -48,6 +48,24 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
+    fun deleteCheckedItems() {
+        viewModelScope.launch {
+            shoppingRepository.deleteShoppingItemsByInBasketStatus(true)
+        }
+    }
+
+    fun deleteUncheckedItems() {
+        viewModelScope.launch {
+            shoppingRepository.deleteShoppingItemsByInBasketStatus(false)
+        }
+    }
+
+    fun deleteAllShoppingItems() {
+        viewModelScope.launch {
+            shoppingRepository.deleteAllShoppingItems()
+        }
+    }
+
 }
 
 sealed class ShoppingListUiState {

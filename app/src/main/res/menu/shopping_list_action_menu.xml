@@ -5,6 +5,23 @@
     <item
         android:id="@+id/action_delete_selected"
         android:title="@string/delete"
+        android:icon="@drawable/baseline_delete_24"
+        android:iconTint="?attr/colorControlNormal"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_delete_checked"
+        android:title="@string/delete_checked_items"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_delete_unchecked"
+        android:title="@string/delete_unchecked_items"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_delete_all"
+        android:title="@string/delete_all_items"
+        app:showAsAction="never" />
 
 </menu>

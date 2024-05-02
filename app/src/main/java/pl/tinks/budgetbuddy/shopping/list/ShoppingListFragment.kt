@@ -63,8 +63,36 @@ class ShoppingListFragment : Fragment() {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected -> {
                     viewModel.deleteSelectedItems(adapter.selectedItems)
-                    adapter.selectedItems.clear()
-                    addItemEditText.visibility = View.VISIBLE
+                    mode?.finish()
+                    return true
+                }
+
+                R.id.action_delete_checked -> {
+                    showConfirmationDialog(
+                        R.string.delete_checked_items_message
+                    ) {
+                        viewModel.deleteCheckedItems()
+                    }
+                    mode?.finish()
+                    return true
+                }
+
+                R.id.action_delete_unchecked -> {
+                    showConfirmationDialog(
+                        R.string.delete_unchecked_items_message
+                    ) {
+                        viewModel.deleteUncheckedItems()
+                    }
+                    mode?.finish()
+                    return true
+                }
+
+                R.id.action_delete_all -> {
+                    showConfirmationDialog(
+                        R.string.delete_all_items_message
+                    ) {
+                        viewModel.deleteAllShoppingItems()
+                    }
                     mode?.finish()
                     return true
                 }
@@ -86,9 +114,7 @@ class ShoppingListFragment : Fragment() {
 
         binding = FragmentShoppingListBinding.inflate(inflater, container, false)
         adapter = ShoppingListAdapter(
-            ::toggleItemCollectedStatus,
-            ::startActionMode,
-            ::finishActionMode
+            ::toggleItemCollectedStatus, ::startActionMode, ::finishActionMode
         )
 
         addItemEditText = binding.editTextShoppingItem
@@ -162,7 +188,7 @@ class ShoppingListFragment : Fragment() {
     private fun toggleItemCollectedStatus(shoppingItem: ShoppingItem) {
         viewModel.updateShoppingItem(
             shoppingItem.copy(
-                isCollected = !shoppingItem.isCollected
+                inBasket = !shoppingItem.inBasket
             )
         )
     }
@@ -192,8 +218,20 @@ class ShoppingListFragment : Fragment() {
 
     private fun showErrorDialog() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.shopping_loading_error_message)
-            .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
-            .show()
+            .setPositiveButton(R.string.payments_loading_error_ok) { _, _ ->
+                enableUserInteractions()
+            }.show()
+    }
+
+    private fun showConfirmationDialog(
+        messageResId: Int, onConfirm: () -> Unit
+    ) {
+        AlertDialog.Builder(requireActivity()).setMessage(messageResId)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                onConfirm()
+            }.setNegativeButton(R.string.no) { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 
     private fun getColorFromAttr(context: Context, attr: Int): Int {
@@ -218,6 +256,7 @@ class ShoppingListFragment : Fragment() {
             addItemLayout.defaultHintTextColor = addItemLayoutHintColor
         }
 
+        addItemEditText.isEnabled = true
         addItemButton.visibility = View.VISIBLE
     }
 
