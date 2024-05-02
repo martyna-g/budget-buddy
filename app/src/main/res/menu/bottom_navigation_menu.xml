@@ -3,21 +3,21 @@
     <item
         android:id="@+id/payment_list_fragment"
         android:enabled="true"
-        android:icon="@drawable/outline_calendar_month_24"
+        android:icon="@drawable/calendar_month_selector"
         android:title="@string/payments"/>
     <item
         android:id="@+id/payment_history_fragment"
         android:enabled="true"
-        android:icon="@drawable/outline_fact_check_24"
+        android:icon="@drawable/fact_check_selector"
         android:title="@string/history"/>
     <item
         android:id="@+id/shopping_list_fragment"
         android:enabled="true"
-        android:icon="@drawable/outline_shopping_cart_24"
+        android:icon="@drawable/shopping_cart_selector"
         android:title="@string/shopping"/>
     <item
         android:id="@+id/bank_holidays_fragment"
         android:enabled="true"
-        android:icon="@drawable/outline_luggage_24"
+        android:icon="@drawable/luggage_selector"
         android:title="@string/bank_holidays"/>
 </menu>
