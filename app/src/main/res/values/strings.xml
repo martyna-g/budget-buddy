@@ -44,4 +44,7 @@
     <string name="delete_all_items">Delete all items</string>
     <string name="delete_all_items_message">Are you sure you want to delete all items?</string>
 
+    <string name="delete_payment_message">Are you sure you want to delete this payment?</string>
+    <string name="payment_deleted_message">Payment \'%s\' has been deleted</string>
+
 </resources>
