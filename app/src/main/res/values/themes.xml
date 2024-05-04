@@ -26,7 +26,7 @@
         <item name="colorTextGreyedOut">@color/light_greyed_out_text</item>
         <item name="toolbarStyle">@style/BudgetBuddy.Toolbar</item>
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/baseline_close_24</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_24</item>
         <item name="fontFamily">@font/budget_buddy</item>
     </style>
 
