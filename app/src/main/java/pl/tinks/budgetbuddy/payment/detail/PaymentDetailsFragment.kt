@@ -57,6 +57,8 @@ class PaymentDetailsFragment : DialogFragment() {
     private lateinit var actionButtonType: ActionButtonType
     private var paymentId: UUID? = null
     private lateinit var payment: Payment
+    private var hasUnsavedChanges = false
+    private var isInitializing = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,6 +126,7 @@ class PaymentDetailsFragment : DialogFragment() {
                         updatePayment(paymentId!!)
                         dismiss()
                     }
+
                     true
                 }
 
@@ -136,7 +139,9 @@ class PaymentDetailsFragment : DialogFragment() {
             }
         }
 
-        toolbar.setNavigationOnClickListener { dismiss() }
+        toolbar.setNavigationOnClickListener {
+            if (hasUnsavedChanges) showDiscardChangesConfirmationDialog() else dismiss()
+        }
 
         datePicker.addOnPositiveButtonClickListener { dateInMillis ->
             selectedDate =
@@ -208,6 +213,7 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentDateEditText.setText(
             payment.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         )
+        isInitializing = false
     }
 
     private fun areFieldsValid(): Boolean {
@@ -271,11 +277,25 @@ class PaymentDetailsFragment : DialogFragment() {
             }.show()
     }
 
+    private fun showDiscardChangesConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage(R.string.discard_changes_message)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                dismiss()
+            }
+            .setNegativeButton(R.string.no) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     private val validateFieldsTextWatcher = object : TextWatcher {
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            if (!isInitializing || paymentId == null) hasUnsavedChanges = true
+        }
 
         override fun afterTextChanged(p0: Editable?) {
 
