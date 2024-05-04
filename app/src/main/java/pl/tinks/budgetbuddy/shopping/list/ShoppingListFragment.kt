@@ -64,7 +64,10 @@ class ShoppingListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected -> {
-                    viewModel.deleteSelectedItems(adapter.selectedItems)
+                    val itemsToDelete = adapter.selectedItems.toList()
+                    showConfirmationDialog(R.string.delete_selected_items_message) {
+                        viewModel.deleteSelectedItems(itemsToDelete)
+                    }
                     mode?.finish()
                     return true
                 }

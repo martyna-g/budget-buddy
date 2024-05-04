@@ -35,6 +35,8 @@
     <string name="payments_due_today">Payments due today</string>
     <string name="overdue_payments">Overdue payments</string>
 
+    <string name="delete_selected_items_message">Are you sure you want to delete the selected item(s)?</string>
+
     <string name="delete_checked_items">Delete checked items</string>
     <string name="delete_checked_items_message">Are you sure you want to delete all checked items?</string>
 
