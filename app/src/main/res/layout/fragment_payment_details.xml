@@ -29,6 +29,7 @@
         android:id="@+id/text_input_layout_payment_title"
         style="@style/BudgetBuddy.TextInputLayout"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout">
@@ -44,6 +45,7 @@
         android:id="@+id/text_input_layout_payment_amount"
         style="@style/BudgetBuddy.TextInputLayout"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_title">
@@ -61,6 +63,7 @@
         android:id="@+id/text_input_layout_payment_date"
         style="@style/BudgetBuddy.TextInputLayout"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_amount">
@@ -80,6 +83,8 @@
         android:id="@+id/text_input_layout_payment_frequency"
         style="@style/BudgetBuddy.DropdownMenu"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/margin_medium_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_date">
