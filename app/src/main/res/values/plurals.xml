@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="delete_payment_history_message">
+        <item quantity="one">Are you sure you want to delete the selected payment?</item>
+        <item quantity="other">Are you sure you want to delete the selected payments?</item>
+    </plurals>
+
+    <plurals name="payment_history_deleted_message">
+        <item quantity="one">Payment deleted</item>
+        <item quantity="other">Payments deleted</item>
+    </plurals>
+</resources>

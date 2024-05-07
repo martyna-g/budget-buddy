@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
@@ -32,6 +33,14 @@ class PaymentHistoryViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentHistoryUiState.Loading)
 
     val uiState: Flow<PaymentHistoryUiState> = _uiState
+
+    fun deleteSelectedPayments(paymentList: List<Payment>) {
+        viewModelScope.launch {
+            paymentList.forEach {
+                repository.deletePayment(it)
+            }
+        }
+    }
 
 }
 
