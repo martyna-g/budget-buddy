@@ -1,5 +1,6 @@
 package pl.tinks.budgetbuddy.payment.list
 
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -40,7 +41,11 @@ class PaymentSchedulerImpl @Inject constructor(
                 )
             )
 
-            workManager.enqueue(workRequest)
+            workManager.enqueueUniqueWork(
+                "Payment_$id",
+                ExistingWorkPolicy.KEEP,
+                workRequest
+            )
         }
     }
 
