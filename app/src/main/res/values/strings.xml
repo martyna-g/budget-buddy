@@ -51,4 +51,6 @@
 
     <string name="discard_changes_message">"Are you sure you want to discard your changes?"</string>
 
+    <string name="payment_moved_to_history">Payment \'%s\' moved to history</string>
+
 </resources>

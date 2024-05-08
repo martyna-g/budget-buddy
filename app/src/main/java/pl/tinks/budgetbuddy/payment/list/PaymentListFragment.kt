@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -165,6 +166,14 @@ class PaymentListFragment : Fragment() {
 
     private fun handleMoveToHistoryButtonClick(payment: Payment) {
         viewModel.moveToHistory(payment.copy(paymentCompleted = true))
+
+        val message = getString(R.string.payment_moved_to_history, payment.title)
+
+        Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {
