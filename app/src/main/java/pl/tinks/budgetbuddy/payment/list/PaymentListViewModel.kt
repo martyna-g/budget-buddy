@@ -63,7 +63,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun moveToHistory(payment: Payment) {
         viewModelScope.launch {
-            paymentRepository.updatePayment(payment)
+            paymentRepository.updatePayment(payment.copy(paymentCompleted = true))
         }
     }
 

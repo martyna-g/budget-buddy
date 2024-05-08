@@ -165,7 +165,7 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun handleMoveToHistoryButtonClick(payment: Payment) {
-        viewModel.moveToHistory(payment.copy(paymentCompleted = true))
+        viewModel.moveToHistory(payment)
 
         val message = getString(R.string.payment_moved_to_history, payment.title)
 
