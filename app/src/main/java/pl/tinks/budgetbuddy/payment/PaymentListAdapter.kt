@@ -80,21 +80,22 @@ class PaymentListAdapter(
 
                 }
 
-                buttonItemInfo.setOnClickListener {
-                    actionButtonClickCallback(buttonItemInfo.id, payment.id)
-                }
-                buttonItemInfoPaymentDue.setOnClickListener {
-                    actionButtonClickCallback(buttonItemInfo.id, payment.id)
-                }
-                buttonItemEdit.setOnClickListener {
-                    actionButtonClickCallback(buttonItemEdit.id, payment.id)
-                }
-                buttonItemDelete.setOnClickListener {
-                    actionButtonClickCallback(buttonItemDelete.id, payment.id)
-                }
                 buttonItemMoveToHistory.setOnClickListener {
                     actionMoveToHistoryButtonClickCallback(payment)
                 }
+
+                setClickListener(buttonItemInfo, buttonItemInfo.id, payment.id)
+                setClickListener(buttonItemInfoPaymentDue, buttonItemInfo.id, payment.id)
+                setClickListener(buttonItemEdit, buttonItemEdit.id, payment.id)
+                setClickListener(buttonItemDelete, buttonItemDelete.id, payment.id)
+            }
+        }
+
+        private fun setClickListener(button: View, buttonId: Int, paymentId: UUID) {
+            button.setOnClickListener {
+                actionButtonClickCallback(buttonId, paymentId)
+                lastClickedPayment = null
+                notifyItemChanged(bindingAdapterPosition)
             }
         }
 
@@ -115,7 +116,6 @@ class PaymentListAdapter(
                 lastClickedPayment = payment
             }
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaymentListViewHolder {
