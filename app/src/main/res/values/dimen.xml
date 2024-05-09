@@ -16,5 +16,6 @@
     <dimen name="margin_small_8">8dp</dimen>
     <dimen name="margin_small_12">12dp</dimen>
     <dimen name="margin_medium_16">16dp</dimen>
+    <dimen name="margin_large_24">24dp</dimen>
     <dimen name="margin_extra_large_32">32dp</dimen>
 </resources>

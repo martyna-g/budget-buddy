@@ -25,6 +25,16 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/label_payment_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_title"
+        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginTop="@dimen/margin_large_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar_layout" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_payment_title"
         style="@style/BudgetBuddy.TextInputLayout"
@@ -32,14 +42,23 @@
         android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/label_payment_title">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_edit_text_payment_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/payment_title" />
+            android:layout_height="match_parent" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/label_payment_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_amount"
+        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginTop="@dimen/margin_large_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_title" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_payment_amount"
@@ -48,16 +67,26 @@
         android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_title">
+        app:layout_constraintTop_toBottomOf="@id/label_payment_amount">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_edit_text_payment_amount"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/payment_amount"
             android:inputType="numberDecimal" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/label_payment_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next_payment_date"
+        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginTop="@dimen/margin_large_24"
+        android:labelFor="@id/text_input_layout_payment_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_amount" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_payment_date"
@@ -66,34 +95,55 @@
         android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_amount">
+        app:layout_constraintTop_toBottomOf="@id/label_payment_date">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/text_input_edit_text_payment_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:drawableEnd="@drawable/baseline_edit_calendar_24"
             android:drawableTint="?attr/colorOnSurface"
             android:focusable="false"
-            android:hint="@string/next_payment_date"
-            android:inputType="none" />
+            android:inputType="date" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        style="?attr/materialIconButtonStyle"
+        android:id="@+id/button_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/baseline_edit_calendar_24"
+        android:layout_margin="@dimen/margin_medium_16"
+        app:layout_constraintTop_toTopOf="@id/text_input_layout_payment_date"
+        app:layout_constraintBottom_toBottomOf="@id/text_input_layout_payment_date"
+        app:layout_constraintEnd_toEndOf="@id/text_input_layout_payment_date"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/label_payment_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_frequency"
+        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginTop="@dimen/margin_large_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_date" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_payment_frequency"
         style="@style/BudgetBuddy.DropdownMenu"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_margin="@dimen/margin_medium_16"
+        android:layout_marginStart="@dimen/margin_medium_16"
+        android:layout_marginEnd="@dimen/margin_medium_16"
+        android:layout_marginBottom="@dimen/margin_medium_16"
+        app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_date">
+        app:layout_constraintTop_toBottomOf="@id/label_payment_frequency">
 
         <AutoCompleteTextView
             android:id="@+id/autocomplete_textview_payment_frequency"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/payment_frequency"
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -2,11 +2,12 @@
 <resources>
 
     <style name="BudgetBuddy.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="android:layout_margin">@dimen/margin_medium_16</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium_16</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium_16</item>
+        <item name="android:layout_marginBottom">@dimen/margin_medium_16</item>
     </style>
 
     <style name="BudgetBuddy.DropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-        <item name="android:layout_marginTop">@dimen/margin_extra_large_32</item>
         <item name="android:layout_width">300dp</item>
     </style>
 

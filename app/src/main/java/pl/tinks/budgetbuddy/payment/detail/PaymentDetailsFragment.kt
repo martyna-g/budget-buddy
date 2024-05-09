@@ -158,6 +158,12 @@ class PaymentDetailsFragment : DialogFragment() {
             )
         }
 
+        binding.buttonCalendar.setOnClickListener {
+            datePicker.show(
+                parentFragmentManager, DATE_PICKER_ADD_PAYMENT
+            )
+        }
+
         with(paymentAmountEditText) {
             addTextChangedListener(DecimalDigitsInputFilter(this))
         }
