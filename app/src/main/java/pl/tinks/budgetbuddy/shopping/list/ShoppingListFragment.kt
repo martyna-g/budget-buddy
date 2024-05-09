@@ -65,7 +65,11 @@ class ShoppingListFragment : Fragment() {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected -> {
                     val itemsToDelete = adapter.selectedItems.toList()
-                    showConfirmationDialog(R.string.delete_selected_items_message) {
+                    val selectedItemsCount = itemsToDelete.size
+                    val message = resources.getQuantityString(
+                        R.plurals.delete_selected_items_message, selectedItemsCount
+                    )
+                    showConfirmationDialog(message) {
                         viewModel.deleteSelectedItems(itemsToDelete)
                     }
                     mode?.finish()
@@ -74,7 +78,7 @@ class ShoppingListFragment : Fragment() {
 
                 R.id.action_delete_checked -> {
                     showConfirmationDialog(
-                        R.string.delete_checked_items_message
+                        resources.getString(R.string.delete_checked_items_message)
                     ) {
                         viewModel.deleteCheckedItems()
                     }
@@ -84,7 +88,7 @@ class ShoppingListFragment : Fragment() {
 
                 R.id.action_delete_unchecked -> {
                     showConfirmationDialog(
-                        R.string.delete_unchecked_items_message
+                        resources.getString(R.string.delete_unchecked_items_message)
                     ) {
                         viewModel.deleteUncheckedItems()
                     }
@@ -94,7 +98,7 @@ class ShoppingListFragment : Fragment() {
 
                 R.id.action_delete_all -> {
                     showConfirmationDialog(
-                        R.string.delete_all_items_message
+                        resources.getString(R.string.delete_all_items_message)
                     ) {
                         viewModel.deleteAllShoppingItems()
                     }
@@ -242,9 +246,9 @@ class ShoppingListFragment : Fragment() {
     }
 
     private fun showConfirmationDialog(
-        messageResId: Int, onConfirm: () -> Unit
+        message: CharSequence, onConfirm: () -> Unit
     ) {
-        AlertDialog.Builder(requireActivity()).setMessage(messageResId)
+        AlertDialog.Builder(requireActivity()).setMessage(message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 onConfirm()
             }.setNegativeButton(R.string.no) { dialog, _ ->
