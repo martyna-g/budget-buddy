@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/payment_title"
-        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginStart="@dimen/margin_medium_16"
         android:layout_marginTop="@dimen/margin_large_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appbar_layout" />
@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/payment_amount"
-        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginStart="@dimen/margin_medium_16"
         android:layout_marginTop="@dimen/margin_large_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_title" />
@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/next_payment_date"
-        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginStart="@dimen/margin_medium_16"
         android:layout_marginTop="@dimen/margin_large_24"
         android:labelFor="@id/text_input_layout_payment_date"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/payment_frequency"
-        android:layout_marginStart="@dimen/margin_large_24"
+        android:layout_marginStart="@dimen/margin_medium_16"
         android:layout_marginTop="@dimen/margin_large_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_date" />
