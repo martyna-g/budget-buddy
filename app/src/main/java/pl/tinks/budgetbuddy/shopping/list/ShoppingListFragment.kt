@@ -213,6 +213,7 @@ class ShoppingListFragment : Fragment() {
                 inBasket = !shoppingItem.inBasket
             )
         )
+        addItemEditText.clearFocus()
     }
 
     private fun startActionMode() {
