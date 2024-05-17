@@ -53,4 +53,10 @@
 
     <string name="payment_moved_to_history">Payment \'%s\' moved to history</string>
 
+    <string name="payment_notification_channel_name">Payment Reminders</string>
+    <string name="payment_notification_channel_description">Notifications for upcoming payments</string>
+
+    <string name="payment_reminder_title">Payment Reminder</string>
+    <string name="payment_reminder_content">Payment %1$s is due tomorrow.</string>
+
 </resources>
