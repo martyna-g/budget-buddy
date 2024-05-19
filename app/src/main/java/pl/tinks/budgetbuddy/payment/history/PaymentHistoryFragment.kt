@@ -21,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
@@ -161,7 +160,7 @@ class PaymentHistoryFragment : Fragment() {
 
     private fun showErrorDialog() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.payments_loading_error_message)
-            .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
+            .setPositiveButton(R.string.dialog_ok) { _, _ -> enableUserInteractions() }
             .show()
     }
 

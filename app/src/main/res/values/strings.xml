@@ -6,7 +6,7 @@
     <string name="uk_bank_holidays">UK Bank Holidays</string>
     <string name="add_payment_fab_content_desc">Add payment</string>
     <string name="payments_loading_error_message">There was an error loading your payments. Please try again later.</string>
-    <string name="payments_loading_error_ok">OK</string>
+    <string name="dialog_ok">OK</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="payment_title">Payment title</string>

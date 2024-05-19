@@ -156,7 +156,7 @@ class PaymentListFragment : Fragment() {
 
     private fun showErrorDialog() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.payments_loading_error_message)
-            .setPositiveButton(R.string.payments_loading_error_ok) { _, _ -> enableUserInteractions() }
+            .setPositiveButton(R.string.dialog_ok) { _, _ -> enableUserInteractions() }
             .show()
     }
 

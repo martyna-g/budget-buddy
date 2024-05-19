@@ -241,7 +241,7 @@ class ShoppingListFragment : Fragment() {
 
     private fun showErrorDialog() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.shopping_loading_error_message)
-            .setPositiveButton(R.string.payments_loading_error_ok) { _, _ ->
+            .setPositiveButton(R.string.dialog_ok) { _, _ ->
                 enableUserInteractions()
             }.show()
     }
