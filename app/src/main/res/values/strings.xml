@@ -7,6 +7,7 @@
     <string name="add_payment_fab_content_desc">Add payment</string>
     <string name="payments_loading_error_message">There was an error loading your payments. Please try again later.</string>
     <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="payment_title">Payment title</string>
@@ -61,5 +62,8 @@
     <string name="payment_reminder_content">Payment %1$s is due tomorrow.</string>
 
     <string name="payment_notification_switch_text">Receive reminders about upcoming payments</string>
+    <string name="payment_notification_permission_title">Notification Permission Required</string>
+    <string name="payment_notification_permission_message">To receive reminders about your payments, please allow the app to send notifications. You can change this permission anytime later in your device\'s system settings.</string>
+    <string name="payment_notification_permission_denied">Permission denied. Notifications won\'t be shown.</string>
 
 </resources>
