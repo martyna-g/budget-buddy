@@ -124,6 +124,7 @@
         android:text="@string/payment_frequency"
         android:layout_marginStart="@dimen/margin_medium_16"
         android:layout_marginTop="@dimen/margin_large_24"
+        android:labelFor="@id/autocomplete_textview_payment_frequency"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_date" />
 
@@ -146,5 +147,29 @@
             android:layout_height="wrap_content"
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/switch_text_payment_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notifications"
+        android:textSize="@dimen/text_size_medium_16"
+        android:layout_marginStart="@dimen/margin_medium_16"
+        android:layout_marginTop="@dimen/margin_large_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_layout_payment_frequency" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_payment_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/payment_notification_switch_text"
+        android:textAlignment="textStart"
+        android:layout_marginStart="@dimen/text_size_medium_16"
+        android:layout_marginEnd="@dimen/text_size_medium_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch_text_payment_notification"
+        android:checked="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
