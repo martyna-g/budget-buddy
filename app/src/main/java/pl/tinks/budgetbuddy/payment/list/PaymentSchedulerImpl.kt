@@ -68,7 +68,7 @@ class PaymentSchedulerImpl @Inject constructor(
                 paymentWorkRequest
             )
 
-            if (notificationWorkRequest != null) {
+            if (notificationWorkRequest != null && payment.notificationEnabled) {
                 workManager.enqueueUniqueWork(
                     "Notification_$id",
                     ExistingWorkPolicy.KEEP,
