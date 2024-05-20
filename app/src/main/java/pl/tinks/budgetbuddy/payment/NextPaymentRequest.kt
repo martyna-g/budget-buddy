@@ -7,6 +7,5 @@ import java.util.UUID
 @Entity(tableName = "next_payment_requests")
 data class NextPaymentRequest(
     @PrimaryKey val requestId: UUID,
-    val notificationRequestId: UUID?,
     val paymentId: UUID,
 )
