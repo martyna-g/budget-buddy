@@ -279,6 +279,7 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentDateEditText.setText(
             payment.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         )
+        notificationSwitch.isChecked = payment.notificationEnabled
         isInitializing = false
     }
 
