@@ -146,7 +146,9 @@ class PaymentDetailsFragment : DialogFragment() {
                         updatePayment(paymentId!!)
                         dismiss()
                     }
-
+                    Toast.makeText(
+                        context, getString(R.string.payment_saved_message), Toast.LENGTH_SHORT
+                    ).show()
                     true
                 }
 

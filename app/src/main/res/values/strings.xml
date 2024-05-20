@@ -50,6 +50,7 @@
 
     <string name="delete_payment_message">Are you sure you want to delete this payment?</string>
     <string name="payment_deleted_message">Payment \'%s\' has been deleted</string>
+    <string name="payment_saved_message">Payment saved</string>
 
     <string name="discard_changes_message">"Are you sure you want to discard your changes?"</string>
 
