@@ -67,4 +67,8 @@
     <string name="payment_notification_permission_message">To receive reminders about your payments, please allow the app to send notifications. You can change this permission anytime later in your device\'s system settings.</string>
     <string name="payment_notification_permission_denied">Permission denied. Notifications won\'t be shown.</string>
 
+    <string name="region_england_and_wales">England and Wales</string>
+    <string name="region_scotland">Scotland</string>
+    <string name="region_northern_ireland">Northern Ireland</string>
+
 </resources>
