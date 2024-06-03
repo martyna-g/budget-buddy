@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentBankHolidayListBinding
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
@@ -28,7 +30,6 @@ class BankHolidayListFragment : Fragment() {
     private val viewModel: BankHolidayViewModel by viewModels()
     private lateinit var region: String
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: BankHolidayListAdapter
     private lateinit var progressIndicator: CircularProgressIndicator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +45,6 @@ class BankHolidayListFragment : Fragment() {
 
         binding = FragmentBankHolidayListBinding.inflate(layoutInflater, container, false)
         recyclerView = binding.recyclerViewBankHoliday
-        adapter = BankHolidayListAdapter()
         progressIndicator = binding.progressIndicatorBankHoliday
 
         return binding.root
@@ -54,7 +54,6 @@ class BankHolidayListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        recyclerView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -96,7 +95,23 @@ class BankHolidayListFragment : Fragment() {
             binding.layoutNextBankHoliday.background =
                 ContextCompat.getDrawable(requireContext(), R.drawable.item_view_background)
         }
-        adapter.submitList(filteredBankHolidays)
+        setupConcatAdapter(filteredBankHolidays)
+    }
+
+    private fun setupConcatAdapter(bankHolidays: List<BankHoliday>) {
+        val concatAdapter = ConcatAdapter()
+        val groupedByYear = bankHolidays.groupBy { LocalDate.parse(it.date.toString()).year }
+
+        groupedByYear.forEach { (year, bankHolidaysInYear) ->
+            val headerAdapter = BankHolidayListHeaderAdapter(year.toString())
+            val bankHolidayListAdapter =
+                BankHolidayListAdapter().apply { submitList(bankHolidaysInYear) }
+
+            concatAdapter.addAdapter(headerAdapter)
+            concatAdapter.addAdapter(bankHolidayListAdapter)
+        }
+
+        recyclerView.adapter = concatAdapter
     }
 
     private fun showErrorDialog() {
