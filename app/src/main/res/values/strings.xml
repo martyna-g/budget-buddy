@@ -74,4 +74,8 @@
     <string name="unknown_region">Unknown Region</string>
     <string name="invalid_position">Invalid position</string>
 
+    <string name="next_bank_holiday_text">The next bank holiday in %s is</string>
+    <string name="upcoming_bank_holidays_text">Upcoming bank holidays in %s</string>
+    <string name="bank_holiday_loading_error_message">There was an error loading data. Please try again later.</string>
+
 </resources>

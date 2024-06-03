@@ -1,0 +1,119 @@
+package pl.tinks.budgetbuddy.bank_holiday
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.databinding.FragmentBankHolidayListBinding
+import java.time.format.DateTimeFormatter
+
+@AndroidEntryPoint
+class BankHolidayListFragment : Fragment() {
+
+    private lateinit var binding: FragmentBankHolidayListBinding
+    private val viewModel: BankHolidayViewModel by viewModels()
+    private lateinit var region: String
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: BankHolidayListAdapter
+    private lateinit var progressIndicator: CircularProgressIndicator
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            region = it.getString(ARG_REGION) ?: ""
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+
+        binding = FragmentBankHolidayListBinding.inflate(layoutInflater, container, false)
+        recyclerView = binding.recyclerViewBankHoliday
+        adapter = BankHolidayListAdapter()
+        progressIndicator = binding.progressIndicatorBankHoliday
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        recyclerView.adapter = adapter
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+
+                viewModel.uiState.collectLatest { uiState ->
+                    when (uiState) {
+                        is BankHolidayUiState.Loading -> {
+                            progressIndicator.visibility = View.VISIBLE
+                        }
+
+                        is BankHolidayUiState.Success -> {
+                            val bankHolidays = uiState.bankHolidays
+                            updateUi(bankHolidays)
+                            progressIndicator.visibility = View.GONE
+                        }
+
+                        is BankHolidayUiState.Error -> {
+                            showErrorDialog()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUi(bankHolidays: List<BankHoliday>) {
+        val filteredBankHolidays = bankHolidays.filter { it.region == region }
+        val nextBankHoliday = filteredBankHolidays.firstOrNull()
+
+        nextBankHoliday?.let {
+            val outputFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+            val formattedDate = it.date.format(outputFormatter)
+            binding.textViewNextBankHolidayDate.text = formattedDate.toString()
+            binding.textViewNextBankHolidayTitle.text = it.title
+            binding.textViewNextBankHoliday.text =
+                getString(R.string.next_bank_holiday_text, region)
+            binding.textViewUpcomingBankHolidays.text =
+                getString(R.string.upcoming_bank_holidays_text, region)
+            binding.layoutNextBankHoliday.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.item_view_background)
+        }
+        adapter.submitList(filteredBankHolidays)
+    }
+
+    private fun showErrorDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setMessage(R.string.bank_holiday_loading_error_message)
+            .setPositiveButton(R.string.dialog_ok) { _, _ ->
+                progressIndicator.visibility = View.GONE
+            }.show()
+    }
+
+    companion object {
+        private const val ARG_REGION = "region"
+
+        fun newInstance(region: String) = BankHolidayListFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_REGION, region)
+            }
+        }
+    }
+}
