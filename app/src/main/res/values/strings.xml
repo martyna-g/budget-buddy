@@ -71,4 +71,7 @@
     <string name="region_scotland">Scotland</string>
     <string name="region_northern_ireland">Northern Ireland</string>
 
+    <string name="unknown_region">Unknown Region</string>
+    <string name="invalid_position">Invalid position</string>
+
 </resources>
