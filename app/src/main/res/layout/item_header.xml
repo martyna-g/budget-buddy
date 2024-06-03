@@ -14,6 +14,8 @@
         android:paddingEnd="@dimen/padding_medium_16"
         android:paddingTop="@dimen/padding_extra_small_4"
         android:paddingBottom="@dimen/padding_extra_small_4"
+        android:textSize="@dimen/text_size_medium_16"
+        android:textStyle="bold"
         android:background="?attr/colorSurfaceContainer"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
