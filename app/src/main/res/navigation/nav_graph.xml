@@ -39,5 +39,10 @@
         android:name="pl.tinks.budgetbuddy.shopping.list.ShoppingListFragment"
         android:label="fragment_shopping_list"
         tools:layout="@layout/fragment_shopping_list" />
+    <fragment
+        android:id="@+id/bank_holiday_fragment"
+        android:name="pl.tinks.budgetbuddy.bank_holiday.BankHolidayFragment"
+        android:label="BankHolidaysFragment"
+        tools:layout="@layout/fragment_bank_holiday" />
 
 </navigation>

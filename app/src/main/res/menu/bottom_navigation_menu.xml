@@ -16,7 +16,7 @@
         android:icon="@drawable/shopping_cart_selector"
         android:title="@string/shopping"/>
     <item
-        android:id="@+id/bank_holidays_fragment"
+        android:id="@+id/bank_holiday_fragment"
         android:enabled="true"
         android:icon="@drawable/luggage_selector"
         android:title="@string/bank_holidays"/>
