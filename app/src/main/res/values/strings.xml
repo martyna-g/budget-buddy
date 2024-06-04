@@ -36,6 +36,9 @@
     <string name="payments_due_today">Payments due today</string>
     <string name="overdue_payments">Overdue payments</string>
     <string name="notifications">Notifications</string>
+    <string name="date">Date</string>
+    <string name="day">Day</string>
+    <string name="bank_holiday">Bank holiday</string>
 
     <string name="delete_selected_items_message">Are you sure you want to delete the selected item(s)?</string>
 
