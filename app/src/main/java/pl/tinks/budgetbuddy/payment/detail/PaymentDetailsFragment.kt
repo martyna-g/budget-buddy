@@ -146,9 +146,6 @@ class PaymentDetailsFragment : DialogFragment() {
                         updatePayment(paymentId!!)
                         dismiss()
                     }
-                    Toast.makeText(
-                        context, getString(R.string.payment_saved_message), Toast.LENGTH_SHORT
-                    ).show()
                     true
                 }
 
@@ -320,11 +317,9 @@ class PaymentDetailsFragment : DialogFragment() {
     }
 
     private fun showDeleteConfirmationDialog(payment: Payment) {
-        val message = getString(R.string.payment_deleted_message, payment.title)
         AlertDialog.Builder(requireContext()).setMessage(R.string.delete_payment_message)
             .setPositiveButton(R.string.yes) { dialog, _ ->
                 deletePayment(payment)
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 dismiss()
             }.setNegativeButton(R.string.no) { dialog, _ ->

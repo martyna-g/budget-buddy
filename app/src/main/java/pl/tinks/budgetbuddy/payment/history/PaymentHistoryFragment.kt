@@ -146,13 +146,9 @@ class PaymentHistoryFragment : Fragment() {
             R.plurals.delete_payment_history_message, count
         )
 
-        val toastMessage = requireContext().resources.getQuantityString(
-            R.plurals.payment_history_deleted_message, count
-        )
         AlertDialog.Builder(requireContext()).setMessage(confirmationMessage)
             .setPositiveButton(R.string.yes) { _, _ ->
                 onConfirm()
-                Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
             }.setNegativeButton(R.string.no) { dialog, _ ->
                 dialog.dismiss()
             }.show()
