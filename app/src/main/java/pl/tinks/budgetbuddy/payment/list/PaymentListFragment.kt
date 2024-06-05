@@ -144,13 +144,11 @@ class PaymentListFragment : Fragment() {
 
     private fun disableUserInteractions() {
         recyclerView.visibility = View.GONE
-        toolbar.visibility = View.GONE
         floatingActionButton.visibility = View.GONE
     }
 
     private fun enableUserInteractions() {
         recyclerView.visibility = View.VISIBLE
-        toolbar.visibility = View.VISIBLE
         floatingActionButton.visibility = View.VISIBLE
     }
 
