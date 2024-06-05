@@ -69,40 +69,42 @@ class ShoppingListFragment : Fragment() {
                     val message = resources.getQuantityString(
                         R.plurals.delete_selected_items_message, selectedItemsCount
                     )
-                    showConfirmationDialog(message) {
+                    showConfirmationDialog(message, {
                         viewModel.deleteSelectedItems(itemsToDelete)
-                    }
-                    mode?.finish()
+                    }, {
+                        mode?.finish()
+                    })
                     return true
                 }
 
                 R.id.action_delete_checked -> {
-                    showConfirmationDialog(
-                        resources.getString(R.string.delete_checked_items_message)
-                    ) {
-                        viewModel.deleteCheckedItems()
-                    }
-                    mode?.finish()
+                    showConfirmationDialog(resources.getString(R.string.delete_checked_items_message),
+                        {
+                            viewModel.deleteCheckedItems()
+                        },
+                        {
+                            mode?.finish()
+                        })
                     return true
                 }
 
                 R.id.action_delete_unchecked -> {
-                    showConfirmationDialog(
-                        resources.getString(R.string.delete_unchecked_items_message)
-                    ) {
-                        viewModel.deleteUncheckedItems()
-                    }
-                    mode?.finish()
+                    showConfirmationDialog(resources.getString(R.string.delete_unchecked_items_message),
+                        {
+                            viewModel.deleteUncheckedItems()
+                        },
+                        {
+                            mode?.finish()
+                        })
                     return true
                 }
 
                 R.id.action_delete_all -> {
-                    showConfirmationDialog(
-                        resources.getString(R.string.delete_all_items_message)
-                    ) {
+                    showConfirmationDialog(resources.getString(R.string.delete_all_items_message), {
                         viewModel.deleteAllShoppingItems()
-                    }
-                    mode?.finish()
+                    }, {
+                        mode?.finish()
+                    })
                     return true
                 }
             }
@@ -162,9 +164,8 @@ class ShoppingListFragment : Fragment() {
         }
 
         addItemEditText.setOnEditorActionListener { _, actionId, keyEvent ->
-            val actionDone = actionId == EditorInfo.IME_ACTION_DONE ||
-                    (keyEvent?.action == KeyEvent.ACTION_DOWN
-                            && keyEvent.keyCode == KeyEvent.KEYCODE_ENTER)
+            val actionDone =
+                actionId == EditorInfo.IME_ACTION_DONE || (keyEvent?.action == KeyEvent.ACTION_DOWN && keyEvent.keyCode == KeyEvent.KEYCODE_ENTER)
 
             if (actionDone) {
                 addNewItem()
@@ -247,13 +248,15 @@ class ShoppingListFragment : Fragment() {
     }
 
     private fun showConfirmationDialog(
-        message: CharSequence, onConfirm: () -> Unit
+        message: CharSequence, onConfirm: () -> Unit, onDismiss: () -> Unit
     ) {
         AlertDialog.Builder(requireActivity()).setMessage(message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 onConfirm()
             }.setNegativeButton(R.string.no) { dialog, _ ->
                 dialog.dismiss()
+            }.setOnDismissListener {
+                onDismiss()
             }.show()
     }
 

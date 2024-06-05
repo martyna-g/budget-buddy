@@ -51,10 +51,11 @@ class PaymentHistoryFragment : Fragment() {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected_payments -> {
                     val paymentsToDelete = paymentHistoryAdapter.selectedPayments.toList()
-                    showConfirmationDialog(paymentsToDelete.size) {
+                    showConfirmationDialog(paymentsToDelete.size, {
                         viewModel.deleteSelectedPayments(paymentsToDelete)
-                    }
-                    mode?.finish()
+                    }, {
+                        mode?.finish()
+                    })
                     return true
                 }
             }
@@ -141,7 +142,7 @@ class PaymentHistoryFragment : Fragment() {
         toolbar.visibility = View.VISIBLE
     }
 
-    private fun showConfirmationDialog(count: Int, onConfirm: () -> Unit) {
+    private fun showConfirmationDialog(count: Int, onConfirm: () -> Unit, onDismiss: () -> Unit) {
         val confirmationMessage = requireContext().resources.getQuantityString(
             R.plurals.delete_payment_history_message, count
         )
@@ -151,6 +152,8 @@ class PaymentHistoryFragment : Fragment() {
                 onConfirm()
             }.setNegativeButton(R.string.no) { dialog, _ ->
                 dialog.dismiss()
+            }.setOnDismissListener {
+                onDismiss()
             }.show()
     }
 
