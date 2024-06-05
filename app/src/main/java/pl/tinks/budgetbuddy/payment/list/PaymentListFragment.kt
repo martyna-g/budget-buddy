@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
@@ -169,11 +169,11 @@ class PaymentListFragment : Fragment() {
 
         val message = getString(R.string.payment_moved_to_history, payment.title)
 
-        Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_SHORT
-        ).show()
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG)
+            .setAction(R.string.undo) {
+                viewModel.undoMoveToHistory(payment)
+            }
+            .show()
     }
 
     private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {
