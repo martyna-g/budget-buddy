@@ -47,7 +47,7 @@ class PaymentListFragment : Fragment() {
         binding = FragmentPaymentListBinding.inflate(inflater, container, false)
         recyclerView = binding.recyclerviewPaymentList
         toolbar = binding.toolbarPaymentList
-        floatingActionButton = binding.fabPaymentList
+        floatingActionButton = binding.fabPaymentList.also { it.visibility = View.GONE }
 
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
