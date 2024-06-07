@@ -23,67 +23,34 @@ class PaymentSchedulerImpl @Inject constructor(
     private val notificationRequestDao: NotificationRequestDao,
 ) : PaymentScheduler {
 
+    private val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+
     override suspend fun scheduleRecurringPayment(payment: Payment) {
 
-        val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
-        val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-        val notificationTimeEpochSeconds =
-            payment.date.minusDays(1).with(LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
+        scheduleNotification(payment)
 
+        if (payment.frequency == PaymentFrequency.SINGLE_PAYMENT) return
+
+        val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
         val paymentDelay = nextPaymentDateEpochSeconds - nowEpochSeconds
-        val notificationDelay = notificationTimeEpochSeconds - nowEpochSeconds
 
         val id = payment.id.toString()
 
-        val paymentWorkRequest = OneTimeWorkRequestBuilder<RecurringPaymentWorker>()
-            .setInitialDelay(paymentDelay, TimeUnit.SECONDS)
-            .setInputData(workDataOf("paymentId" to id))
-            .build()
+        val paymentWorkRequest =
+            OneTimeWorkRequestBuilder<RecurringPaymentWorker>().setInitialDelay(
+                    paymentDelay,
+                    TimeUnit.SECONDS
+                ).setInputData(workDataOf("paymentId" to id)).build()
 
+        workManager.enqueueUniqueWork(
+            "Payment_$id", ExistingWorkPolicy.KEEP, paymentWorkRequest
+        )
 
-        val notificationWorkRequest = if (notificationDelay > 0) {
-            OneTimeWorkRequestBuilder<PaymentNotificationWorker>()
-                .setInitialDelay(notificationDelay, TimeUnit.SECONDS)
-                .setInputData(
-                    workDataOf(
-                        PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
-                        PaymentNotificationWorker.PAYMENT_ID_KEY to id
-                    )
-                )
-                .build()
-        } else {
-            null
-        }
-
-        if (payment.frequency != PaymentFrequency.SINGLE_PAYMENT) {
-            workManager.enqueueUniqueWork(
-                "Payment_$id",
-                ExistingWorkPolicy.KEEP,
-                paymentWorkRequest
+        nextPaymentRequestDao.addNextPaymentRequest(
+            NextPaymentRequest(
+                paymentWorkRequest.id, payment.id
             )
-
-            nextPaymentRequestDao.addNextPaymentRequest(
-                NextPaymentRequest(
-                    paymentWorkRequest.id,
-                    payment.id
-                )
-            )
-        }
-
-        if (notificationWorkRequest != null && payment.notificationEnabled) {
-            workManager.enqueueUniqueWork(
-                "Notification_$id",
-                ExistingWorkPolicy.REPLACE,
-                notificationWorkRequest
-            )
-
-            notificationRequestDao.addNotificationRequest(
-                NotificationRequest(
-                    notificationWorkRequest.id,
-                    payment.id
-                )
-            )
-        }
+        )
 
     }
 
@@ -106,6 +73,44 @@ class PaymentSchedulerImpl @Inject constructor(
     override suspend fun updateRecurringPayment(payment: Payment) {
         cancelUpcomingPayment(payment)
         scheduleRecurringPayment(payment)
+    }
+
+    private suspend fun scheduleNotification(payment: Payment) {
+
+        if (!payment.notificationEnabled) return
+
+        val id = payment.id.toString()
+
+        val notificationTimeEpochSeconds =
+            payment.date.minusDays(1).with(LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
+
+        val notificationDelay = notificationTimeEpochSeconds - nowEpochSeconds
+
+        val notificationWorkRequest = if (notificationDelay > 0) {
+            OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
+                    notificationDelay,
+                    TimeUnit.SECONDS
+                ).setInputData(
+                    workDataOf(
+                        PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
+                        PaymentNotificationWorker.PAYMENT_ID_KEY to id
+                    )
+                ).build()
+        } else {
+            null
+        }
+
+        if (notificationWorkRequest != null) {
+            workManager.enqueueUniqueWork(
+                "Notification_$id", ExistingWorkPolicy.REPLACE, notificationWorkRequest
+            )
+
+            notificationRequestDao.addNotificationRequest(
+                NotificationRequest(
+                    notificationWorkRequest.id, payment.id
+                )
+            )
+        }
     }
 
 }
