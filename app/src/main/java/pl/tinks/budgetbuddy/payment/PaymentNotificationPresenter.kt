@@ -24,7 +24,7 @@ class PaymentNotificationPresenter @Inject constructor(val context: Context) {
 
         val notificationId = id.hashCode()
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_budget_buddy_foreground_primary)
+            .setSmallIcon(R.drawable.ic_notifications)
             .setContentTitle(context.getString(R.string.payment_reminder_title))
             .setContentText(context.getString(R.string.payment_reminder_content, title.uppercase()))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
