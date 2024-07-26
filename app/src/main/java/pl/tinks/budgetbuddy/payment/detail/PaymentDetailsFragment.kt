@@ -60,6 +60,7 @@ class PaymentDetailsFragment : DialogFragment() {
     private lateinit var paymentFrequencies: Array<out String>
     private lateinit var notificationSwitch: MaterialSwitch
     private lateinit var toolbar: MaterialToolbar
+    private val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     private val currencyGbp: CurrencyUnit = CurrencyUnit.GBP
     private val args: PaymentDetailsFragmentArgs by navArgs()
     private lateinit var actionButtonType: ActionButtonType
@@ -167,7 +168,7 @@ class PaymentDetailsFragment : DialogFragment() {
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(dateInMillis), ZoneId.of("UTC"))
 
             paymentDateEditText.setText(
-                selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                selectedDate.format(formatter)
             )
         }
 
@@ -219,7 +220,6 @@ class PaymentDetailsFragment : DialogFragment() {
     }
 
     private fun createPaymentFromUserInput(id: UUID): Payment {
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
         val title = paymentTitleEditText.text.toString()
         val amount = paymentAmountEditText.text.toString()
@@ -276,7 +276,7 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentTitleEditText.setText(payment.title)
         paymentAmountEditText.setText(payment.amount.amount.toPlainString())
         paymentDateEditText.setText(
-            payment.date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            payment.date.format(formatter)
         )
         notificationSwitch.isChecked = payment.notificationEnabled
         isInitializing = false
