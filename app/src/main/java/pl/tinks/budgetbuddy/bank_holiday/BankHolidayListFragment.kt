@@ -100,7 +100,7 @@ class BankHolidayListFragment : Fragment() {
 
     private fun setupConcatAdapter(bankHolidays: List<BankHoliday>) {
         val concatAdapter = ConcatAdapter()
-        val groupedByYear = bankHolidays.groupBy { LocalDate.parse(it.date.toString()).year }
+        val groupedByYear = bankHolidays.groupBy { it.date.year }
 
         groupedByYear.forEach { (year, bankHolidaysInYear) ->
             val headerAdapter = BankHolidayListHeaderAdapter(year.toString())
