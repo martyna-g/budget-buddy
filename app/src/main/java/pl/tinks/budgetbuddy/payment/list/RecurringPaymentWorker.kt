@@ -6,6 +6,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -24,13 +27,15 @@ class RecurringPaymentWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
 
         val input = inputData.getString("paymentId")
+
         val id = UUID.fromString(input)
 
         val payment = repository.getPaymentById(id)
 
+        if (payment.isNextPaymentScheduled) return Result.success()
+
         val nextPaymentDate = calculator.calculateNextPaymentDate(
-            payment.date.toLocalDate(),
-            payment.frequency
+            payment.date.toLocalDate(), payment.frequency
         )
 
         val newPaymentId = UUID.randomUUID()
@@ -38,9 +43,25 @@ class RecurringPaymentWorker @AssistedInject constructor(
 
         val newPayment = payment.copy(id = newPaymentId, date = newPaymentDate)
 
-        repository.addPayment(newPayment)
-        paymentScheduler.scheduleRecurringPayment(newPayment)
+        var paymentAdded = false
 
-        return Result.success()
+        try {
+            repository.addPayment(newPayment)
+            paymentAdded = true
+
+            paymentScheduler.scheduleRecurringPayment(newPayment)
+            repository.updatePayment(payment.copy(isNextPaymentScheduled = true))
+
+            return Result.success()
+
+        } catch (e: CancellationException) {
+            if (paymentAdded) {
+                withContext(NonCancellable) {
+                    repository.deletePayment(newPayment)
+                }
+            }
+            return Result.failure()
+        }
     }
+
 }
