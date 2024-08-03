@@ -119,13 +119,27 @@ class PaymentHistoryFragment : Fragment() {
                         is PaymentHistoryUiState.Error -> showErrorDialog()
                         is PaymentHistoryUiState.Success -> {
                             enableUserInteractions()
-                            paymentHistoryAdapter.submitList(uiState.data)
+                            setupAdapter(uiState.data)
                         }
                     }
                 }
             }
         }
 
+    }
+
+    private fun setupAdapter(payments: List<Payment>) {
+        val items = mutableListOf<PaymentItem>()
+        val groupedByMonth = payments.groupBy {
+            "${it.date.month.toString().substring(0..2)} ${it.date.year}"
+        }
+
+        groupedByMonth.forEach { (month, paymentsInMonth) ->
+            items.add(PaymentItem.Header(month))
+            paymentsInMonth.forEach { items.add(PaymentItem.PaymentEntry(it)) }
+        }
+
+        paymentHistoryAdapter.submitList(items)
     }
 
     private fun onPaymentLongClicked(payment: Payment) {
