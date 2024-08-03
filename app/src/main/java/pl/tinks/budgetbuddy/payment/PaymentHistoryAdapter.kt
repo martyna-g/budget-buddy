@@ -12,27 +12,30 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class PaymentHistoryAdapter(
-    private val paymentItemLongClickCallback: () -> Unit,
-    private val emptyListCallback: () -> Unit,
+    private val paymentItemLongClickCallback: (Payment) -> Unit,
+    private val paymentItemClickCallback: (Payment) -> Unit,
+    private val isSelected: (Payment) -> Boolean
 ) : ListAdapter<Payment, PaymentHistoryAdapter.PaymentHistoryViewHolder>(
     PaymentHistoryDiffCallback()
 ) {
-
-    val selectedPayments: MutableList<Payment> = mutableListOf()
 
     inner class PaymentHistoryViewHolder(
         private val binding: ItemPaymentBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(payment: Payment) {
+        fun bind(
+            payment: Payment,
+            isSelected: Boolean,
+            paymentItemClickCallback: (Payment) -> Unit,
+            paymentItemLongClickCallback: (Payment) -> Unit
+        ) {
             val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
-
             val itemBackground =
                 ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background)
             val selectedItemBackground = ContextCompat.getDrawable(
                 itemView.context, R.drawable.item_view_background_selected
             )
-            itemView.background = itemBackground
+            itemView.background = if (isSelected) selectedItemBackground else itemBackground
 
             with(binding) {
                 textPaymentTitle.text = payment.title
@@ -40,23 +43,10 @@ class PaymentHistoryAdapter(
                 textPaymentDateDay.text = date.dayOfMonth.toString()
                 textPaymentDateMonth.text = date.month.toString().substring(0..2)
                 root.setOnClickListener {
-                    if (selectedPayments.isNotEmpty()) {
-                        if (selectedPayments.contains(payment)) {
-                            selectedPayments.remove(payment)
-                            root.background = itemBackground
-                            if (selectedPayments.isEmpty()) emptyListCallback()
-                        } else {
-                            selectedPayments.add(payment)
-                            root.background = selectedItemBackground
-                        }
-                    }
+                    paymentItemClickCallback(payment)
                 }
                 root.setOnLongClickListener {
-                    if (selectedPayments.isEmpty()) {
-                        selectedPayments.add(payment)
-                        root.background = selectedItemBackground
-                        paymentItemLongClickCallback()
-                    }
+                    paymentItemLongClickCallback(payment)
                     true
                 }
             }
@@ -71,7 +61,13 @@ class PaymentHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: PaymentHistoryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val payment = getItem(position)
+        holder.bind(
+            payment,
+            isSelected(payment),
+            paymentItemClickCallback,
+            paymentItemLongClickCallback
+        )
     }
 
     class PaymentHistoryDiffCallback : DiffUtil.ItemCallback<Payment>() {

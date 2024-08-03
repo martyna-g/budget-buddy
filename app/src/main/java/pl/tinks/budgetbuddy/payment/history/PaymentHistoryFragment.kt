@@ -25,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentHistoryBinding
+import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentHistoryAdapter
 
 @AndroidEntryPoint
@@ -36,6 +37,7 @@ class PaymentHistoryFragment : Fragment() {
     private lateinit var toolbar: MaterialToolbar
     private lateinit var paymentHistoryAdapter: PaymentHistoryAdapter
     private var actionMode: ActionMode? = null
+    private val selectedPayments = mutableListOf<Payment>()
 
     private val actionModeCallback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -50,7 +52,7 @@ class PaymentHistoryFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
             when (menuItem?.itemId) {
                 R.id.action_delete_selected_payments -> {
-                    val paymentsToDelete = paymentHistoryAdapter.selectedPayments.toList()
+                    val paymentsToDelete = selectedPayments.toList()
                     showConfirmationDialog(paymentsToDelete.size, {
                         viewModel.deleteSelectedPayments(paymentsToDelete)
                     }, {
@@ -63,18 +65,20 @@ class PaymentHistoryFragment : Fragment() {
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
-            paymentHistoryAdapter.selectedPayments.clear()
+            selectedPayments.clear()
             paymentHistoryAdapter.notifyDataSetChanged()
             actionMode = null
         }
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        paymentHistoryAdapter = PaymentHistoryAdapter(::startActionMode, ::finishActionMode)
+        paymentHistoryAdapter = PaymentHistoryAdapter(
+            ::onPaymentLongClicked,
+            ::onPaymentClicked
+        ) { payment -> selectedPayments.contains(payment) }
 
         binding = FragmentPaymentHistoryBinding.inflate(inflater, container, false)
 
@@ -124,6 +128,28 @@ class PaymentHistoryFragment : Fragment() {
 
     }
 
+    private fun onPaymentLongClicked(payment: Payment) {
+        if (selectedPayments.isEmpty()) {
+            selectedPayments.add(payment)
+            startActionMode()
+        } else {
+            onPaymentClicked(payment)
+        }
+        paymentHistoryAdapter.notifyDataSetChanged()
+    }
+
+    private fun onPaymentClicked(payment: Payment) {
+        if (selectedPayments.contains(payment)) {
+            selectedPayments.remove(payment)
+            if (selectedPayments.isEmpty()) {
+                finishActionMode()
+            }
+        } else {
+            selectedPayments.add(payment)
+        }
+        paymentHistoryAdapter.notifyDataSetChanged()
+    }
+
     private fun startActionMode() {
         actionMode = requireActivity().startActionMode(actionModeCallback)
     }
@@ -162,5 +188,4 @@ class PaymentHistoryFragment : Fragment() {
             .setPositiveButton(R.string.dialog_ok) { _, _ -> enableUserInteractions() }
             .show()
     }
-
 }
