@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -24,11 +23,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
-import pl.tinks.budgetbuddy.payment.PaymentHeaderAdapter
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentListAdapter
 import pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment
-import java.time.LocalDateTime
+import pl.tinks.budgetbuddy.payment.history.PaymentItem
+import java.time.LocalDate
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -39,11 +38,11 @@ class PaymentListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var toolbar: MaterialToolbar
     private lateinit var floatingActionButton: FloatingActionButton
+    private lateinit var paymentListAdapter: PaymentListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentPaymentListBinding.inflate(inflater, container, false)
         recyclerView = binding.recyclerviewPaymentList
         toolbar = binding.toolbarPaymentList
@@ -73,6 +72,12 @@ class PaymentListFragment : Fragment() {
             WindowInsetsCompat.CONSUMED
         }
 
+        paymentListAdapter = PaymentListAdapter(
+            ::handleActionButtonClick, ::handleMoveToHistoryButtonClick
+        )
+
+        recyclerView.adapter = paymentListAdapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.uiState.collect { uiState ->
@@ -80,7 +85,7 @@ class PaymentListFragment : Fragment() {
                         is PaymentUiState.Loading -> disableUserInteractions()
                         is PaymentUiState.Success -> {
                             enableUserInteractions()
-                            setupConcatAdapter(uiState.data)
+                            setupAdapter(uiState.data)
                         }
 
                         is PaymentUiState.Error -> showErrorDialog()
@@ -90,57 +95,23 @@ class PaymentListFragment : Fragment() {
         }
     }
 
-    private fun setupConcatAdapter(payments: List<Payment>) {
-        val today = LocalDateTime.now().toLocalDate()
-
-        val overduePayments = payments.filter { it.date.toLocalDate() < today }
-        val paymentsDueToday = payments.filter { it.date.toLocalDate() == today }
-        val upcomingPayments = payments.filter { it.date.toLocalDate() > today }
-
-        val paymentAdapterOverdue = PaymentListAdapter(
-            ::handleActionButtonClick,
-            ::handleMoveToHistoryButtonClick,
-        )
-        paymentAdapterOverdue.submitList(overduePayments)
-
-        val paymentAdapterDueToday = PaymentListAdapter(
-            ::handleActionButtonClick,
-            ::handleMoveToHistoryButtonClick,
-        )
-        paymentAdapterDueToday.submitList(paymentsDueToday)
-
-        val paymentAdapterUpcoming = PaymentListAdapter(
-            ::handleActionButtonClick,
-            ::handleMoveToHistoryButtonClick,
-        )
-        paymentAdapterUpcoming.submitList(upcomingPayments)
-
-        val newConcatAdapter = ConcatAdapter()
-
-        if (overduePayments.isNotEmpty()) {
-            newConcatAdapter.addAdapter(
-                PaymentHeaderAdapter(resources.getString(R.string.overdue_payments))
-            )
-            newConcatAdapter.addAdapter(paymentAdapterOverdue)
+    private fun setupAdapter(payments: List<Payment>) {
+        val items = mutableListOf<PaymentItem>()
+        val groupedByCategory = payments.groupBy {
+            when {
+                it.date.toLocalDate() < LocalDate.now() -> R.string.overdue_payments
+                it.date.toLocalDate() == LocalDate.now() -> R.string.payments_due_today
+                else -> R.string.upcoming_payments
+            }
         }
 
-        if (paymentsDueToday.isNotEmpty()) {
-            newConcatAdapter.addAdapter(
-                PaymentHeaderAdapter(resources.getString(R.string.payments_due_today))
-            )
-            newConcatAdapter.addAdapter(paymentAdapterDueToday)
+        groupedByCategory.forEach { (category, paymentsInCategory) ->
+            items.add(PaymentItem.Header(resources.getString(category)))
+            paymentsInCategory.forEach { items.add(PaymentItem.PaymentEntry(it)) }
         }
 
-        if (upcomingPayments.isNotEmpty()) {
-            newConcatAdapter.addAdapter(
-                PaymentHeaderAdapter(resources.getString(R.string.upcoming_payments))
-            )
-            newConcatAdapter.addAdapter(paymentAdapterUpcoming)
-        }
-
-        recyclerView.adapter = newConcatAdapter
+        paymentListAdapter.submitList(items)
     }
-
 
     private fun disableUserInteractions() {
         recyclerView.visibility = View.GONE
@@ -154,8 +125,7 @@ class PaymentListFragment : Fragment() {
 
     private fun showErrorDialog() {
         AlertDialog.Builder(requireActivity()).setMessage(R.string.payments_loading_error_message)
-            .setPositiveButton(R.string.dialog_ok, null)
-            .show()
+            .setPositiveButton(R.string.dialog_ok, null).show()
     }
 
     private fun handleActionButtonClick(buttonId: Int, paymentId: UUID) {
@@ -167,11 +137,9 @@ class PaymentListFragment : Fragment() {
 
         val message = getString(R.string.payment_moved_to_history, payment.title)
 
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG)
-            .setAction(R.string.undo) {
-                viewModel.undoMoveToHistory(payment)
-            }
-            .show()
+        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).setAction(R.string.undo) {
+            viewModel.undoMoveToHistory(payment)
+        }.show()
     }
 
     private fun navigateToPaymentDetailFragment(buttonId: Int?, paymentId: String?) {

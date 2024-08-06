@@ -3,14 +3,13 @@ package pl.tinks.budgetbuddy.payment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.databinding.ItemHeaderBinding
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
+import pl.tinks.budgetbuddy.payment.history.PaymentItem
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -18,123 +17,151 @@ import java.util.UUID
 
 class PaymentListAdapter(
     private val actionButtonClickCallback: (Int, UUID) -> Unit,
-    private val actionMoveToHistoryButtonClickCallback: (Payment) -> Unit,
-) :
-    ListAdapter<Payment, PaymentListAdapter.PaymentListViewHolder>(PaymentDiffCallback()) {
+    private val actionMoveToHistoryButtonClickCallback: (Payment) -> Unit
+) : ListAdapter<PaymentItem, PaymentListAdapter.PaymentListViewHolder>(PaymentItemDiffCallback()) {
 
-    private var lastClickedPayment: Payment? = null
-    private var lastClickedPosition: Int = RecyclerView.NO_POSITION
+    private var selectedPayment: Payment? = null
 
-    inner class PaymentListViewHolder(private val binding: ItemPaymentBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    sealed class PaymentListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        class PaymentViewHolder(private val binding: ItemPaymentBinding) :
+            PaymentListViewHolder(binding.root) {
+            fun bind(
+                payment: Payment,
+                actionButtonClickCallback: (Int, UUID) -> Unit,
+                actionMoveToHistoryButtonClickCallback: (Payment) -> Unit,
+                isSelected: Boolean,
+                onPaymentClick: (Payment) -> Unit
+            ) {
+                val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
+                val actionButtonsLayout = binding.layoutItemActionButtons
+                val actionButtonsLayoutPaymentsDue = binding.layoutItemActionButtonsPaymentDue
 
-        private val alphaAnimationIn = AlphaAnimation(0f, 1f)
-        private val alphaAnimationOut = AlphaAnimation(1f, 0f)
+                val today = LocalDateTime.now().toLocalDate()
+                val isUpcoming = payment.date.toLocalDate() > today
+                val isDue = payment.date.toLocalDate() <= today
 
-        init {
-            alphaAnimationIn.duration = 500
-            alphaAnimationIn.interpolator = AccelerateDecelerateInterpolator()
-            alphaAnimationOut.duration = 70
-            alphaAnimationOut.interpolator = AccelerateInterpolator()
-        }
+                actionButtonsLayout.visibility =
+                    if (isSelected && isUpcoming) View.VISIBLE else View.GONE
+                actionButtonsLayoutPaymentsDue.visibility =
+                    if (isSelected && isDue) View.VISIBLE else View.GONE
 
-        fun bind(payment: Payment) {
+                with(binding) {
+                    textPaymentTitle.text = payment.title
+                    textPaymentAmount.text = payment.amount.toString()
+                    textPaymentDateDay.text = date.dayOfMonth.toString()
+                    textPaymentDateMonth.text = date.month.toString().substring(0..2)
+                    root.setOnClickListener {
+                        onPaymentClick(payment)
+                    }
 
-            val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
-            val actionButtonsLayout = binding.layoutItemActionButtons
-            val actionButtonsLayoutPaymentsDue = binding.layoutItemActionButtonsPaymentDue
+                    buttonItemMoveToHistory.setOnClickListener {
+                        actionMoveToHistoryButtonClickCallback(payment)
+                    }
 
-            val today = LocalDateTime.now().toLocalDate()
-            val isUpcoming = payment.date.toLocalDate() > today
-            val isDue = payment.date.toLocalDate() <= today
-
-            actionButtonsLayout.visibility = View.GONE
-            actionButtonsLayoutPaymentsDue.visibility = View.GONE
-
-            if (lastClickedPayment == payment) {
-                if (isUpcoming) {
-                    actionButtonsLayout.visibility = View.VISIBLE
-                } else if (isDue) {
-                    actionButtonsLayoutPaymentsDue.visibility = View.VISIBLE
+                    setClickListener(
+                        buttonItemInfo, buttonItemInfo.id, payment.id, actionButtonClickCallback
+                    )
+                    setClickListener(
+                        buttonItemInfoPaymentDue,
+                        buttonItemInfo.id,
+                        payment.id,
+                        actionButtonClickCallback
+                    )
+                    setClickListener(
+                        buttonItemEdit, buttonItemEdit.id, payment.id, actionButtonClickCallback
+                    )
+                    setClickListener(
+                        buttonItemDelete, buttonItemDelete.id, payment.id, actionButtonClickCallback
+                    )
                 }
             }
 
-            with(binding) {
-                textPaymentTitle.text = payment.title
-                textPaymentAmount.text = payment.amount.toString()
-                textPaymentDateDay.text = date.dayOfMonth.toString()
-                textPaymentDateMonth.text = date.month.toString().substring(0..2)
-                root.setOnClickListener {
-
-                    if (lastClickedPosition != bindingAdapterPosition && lastClickedPosition != RecyclerView.NO_POSITION) {
-                        notifyItemChanged(lastClickedPosition)
-                    }
-
-                    if (isUpcoming) {
-                        toggleLayoutVisibility(actionButtonsLayout, payment)
-                    } else if (isDue) {
-                        toggleLayoutVisibility(actionButtonsLayoutPaymentsDue, payment)
-                    }
-
-                    lastClickedPosition = bindingAdapterPosition
-
+            private fun setClickListener(
+                button: View,
+                buttonId: Int,
+                paymentId: UUID,
+                actionButtonClickCallback: (Int, UUID) -> Unit
+            ) {
+                button.setOnClickListener {
+                    actionButtonClickCallback(buttonId, paymentId)
                 }
-
-                buttonItemMoveToHistory.setOnClickListener {
-                    actionMoveToHistoryButtonClickCallback(payment)
-                }
-
-                setClickListener(buttonItemInfo, buttonItemInfo.id, payment.id)
-                setClickListener(buttonItemInfoPaymentDue, buttonItemInfo.id, payment.id)
-                setClickListener(buttonItemEdit, buttonItemEdit.id, payment.id)
-                setClickListener(buttonItemDelete, buttonItemDelete.id, payment.id)
             }
         }
 
-        private fun setClickListener(button: View, buttonId: Int, paymentId: UUID) {
-            button.setOnClickListener {
-                actionButtonClickCallback(buttonId, paymentId)
-                lastClickedPayment = null
-                notifyItemChanged(bindingAdapterPosition)
-            }
-        }
-
-        private fun toggleLayoutVisibility(layout: View, payment: Payment) {
-            if (layout.visibility == View.VISIBLE) {
-                layout.startAnimation(alphaAnimationOut)
-                alphaAnimationOut.setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(animation: Animation?) {}
-                    override fun onAnimationRepeat(animation: Animation?) {}
-                    override fun onAnimationEnd(animation: Animation?) {
-                        layout.visibility = View.GONE
-                        lastClickedPayment = null
-                    }
-                })
-            } else {
-                layout.startAnimation(alphaAnimationIn)
-                layout.visibility = View.VISIBLE
-                lastClickedPayment = payment
+        class HeaderViewHolder(val binding: ItemHeaderBinding) :
+            PaymentListViewHolder(binding.root) {
+            fun bind(title: String) {
+                binding.textHeader.text = title
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaymentListViewHolder {
-        val binding = ItemPaymentBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return PaymentListViewHolder(binding)
+        return when (viewType) {
+            R.layout.item_payment -> {
+                val binding =
+                    ItemPaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                PaymentListViewHolder.PaymentViewHolder(binding)
+            }
+
+            R.layout.item_header -> {
+                val binding =
+                    ItemHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                PaymentListViewHolder.HeaderViewHolder(binding)
+            }
+
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
     override fun onBindViewHolder(holder: PaymentListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        when (holder) {
+            is PaymentListViewHolder.PaymentViewHolder -> {
+                val paymentEntry = getItem(position) as PaymentItem.PaymentEntry
+                holder.bind(
+                    paymentEntry.payment,
+                    actionButtonClickCallback,
+                    actionMoveToHistoryButtonClickCallback,
+                    paymentEntry.payment == selectedPayment,
+                    ::onPaymentClicked
+                )
+            }
+
+            is PaymentListViewHolder.HeaderViewHolder -> holder.bind((getItem(position) as PaymentItem.Header).title)
+        }
     }
 
-    class PaymentDiffCallback : DiffUtil.ItemCallback<Payment>() {
-        override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
-            return oldItem.id == newItem.id
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is PaymentItem.Header -> R.layout.item_header
+            is PaymentItem.PaymentEntry -> R.layout.item_payment
+        }
+    }
+
+    private fun onPaymentClicked(payment: Payment) {
+        val previousSelectedPayment = selectedPayment
+        selectedPayment = if (previousSelectedPayment == payment) null else payment
+
+        notifyItemChanged(currentList.indexOfFirst {
+            it is PaymentItem.PaymentEntry && it.payment == previousSelectedPayment
+        })
+        notifyItemChanged(currentList.indexOfFirst {
+            it is PaymentItem.PaymentEntry && it.payment == selectedPayment
+        })
+    }
+
+    class PaymentItemDiffCallback : DiffUtil.ItemCallback<PaymentItem>() {
+        override fun areItemsTheSame(oldItem: PaymentItem, newItem: PaymentItem): Boolean {
+            return if (oldItem is PaymentItem.Header && newItem is PaymentItem.Header) {
+                oldItem.title == newItem.title
+            } else if (oldItem is PaymentItem.PaymentEntry && newItem is PaymentItem.PaymentEntry) {
+                oldItem.payment.id == newItem.payment.id
+            } else {
+                false
+            }
         }
 
-        override fun areContentsTheSame(oldItem: Payment, newItem: Payment): Boolean {
+        override fun areContentsTheSame(oldItem: PaymentItem, newItem: PaymentItem): Boolean {
             return oldItem == newItem
         }
     }
