@@ -34,4 +34,8 @@ class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentD
         paymentDao.deletePayment(payment)
     }
 
+    override suspend fun deletePayments(payments: List<Payment>) {
+            paymentDao.deletePayments(payments)
+    }
+
 }

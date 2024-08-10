@@ -26,4 +26,7 @@ interface PaymentDao {
     @Delete
     suspend fun deletePayment(payment: Payment)
 
+    @Delete
+    suspend fun deletePayments(payments: List<Payment>)
+
 }

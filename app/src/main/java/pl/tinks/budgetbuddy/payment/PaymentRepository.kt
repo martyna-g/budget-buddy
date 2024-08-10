@@ -16,4 +16,6 @@ interface PaymentRepository {
 
     suspend fun deletePayment(payment: Payment)
 
+    suspend fun deletePayments(payments: List<Payment>)
+
 }
