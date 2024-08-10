@@ -36,9 +36,7 @@ class PaymentHistoryViewModel @Inject constructor(
 
     fun deleteSelectedPayments(paymentList: List<Payment>) {
         viewModelScope.launch {
-            paymentList.forEach {
-                repository.deletePayment(it)
-            }
+            repository.deletePayments(paymentList)
         }
     }
 
