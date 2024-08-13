@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="shortcut_shopping_list"
+        android:enabled="true"
+        android:icon="@drawable/outline_shopping_cart_24"
+        android:shortcutShortLabel="@string/shortcut_shopping_list_short_label"
+        android:shortcutLongLabel="@string/shortcut_shopping_list_long_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="pl.tinks.budgetbuddy"
+            android:targetClass="pl.tinks.budgetbuddy.MainActivity"
+            android:data="budgetbuddy://shoppinglist" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="shortcut_bank_holiday"
+        android:enabled="true"
+        android:icon="@drawable/outline_luggage_24"
+        android:shortcutShortLabel="@string/shortcut_bank_holiday_short_label"
+        android:shortcutLongLabel="@string/shortcut_bank_holiday_long_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="pl.tinks.budgetbuddy"
+            android:targetClass="pl.tinks.budgetbuddy.MainActivity"
+            android:data="budgetbuddy://bankholiday" />
+    </shortcut>
+</shortcuts>

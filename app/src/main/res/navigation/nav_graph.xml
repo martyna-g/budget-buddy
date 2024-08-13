@@ -36,13 +36,16 @@
         tools:layout="@layout/fragment_payment_history" />
     <fragment
         android:id="@+id/shopping_list_fragment"
-        android:name="pl.tinks.budgetbuddy.shopping.list.ShoppingListFragment"
-        android:label="fragment_shopping_list"
-        tools:layout="@layout/fragment_shopping_list" />
+        android:name="pl.tinks.budgetbuddy.shopping.list.ShoppingListFragment">
+        <deepLink
+            app:uri="budgetbuddy://shoppinglist" />
+    </fragment>
     <fragment
         android:id="@+id/bank_holiday_fragment"
-        android:name="pl.tinks.budgetbuddy.bank_holiday.BankHolidayFragment"
-        android:label="BankHolidaysFragment"
-        tools:layout="@layout/fragment_bank_holiday" />
+        android:name="pl.tinks.budgetbuddy.bank_holiday.BankHolidayFragment">
+        <deepLink
+            app:uri="budgetbuddy://bankholiday" />
+    </fragment>
+
 
 </navigation>

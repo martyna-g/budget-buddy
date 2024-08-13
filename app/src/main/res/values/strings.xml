@@ -79,4 +79,9 @@
     <string name="bank_holiday_loading_error_message">There was an error loading data. Please try again later.</string>
     <string name="undo">Undo</string>
 
+    <string name="shortcut_shopping_list_short_label">Shopping List</string>
+    <string name="shortcut_shopping_list_long_label">Open Shopping List</string>
+    <string name="shortcut_bank_holiday_short_label">Bank Holidays</string>
+    <string name="shortcut_bank_holiday_long_label">Open Bank Holidays</string>
+
 </resources>
