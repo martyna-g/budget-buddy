@@ -143,16 +143,22 @@ class PaymentHistoryFragment : Fragment() {
     }
 
     private fun onPaymentLongClicked(payment: Payment) {
+        val index = paymentHistoryAdapter.currentList.indexOfFirst {
+            it is PaymentItem.PaymentEntry && it.payment == payment
+        }
         if (selectedPayments.isEmpty()) {
             selectedPayments.add(payment)
             startActionMode()
         } else {
             onPaymentClicked(payment)
         }
-        paymentHistoryAdapter.notifyDataSetChanged()
+        paymentHistoryAdapter.notifyItemChanged(index)
     }
 
     private fun onPaymentClicked(payment: Payment) {
+        val index = paymentHistoryAdapter.currentList.indexOfFirst {
+            it is PaymentItem.PaymentEntry && it.payment == payment
+        }
         if (selectedPayments.contains(payment)) {
             selectedPayments.remove(payment)
             if (selectedPayments.isEmpty()) {
@@ -161,7 +167,7 @@ class PaymentHistoryFragment : Fragment() {
         } else {
             selectedPayments.add(payment)
         }
-        paymentHistoryAdapter.notifyDataSetChanged()
+        paymentHistoryAdapter.notifyItemChanged(index)
     }
 
     private fun startActionMode() {
