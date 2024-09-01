@@ -23,16 +23,13 @@ class PaymentSchedulerImpl @Inject constructor(
     private val notificationRequestDao: NotificationRequestDao,
 ) : PaymentScheduler {
 
-    private val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-
     override suspend fun scheduleRecurringPayment(payment: Payment) {
 
         scheduleNotification(payment)
 
         if (payment.frequency == PaymentFrequency.SINGLE_PAYMENT) return
 
-        val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
-        val paymentDelay = nextPaymentDateEpochSeconds - nowEpochSeconds
+        val paymentDelay = calculatePaymentDelay(payment)
 
         val id = payment.id.toString()
 
@@ -81,10 +78,7 @@ class PaymentSchedulerImpl @Inject constructor(
 
         val id = payment.id.toString()
 
-        val notificationTimeEpochSeconds =
-            payment.date.minusDays(1).with(LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
-
-        val notificationDelay = notificationTimeEpochSeconds - nowEpochSeconds
+        val notificationDelay = calculateNotificationDelay(payment)
 
         val notificationWorkRequest = if (notificationDelay > 0) {
             OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
@@ -111,6 +105,19 @@ class PaymentSchedulerImpl @Inject constructor(
                 )
             )
         }
+    }
+
+    private fun calculatePaymentDelay(payment: Payment): Long {
+        val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
+        return nextPaymentDateEpochSeconds - nowEpochSeconds
+    }
+
+    private fun calculateNotificationDelay(payment: Payment): Long {
+        val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+        val notificationTimeEpochSeconds =
+            payment.date.minusDays(1).with(LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
+        return notificationTimeEpochSeconds - nowEpochSeconds
     }
 
 }
