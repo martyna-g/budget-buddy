@@ -52,15 +52,13 @@ class PaymentSchedulerImpl @Inject constructor(
     }
 
     override suspend fun cancelUpcomingPayment(payment: Payment) {
-        val nextPaymentRequest: NextPaymentRequest? =
-            nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
+        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
         val notificationRequest: NotificationRequest? =
             notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
 
-        if (nextPaymentRequest != null) {
-            workManager.cancelWorkById(nextPaymentRequest.requestId)
-            nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
-        }
+        workManager.cancelWorkById(nextPaymentRequest.requestId)
+        nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
+
         if (notificationRequest != null) {
             workManager.cancelWorkById(notificationRequest.requestId)
             notificationRequestDao.deleteNotificationRequest(notificationRequest)
