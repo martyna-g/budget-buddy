@@ -10,7 +10,7 @@ import java.util.UUID
 interface NotificationRequestDao {
 
     @Query("SELECT * FROM notification_requests WHERE paymentId = :paymentId")
-    suspend fun getNotificationRequestByPaymentId(paymentId: UUID): NotificationRequest
+    suspend fun getNotificationRequestByPaymentId(paymentId: UUID): NotificationRequest?
 
     @Insert
     suspend fun addNotificationRequest(notificationRequest: NotificationRequest)
