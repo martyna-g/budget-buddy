@@ -35,9 +35,8 @@ class PaymentSchedulerImpl @Inject constructor(
 
         val paymentWorkRequest =
             OneTimeWorkRequestBuilder<RecurringPaymentWorker>().setInitialDelay(
-                    paymentDelay,
-                    TimeUnit.SECONDS
-                ).setInputData(workDataOf("paymentId" to id)).build()
+                paymentDelay, TimeUnit.SECONDS
+            ).setInputData(workDataOf("paymentId" to id)).build()
 
         workManager.enqueueUniqueWork(
             "Payment_$id", ExistingWorkPolicy.KEEP, paymentWorkRequest
@@ -48,26 +47,6 @@ class PaymentSchedulerImpl @Inject constructor(
                 paymentWorkRequest.id, payment.id
             )
         )
-
-    }
-
-    override suspend fun cancelUpcomingPayment(payment: Payment) {
-        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
-        val notificationRequest: NotificationRequest? =
-            notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
-
-        workManager.cancelWorkById(nextPaymentRequest.requestId)
-        nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
-
-        if (notificationRequest != null) {
-            workManager.cancelWorkById(notificationRequest.requestId)
-            notificationRequestDao.deleteNotificationRequest(notificationRequest)
-        }
-    }
-
-    override suspend fun updateRecurringPayment(payment: Payment) {
-        cancelUpcomingPayment(payment)
-        scheduleRecurringPayment(payment)
     }
 
     private suspend fun scheduleNotification(payment: Payment) {
@@ -80,14 +59,13 @@ class PaymentSchedulerImpl @Inject constructor(
 
         val notificationWorkRequest = if (notificationDelay > 0) {
             OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
-                    notificationDelay,
-                    TimeUnit.SECONDS
-                ).setInputData(
-                    workDataOf(
-                        PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
-                        PaymentNotificationWorker.PAYMENT_ID_KEY to id
-                    )
-                ).build()
+                notificationDelay, TimeUnit.SECONDS
+            ).setInputData(
+                workDataOf(
+                    PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
+                    PaymentNotificationWorker.PAYMENT_ID_KEY to id
+                )
+            ).build()
         } else {
             null
         }
@@ -104,6 +82,85 @@ class PaymentSchedulerImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun cancelUpcomingPayment(payment: Payment) {
+        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
+        val notificationRequest: NotificationRequest? =
+            notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
+
+        workManager.cancelWorkById(nextPaymentRequest.requestId)
+        nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
+
+        if (notificationRequest != null) {
+            workManager.cancelWorkById(notificationRequest.requestId)
+            notificationRequestDao.deleteNotificationRequest(notificationRequest)
+        }
+    }
+
+    override suspend fun updateRecurringPayment(updatedPayment: Payment, originalPayment: Payment) {
+
+        val hasNotificationChanged =
+            updatedPayment.notificationEnabled != originalPayment.notificationEnabled
+        val hasDateChanged = updatedPayment.date != originalPayment.date
+        val hasTitleChanged = updatedPayment.title != originalPayment.title
+
+        if (hasNotificationChanged || hasTitleChanged) {
+            updateNotificationWorker(updatedPayment)
+        }
+
+        if (hasDateChanged) {
+            updatePaymentWorker(updatedPayment)
+
+            if (updatedPayment.notificationEnabled) {
+                updateNotificationWorker(updatedPayment)
+            }
+        }
+    }
+
+    private suspend fun updatePaymentWorker(payment: Payment) {
+        val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
+
+        val updatedPaymentWorkRequest =
+            OneTimeWorkRequestBuilder<RecurringPaymentWorker>().setInitialDelay(
+                    calculatePaymentDelay(payment),
+                    TimeUnit.SECONDS
+                ).setInputData(workDataOf("paymentId" to payment.id.toString()))
+                .setId(nextPaymentRequest.requestId).build()
+
+        workManager.updateWork(updatedPaymentWorkRequest)
+    }
+
+    private suspend fun updateNotificationWorker(payment: Payment) {
+        val notificationRequest: NotificationRequest? =
+            notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
+
+        if (payment.notificationEnabled) {
+            val notificationDelay = calculateNotificationDelay(payment)
+
+            if (notificationRequest != null) {
+                val updatedNotificationWorkRequest =
+                    OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
+                            notificationDelay,
+                            TimeUnit.SECONDS
+                        ).setInputData(
+                            workDataOf(
+                                PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
+                                PaymentNotificationWorker.PAYMENT_ID_KEY to payment.id.toString()
+                            )
+                        ).setId(notificationRequest.requestId).build()
+
+                workManager.updateWork(updatedNotificationWorkRequest)
+            } else {
+                scheduleNotification(payment)
+            }
+        } else {
+            if (notificationRequest != null) {
+                workManager.cancelWorkById(notificationRequest.requestId)
+                notificationRequestDao.deleteNotificationRequest(notificationRequest)
+            }
+        }
+    }
+
 
     private fun calculatePaymentDelay(payment: Payment): Long {
         val nowEpochSeconds = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
