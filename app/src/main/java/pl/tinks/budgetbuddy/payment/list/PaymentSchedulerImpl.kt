@@ -83,27 +83,7 @@ class PaymentSchedulerImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateRecurringPayment(updatedPayment: Payment, originalPayment: Payment) {
-
-        val hasNotificationChanged =
-            updatedPayment.notificationEnabled != originalPayment.notificationEnabled
-        val hasDateChanged = updatedPayment.date != originalPayment.date
-        val hasTitleChanged = updatedPayment.title != originalPayment.title
-
-        if (hasNotificationChanged || hasTitleChanged) {
-            updateNotificationWorker(updatedPayment)
-        }
-
-        if (hasDateChanged) {
-            updatePaymentWorker(updatedPayment)
-
-            if (updatedPayment.notificationEnabled) {
-                updateNotificationWorker(updatedPayment)
-            }
-        }
-    }
-
-    private suspend fun updatePaymentWorker(payment: Payment) {
+    override suspend fun updateRecurringPayment(payment: Payment) {
         val nextPaymentRequest = nextPaymentRequestDao.getNextPaymentRequestByPaymentId(payment.id)
 
         val updatedPaymentWorkRequest =
@@ -116,7 +96,7 @@ class PaymentSchedulerImpl @Inject constructor(
         workManager.updateWork(updatedPaymentWorkRequest)
     }
 
-    private suspend fun updateNotificationWorker(payment: Payment) {
+    override suspend fun updateNotification(payment: Payment) {
         val notificationRequest: NotificationRequest? =
             notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
 
@@ -140,7 +120,7 @@ class PaymentSchedulerImpl @Inject constructor(
                 scheduleNotification(payment)
             }
         } else {
-            cancelNotificationWorker(payment)
+            cancelNotification(payment)
         }
     }
 
@@ -150,10 +130,10 @@ class PaymentSchedulerImpl @Inject constructor(
         workManager.cancelWorkById(nextPaymentRequest.requestId)
         nextPaymentRequestDao.deleteNextPaymentRequest(nextPaymentRequest)
 
-        cancelNotificationWorker(payment)
+        cancelNotification(payment)
     }
 
-    override suspend fun cancelNotificationWorker(payment: Payment) {
+    override suspend fun cancelNotification(payment: Payment) {
         val notificationRequest: NotificationRequest? =
             notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
 
