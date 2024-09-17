@@ -12,15 +12,24 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
+import pl.tinks.budgetbuddy.payment.AddPaymentUseCase
+import pl.tinks.budgetbuddy.payment.DeletePaymentUseCase
+import pl.tinks.budgetbuddy.payment.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import pl.tinks.budgetbuddy.payment.UndoMoveToHistoryUseCase
+import pl.tinks.budgetbuddy.payment.UpdatePaymentUseCase
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     private val paymentRepository: PaymentRepository,
-    private val paymentScheduler: PaymentScheduler,
+    private val updatePaymentUseCase: UpdatePaymentUseCase,
+    private val addPaymentUseCase: AddPaymentUseCase,
+    private val deletePaymentUseCase: DeletePaymentUseCase,
+    private val moveToHistoryUseCase: MoveToHistoryUseCase,
+    private val undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase,
 ) : ViewModel() {
 
     private var _uiState: StateFlow<PaymentUiState> =
@@ -49,35 +58,31 @@ class PaymentListViewModel @Inject constructor(
 
     fun addPayment(payment: Payment) {
         viewModelScope.launch {
-            paymentRepository.addPayment(payment)
-            paymentScheduler.scheduleRecurringPayment(payment)
+            addPaymentUseCase.addPayment(payment)
         }
     }
 
     fun updatePayment(payment: Payment) {
         viewModelScope.launch {
-            val originalPayment = paymentRepository.getPaymentById(payment.id)
-            paymentRepository.updatePayment(payment)
-            paymentScheduler.updateRecurringPayment(payment, originalPayment)
+            updatePaymentUseCase.updatePayment(payment)
         }
     }
 
     fun moveToHistory(payment: Payment) {
         viewModelScope.launch {
-            paymentRepository.updatePayment(payment.copy(paymentCompleted = true))
+            moveToHistoryUseCase.moveToHistory(payment)
         }
     }
 
     fun undoMoveToHistory(payment: Payment) {
         viewModelScope.launch {
-            paymentRepository.updatePayment(payment.copy(paymentCompleted = false))
+            undoMoveToHistoryUseCase.undoMoveToHistory(payment)
         }
     }
 
     fun deletePayment(payment: Payment) {
         viewModelScope.launch {
-            paymentRepository.deletePayment(payment)
-            paymentScheduler.cancelUpcomingPayment(payment)
+            deletePaymentUseCase.deletePayment(payment)
         }
     }
 

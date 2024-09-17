@@ -18,4 +18,33 @@ object UseCaseModule {
         return UpdatePaymentUseCase(paymentRepository, paymentScheduler)
     }
 
+    @Provides
+    fun provideAddPaymentUseCase(
+        paymentRepository: PaymentRepository,
+        paymentScheduler: PaymentScheduler
+    ): AddPaymentUseCase {
+        return AddPaymentUseCase(paymentRepository, paymentScheduler)
+    }
+
+    @Provides
+    fun provideDeletePaymentUseCase(
+        paymentRepository: PaymentRepository,
+        paymentScheduler: PaymentScheduler
+    ): DeletePaymentUseCase {
+        return DeletePaymentUseCase(paymentRepository, paymentScheduler)
+    }
+
+    @Provides
+    fun provideMoveToHistoryUseCase(
+        paymentRepository: PaymentRepository
+    ): MoveToHistoryUseCase {
+        return MoveToHistoryUseCase(paymentRepository)
+    }
+
+    @Provides
+    fun provideUndoMoveToHistoryUseCase(
+        paymentRepository: PaymentRepository
+    ): UndoMoveToHistoryUseCase {
+        return UndoMoveToHistoryUseCase(paymentRepository)
+    }
 }
