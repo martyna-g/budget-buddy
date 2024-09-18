@@ -100,26 +100,24 @@ class PaymentSchedulerImpl @Inject constructor(
         val notificationRequest: NotificationRequest? =
             notificationRequestDao.getNotificationRequestByPaymentId(payment.id)
 
-        if (payment.notificationEnabled) {
-            val notificationDelay = calculateNotificationDelay(payment)
+        val notificationDelay = calculateNotificationDelay(payment)
 
-            if (notificationRequest != null) {
-                val updatedNotificationWorkRequest =
-                    OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
-                        notificationDelay,
-                        TimeUnit.SECONDS
-                    ).setInputData(
-                        workDataOf(
-                            PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
-                            PaymentNotificationWorker.PAYMENT_ID_KEY to payment.id.toString()
-                        )
-                    ).setId(notificationRequest.requestId).build()
+        if (notificationRequest != null && notificationDelay > 0) {
+            val updatedNotificationWorkRequest =
+                OneTimeWorkRequestBuilder<PaymentNotificationWorker>().setInitialDelay(
+                    notificationDelay,
+                    TimeUnit.SECONDS
+                ).setInputData(
+                    workDataOf(
+                        PaymentNotificationWorker.PAYMENT_TITLE_KEY to payment.title,
+                        PaymentNotificationWorker.PAYMENT_ID_KEY to payment.id.toString()
+                    )
+                ).setId(notificationRequest.requestId).build()
 
-                workManager.updateWork(updatedNotificationWorkRequest)
-            } else {
-                scheduleNotification(payment)
-            }
-        } else {
+            workManager.updateWork(updatedNotificationWorkRequest)
+        } else if (notificationDelay > 0) {
+            scheduleNotification(payment)
+        } else if (notificationRequest != null) {
             cancelNotification(payment)
         }
     }
