@@ -36,7 +36,7 @@ class PaymentSchedulerImpl @Inject constructor(
         val paymentWorkRequest =
             OneTimeWorkRequestBuilder<RecurringPaymentWorker>().setInitialDelay(
                 paymentDelay, TimeUnit.SECONDS
-            ).setInputData(workDataOf("paymentId" to id)).build()
+            ).setInputData(workDataOf(RecurringPaymentWorker.PAYMENT_ID_KEY to id)).build()
 
         workManager.enqueueUniqueWork(
             "Payment_$id", ExistingWorkPolicy.KEEP, paymentWorkRequest
@@ -90,7 +90,7 @@ class PaymentSchedulerImpl @Inject constructor(
             OneTimeWorkRequestBuilder<RecurringPaymentWorker>().setInitialDelay(
                 calculatePaymentDelay(payment),
                 TimeUnit.SECONDS
-            ).setInputData(workDataOf("paymentId" to payment.id.toString()))
+            ).setInputData(workDataOf(RecurringPaymentWorker.PAYMENT_ID_KEY to payment.id.toString()))
                 .setId(nextPaymentRequest.requestId).build()
 
         workManager.updateWork(updatedPaymentWorkRequest)

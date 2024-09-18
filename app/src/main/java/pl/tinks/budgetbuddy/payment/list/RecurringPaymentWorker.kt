@@ -24,9 +24,13 @@ class RecurringPaymentWorker @AssistedInject constructor(
 
 ) : CoroutineWorker(appContext, workerParams) {
 
+    companion object {
+        const val PAYMENT_ID_KEY = "paymentId"
+    }
+
     override suspend fun doWork(): Result {
 
-        val input = inputData.getString("paymentId")
+        val input = inputData.getString(PAYMENT_ID_KEY)
 
         val id = UUID.fromString(input)
 
