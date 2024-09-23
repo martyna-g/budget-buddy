@@ -25,7 +25,6 @@ class DecimalDigitsInputFilter(private val editText: EditText) : TextWatcher {
         val decimalPart = text.substring(dotIndex + 1)
 
         if (text.startsWith("0") && !text.startsWith("0.")) {
-            // If the first character is "0" (without a dot), keep only "0"
             editText.setText("0")
             editText.setSelection(1)
 
