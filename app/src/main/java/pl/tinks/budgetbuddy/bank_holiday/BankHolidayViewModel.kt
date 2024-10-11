@@ -3,35 +3,43 @@ package pl.tinks.budgetbuddy.bank_holiday
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
+import pl.tinks.budgetbuddy.Result
 
 @HiltViewModel
 class BankHolidayViewModel @Inject constructor(
     private val bankHolidayRetriever: BankHolidayRetriever
 ) : ViewModel() {
 
-    private var _uiState: StateFlow<BankHolidayUiState> = flow {
-        val bankHolidays: List<BankHoliday> = bankHolidayRetriever.getBankHolidays()
-        emit(bankHolidays)
-    }.map { bankHolidays ->
-        val today = LocalDate.now()
-        val filteredBankHolidays = bankHolidays.filter { bankHoliday ->
-            bankHoliday.date.isEqual(today) || bankHoliday.date.isAfter(today)
-        }
-        BankHolidayUiState.Success(filteredBankHolidays)
-    }.catch { e ->
-        BankHolidayUiState.Error(e.message ?: "An unknown error occurred")
-    }.stateIn(viewModelScope, SharingStarted.Lazily, BankHolidayUiState.Loading)
+    private val _uiState = MutableStateFlow<BankHolidayUiState>(BankHolidayUiState.Loading)
+    val uiState: StateFlow<BankHolidayUiState> = _uiState
 
-    val uiState: Flow<BankHolidayUiState> = _uiState
+    init {
+        getBankHolidays()
+    }
+
+    private fun getBankHolidays() {
+        viewModelScope.launch {
+            when (val result = bankHolidayRetriever.getBankHolidays()) {
+                is Result.Success -> {
+                    val today = LocalDate.now()
+                    val filteredBankHolidays = result.data.filter { bankHoliday ->
+                        bankHoliday.date.isEqual(today) || bankHoliday.date.isAfter(today)
+                    }
+                    _uiState.value = BankHolidayUiState.Success(filteredBankHolidays)
+                }
+
+                is Result.Error -> {
+                    _uiState.value =
+                        BankHolidayUiState.Error(result.e.message ?: "An unknown error occurred")
+                }
+            }
+        }
+    }
 
 }
 
