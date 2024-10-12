@@ -35,7 +35,7 @@ class BankHolidayViewModel @Inject constructor(
 
                 is Result.Error -> {
                     _uiState.value =
-                        BankHolidayUiState.Error(result.e.message ?: "An unknown error occurred")
+                        BankHolidayUiState.Error(result.e)
                 }
             }
         }
@@ -45,6 +45,6 @@ class BankHolidayViewModel @Inject constructor(
 
 sealed class BankHolidayUiState {
     data class Success(val bankHolidays: List<BankHoliday>) : BankHolidayUiState()
-    data class Error(val message: String) : BankHolidayUiState()
+    data class Error(val e: Throwable) : BankHolidayUiState()
     data object Loading : BankHolidayUiState()
 }
