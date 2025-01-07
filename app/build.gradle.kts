@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
+    id("androidx.room")
     kotlin("kapt")
 }
 
@@ -49,6 +50,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
