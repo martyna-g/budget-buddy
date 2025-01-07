@@ -14,7 +14,8 @@ import pl.tinks.budgetbuddy.shopping.ShoppingItem
 
 @Database(
     entities = [Payment::class, NextPaymentRequest::class, NotificationRequest::class, ShoppingItem::class],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 @TypeConverters(RoomTypeConverter::class)
 abstract class BudgetBuddyDatabase : RoomDatabase() {
