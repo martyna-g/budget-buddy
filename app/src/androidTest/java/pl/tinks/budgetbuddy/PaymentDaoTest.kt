@@ -15,46 +15,48 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
-import pl.tinks.budgetbuddy.payment.PaymentDatabase
-import java.io.IOException
+import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class PaymentEntityReadWriteTest {
+class PaymentDaoTest {
 
-    private lateinit var database: PaymentDatabase
+    private lateinit var database: BudgetBuddyDatabase
     private lateinit var paymentDao: PaymentDao
     private val paymentId = UUID.randomUUID()
+    private lateinit var payment: Payment
 
     @Before
     fun setupDatabase() {
         database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            PaymentDatabase::class.java
+            ApplicationProvider.getApplicationContext(), BudgetBuddyDatabase::class.java
         ).build()
 
         paymentDao = database.getPaymentDao()
-    }
 
-    @After
-    @Throws(IOException::class)
-    fun closeDatabase() = database.close()
-
-    @Test
-    @Throws(Exception::class)
-    fun addPaymentAndGetById() = runBlocking {
-        val payment = Payment(
+        payment = Payment(
             paymentId,
             "Rent",
             Money.of(CurrencyUnit.GBP, 111.11),
-            LocalDateTime.now(),
-            1
+            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+            PaymentFrequency.DAILY
         )
 
-        paymentDao.addPayment(payment)
+        runBlocking {
+            paymentDao.addPayment(payment)
+        }
+    }
 
+    @After
+    fun closeDatabase() {
+        database.close()
+    }
+
+    @Test
+    fun getById_returnsCorrectPayment() = runBlocking {
         val paymentById = paymentDao.getPaymentById(paymentId)
         MatcherAssert.assertThat(paymentById, CoreMatchers.equalTo(payment))
     }
