@@ -5,8 +5,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.MatcherAssert.assertThat
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.junit.After
@@ -58,6 +59,22 @@ class PaymentDaoTest {
     @Test
     fun getById_returnsCorrectPayment() = runBlocking {
         val paymentById = paymentDao.getPaymentById(paymentId)
-        MatcherAssert.assertThat(paymentById, CoreMatchers.equalTo(payment))
+        assertThat(paymentById, `is`(payment))
+    }
+
+    @Test
+    fun updatePayment_updatesPaymentInDb() = runBlocking {
+        val updatedPayment = payment.copy(title = "Updated Rent")
+        paymentDao.updatePayment(updatedPayment)
+
+        val retrievedPayment = paymentDao.getPaymentById(paymentId)
+        assertThat(retrievedPayment.title, `is`("Updated Rent"))
+    }
+
+    @Test
+    fun deletePayment_removesPaymentFromDb() = runBlocking {
+        paymentDao.deletePayment(payment)
+        val retrievedPayment = paymentDao.getPaymentById(paymentId)
+        assertThat(retrievedPayment, `is`(nullValue()))
     }
 }
