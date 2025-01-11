@@ -8,7 +8,7 @@ interface PaymentRepository {
 
     fun getAllPayments(): Flow<Result<List<Payment>>>
 
-    suspend fun getPaymentById(paymentId: UUID): Payment
+    suspend fun getPaymentById(paymentId: UUID): Payment?
 
     suspend fun addPayment(payment: Payment)
 
