@@ -11,6 +11,7 @@ class UpdatePaymentUseCase @Inject constructor(
     suspend fun updatePayment(payment: Payment) {
 
         val originalPayment = paymentRepository.getPaymentById(payment.id)
+            ?: throw NullPointerException("Payment with ID ${payment.id} not found.")
 
         paymentRepository.updatePayment(payment)
 
