@@ -119,9 +119,9 @@ class PaymentDetailsFragment : DialogFragment() {
                 .setCalendarConstraints(constraintsBuilder.build())
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
 
-        if (paymentId != null) {
+        paymentId?.let { id ->
             viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.initPaymentDetails(paymentId!!)
+                viewModel.initPaymentDetails(id)
                 viewModel.selectedPayment.collect {
                     populateFields(it)
                     payment = it
