@@ -11,6 +11,13 @@ import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 object UseCaseModule {
 
     @Provides
+    fun provideGetPaymentByIdUseCase(
+        paymentRepository: PaymentRepository
+    ): GetPaymentByIdUseCase {
+        return GetPaymentByIdUseCase(paymentRepository)
+    }
+
+    @Provides
     fun provideUpdatePaymentUseCase(
         paymentRepository: PaymentRepository,
         paymentScheduler: PaymentScheduler
