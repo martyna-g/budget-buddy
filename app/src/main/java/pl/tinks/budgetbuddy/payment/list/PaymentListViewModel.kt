@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.AddPaymentUseCase
 import pl.tinks.budgetbuddy.payment.DeletePaymentUseCase
+import pl.tinks.budgetbuddy.payment.GetPaymentByIdUseCase
 import pl.tinks.budgetbuddy.payment.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
@@ -25,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     private val paymentRepository: PaymentRepository,
+    private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
     private val updatePaymentUseCase: UpdatePaymentUseCase,
     private val addPaymentUseCase: AddPaymentUseCase,
     private val deletePaymentUseCase: DeletePaymentUseCase,
@@ -51,7 +53,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun initPaymentDetails(id: UUID) {
         viewModelScope.launch {
-            val payment = paymentRepository.getPaymentById(id)
+            val payment = getPaymentByIdUseCase.getPaymentById(id)
             _selectedPayment.emit(payment)
         }
     }
