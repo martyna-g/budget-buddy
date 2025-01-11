@@ -15,7 +15,7 @@ interface PaymentDao {
     fun getAllPayments(): Flow<List<Payment>>
 
     @Query("SELECT * FROM payments WHERE id LIKE :paymentId")
-    suspend fun getPaymentById(paymentId: UUID): Payment
+    suspend fun getPaymentById(paymentId: UUID): Payment?
 
     @Insert
     suspend fun addPayment(payment: Payment)
