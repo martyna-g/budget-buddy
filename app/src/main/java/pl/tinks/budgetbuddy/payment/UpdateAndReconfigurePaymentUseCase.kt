@@ -3,12 +3,12 @@ package pl.tinks.budgetbuddy.payment
 import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 import javax.inject.Inject
 
-class UpdatePaymentUseCase @Inject constructor(
+class UpdateAndReconfigurePaymentUseCase @Inject constructor(
     private val paymentRepository: PaymentRepository,
     private val paymentScheduler: PaymentScheduler
 ) {
 
-    suspend fun updatePayment(payment: Payment) {
+    suspend operator fun invoke(payment: Payment) {
 
         val originalPayment = paymentRepository.getPaymentById(payment.id)
             ?: throw NullPointerException("Payment with ID ${payment.id} not found.")

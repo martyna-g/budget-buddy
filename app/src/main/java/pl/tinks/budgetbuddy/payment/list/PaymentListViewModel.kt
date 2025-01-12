@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
-import pl.tinks.budgetbuddy.payment.AddPaymentUseCase
-import pl.tinks.budgetbuddy.payment.DeletePaymentUseCase
+import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
+import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.GetPaymentByIdUseCase
 import pl.tinks.budgetbuddy.payment.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.UndoMoveToHistoryUseCase
-import pl.tinks.budgetbuddy.payment.UpdatePaymentUseCase
+import pl.tinks.budgetbuddy.payment.UpdateAndReconfigurePaymentUseCase
 import java.util.UUID
 import javax.inject.Inject
 
@@ -27,9 +27,9 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(
     private val paymentRepository: PaymentRepository,
     private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
-    private val updatePaymentUseCase: UpdatePaymentUseCase,
-    private val addPaymentUseCase: AddPaymentUseCase,
-    private val deletePaymentUseCase: DeletePaymentUseCase,
+    private val updateAndReconfigurePaymentUseCase: UpdateAndReconfigurePaymentUseCase,
+    private val addAndConfigurePaymentUseCase: AddAndConfigurePaymentUseCase,
+    private val deletePaymentAndCleanupUseCase: DeletePaymentAndCleanupUseCase,
     private val moveToHistoryUseCase: MoveToHistoryUseCase,
     private val undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase,
 ) : ViewModel() {
@@ -60,13 +60,13 @@ class PaymentListViewModel @Inject constructor(
 
     fun addPayment(payment: Payment) {
         viewModelScope.launch {
-            addPaymentUseCase.addPayment(payment)
+            addAndConfigurePaymentUseCase(payment)
         }
     }
 
     fun updatePayment(payment: Payment) {
         viewModelScope.launch {
-            updatePaymentUseCase.updatePayment(payment)
+            updateAndReconfigurePaymentUseCase(payment)
         }
     }
 
@@ -84,7 +84,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun deletePayment(payment: Payment) {
         viewModelScope.launch {
-            deletePaymentUseCase.deletePayment(payment)
+            deletePaymentAndCleanupUseCase(payment)
         }
     }
 

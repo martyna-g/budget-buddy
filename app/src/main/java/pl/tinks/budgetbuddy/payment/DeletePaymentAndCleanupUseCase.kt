@@ -3,11 +3,11 @@ package pl.tinks.budgetbuddy.payment
 import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 import javax.inject.Inject
 
-class DeletePaymentUseCase @Inject constructor(
+class DeletePaymentAndCleanupUseCase @Inject constructor(
     private val paymentRepository: PaymentRepository,
     private val paymentScheduler: PaymentScheduler
 ) {
-    suspend fun deletePayment(payment: Payment) {
+    suspend operator fun invoke(payment: Payment) {
         paymentRepository.deletePayment(payment)
         paymentScheduler.cancelUpcomingPayment(payment)
     }
