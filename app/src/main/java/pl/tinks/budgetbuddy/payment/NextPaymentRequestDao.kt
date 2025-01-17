@@ -10,7 +10,7 @@ import java.util.UUID
 interface NextPaymentRequestDao {
 
     @Query("SELECT * FROM next_payment_requests WHERE paymentId = :paymentId")
-    suspend fun getNextPaymentRequestByPaymentId(paymentId: UUID): NextPaymentRequest
+    suspend fun getNextPaymentRequestByPaymentId(paymentId: UUID): NextPaymentRequest?
 
     @Insert
     suspend fun addNextPaymentRequest(nextPaymentRequest: NextPaymentRequest)

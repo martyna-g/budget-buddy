@@ -7,21 +7,15 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.withContext
-import pl.tinks.budgetbuddy.payment.PaymentRepository
-import java.time.LocalDateTime
-import java.time.LocalTime
+import pl.tinks.budgetbuddy.payment.GetPaymentByIdUseCase
 import java.util.UUID
 
 @HiltWorker
 class RecurringPaymentWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val repository: PaymentRepository,
-    private val calculator: PaymentDateCalculator,
-    private val paymentScheduler: PaymentScheduler
-
+    private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
+    private val scheduleNextPaymentUseCase: ScheduleNextPaymentUseCase,
 ) : CoroutineWorker(appContext, workerParams) {
 
     companion object {
@@ -29,43 +23,21 @@ class RecurringPaymentWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result {
+        val input = inputData.getString(PAYMENT_ID_KEY) ?: return Result.failure()
 
-        val input = inputData.getString(PAYMENT_ID_KEY)
+        val paymentId = UUID.fromString(input)
 
-        val id = UUID.fromString(input)
+        val payment = getPaymentByIdUseCase.getPaymentById(paymentId)
 
-        val payment = repository.getPaymentById(id)
-
-        if (payment.isNextPaymentScheduled) return Result.success()
-
-        val nextPaymentDate = calculator.calculateNextPaymentDate(
-            payment.date.toLocalDate(), payment.frequency
-        )
-
-        val newPaymentId = UUID.randomUUID()
-        val newPaymentDate = LocalDateTime.of(nextPaymentDate, LocalTime.MIDNIGHT)
-
-        val newPayment = payment.copy(id = newPaymentId, date = newPaymentDate)
-
-        var paymentAdded = false
-
-        try {
-            repository.addPayment(newPayment)
-            paymentAdded = true
-
-            paymentScheduler.scheduleRecurringPayment(newPayment)
-            repository.updatePayment(payment.copy(isNextPaymentScheduled = true))
-
+        if (payment.isNextPaymentScheduled) {
             return Result.success()
+        }
 
+        return try {
+            scheduleNextPaymentUseCase(payment)
+            Result.success()
         } catch (e: CancellationException) {
-            if (paymentAdded) {
-                withContext(NonCancellable) {
-                    repository.deletePayment(newPayment)
-                }
-            }
-            return Result.failure()
+            Result.retry()
         }
     }
-
 }
