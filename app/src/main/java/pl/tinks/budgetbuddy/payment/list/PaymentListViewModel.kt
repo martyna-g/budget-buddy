@@ -53,7 +53,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun initPaymentDetails(id: UUID) {
         viewModelScope.launch {
-            val payment = getPaymentByIdUseCase.getPaymentById(id)
+            val payment = getPaymentByIdUseCase(id)
             _selectedPayment.emit(payment)
         }
     }
@@ -72,13 +72,13 @@ class PaymentListViewModel @Inject constructor(
 
     fun moveToHistory(payment: Payment) {
         viewModelScope.launch {
-            moveToHistoryUseCase.moveToHistory(payment)
+            moveToHistoryUseCase(payment)
         }
     }
 
     fun undoMoveToHistory(payment: Payment) {
         viewModelScope.launch {
-            undoMoveToHistoryUseCase.undoMoveToHistory(payment)
+            undoMoveToHistoryUseCase(payment)
         }
     }
 

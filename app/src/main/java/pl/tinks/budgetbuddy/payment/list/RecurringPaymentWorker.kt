@@ -27,7 +27,7 @@ class RecurringPaymentWorker @AssistedInject constructor(
 
         val paymentId = UUID.fromString(input)
 
-        val payment = getPaymentByIdUseCase.getPaymentById(paymentId)
+        val payment = getPaymentByIdUseCase(paymentId)
 
         if (payment.isNextPaymentScheduled) {
             return Result.success()

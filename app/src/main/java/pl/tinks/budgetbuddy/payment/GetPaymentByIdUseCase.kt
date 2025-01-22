@@ -6,8 +6,8 @@ import javax.inject.Inject
 class GetPaymentByIdUseCase @Inject constructor(
     private val paymentRepository: PaymentRepository
 ) {
-    suspend fun getPaymentById(paymentId: UUID): Payment {
+    suspend operator fun invoke(paymentId: UUID): Payment {
         return paymentRepository.getPaymentById(paymentId)
-            ?: throw NullPointerException("Payment with ID $paymentId not found.")
+            ?: throw IllegalStateException("Payment with ID $paymentId not found. This indicates a bug in the app.")
     }
 }

@@ -5,7 +5,7 @@ import javax.inject.Inject
 class MoveToHistoryUseCase @Inject constructor(
     private val paymentRepository: PaymentRepository
 ) {
-    suspend fun moveToHistory(payment: Payment) {
+    suspend operator fun invoke(payment: Payment) {
         paymentRepository.updatePayment(payment.copy(paymentCompleted = true))
     }
 }
