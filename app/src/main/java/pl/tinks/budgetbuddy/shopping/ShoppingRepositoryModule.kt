@@ -1,17 +1,18 @@
 package pl.tinks.budgetbuddy.shopping
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
-
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class ShoppingRepositoryModule {
+object ShoppingRepositoryModule {
 
     @Singleton
-    @Binds
-    abstract fun bindShoppingRepository(shoppingRepository: ShoppingRepositoryImpl): ShoppingRepository
+    @Provides
+    fun provideShoppingRepository(shoppingDao: ShoppingDao): ShoppingRepository =
+        ShoppingRepositoryImpl(shoppingDao, Dispatchers.IO)
 }

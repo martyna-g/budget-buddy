@@ -1,18 +1,21 @@
 package pl.tinks.budgetbuddy.shopping
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import pl.tinks.budgetbuddy.Result
 import java.util.UUID
-import javax.inject.Inject
+import javax.inject.Singleton
 
-class ShoppingRepositoryImpl @Inject constructor(
-    private val shoppingDao: ShoppingDao
+@Singleton
+class ShoppingRepositoryImpl(
+    private val shoppingDao: ShoppingDao, private val dispatcher: CoroutineDispatcher
 ) : ShoppingRepository {
 
     override fun getAllShoppingItems(): Flow<Result<List<ShoppingItem>>> {
-        return shoppingDao.getAllShoppingItems().map { shoppingList ->
+        return shoppingDao.getAllShoppingItems().flowOn(dispatcher).map { shoppingList ->
             Result.Success(shoppingList) as Result<List<ShoppingItem>>
         }.catch { e ->
             emit(Result.Error(e))
@@ -50,5 +53,4 @@ class ShoppingRepositoryImpl @Inject constructor(
     override suspend fun deleteAllShoppingItems() {
         shoppingDao.deleteAllShoppingItems()
     }
-
 }
