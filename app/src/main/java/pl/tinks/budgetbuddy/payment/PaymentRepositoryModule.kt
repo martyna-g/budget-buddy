@@ -1,16 +1,18 @@
 package pl.tinks.budgetbuddy.payment
 
-import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class PaymentRepositoryModule {
+object PaymentRepositoryModule {
 
     @Singleton
-    @Binds
-    abstract fun bindPaymentRepository(paymentRepository: PaymentRepositoryImpl): PaymentRepository
+    @Provides
+    fun providePaymentRepository(paymentDao: PaymentDao): PaymentRepository =
+        PaymentRepositoryImpl(paymentDao, Dispatchers.IO)
 }

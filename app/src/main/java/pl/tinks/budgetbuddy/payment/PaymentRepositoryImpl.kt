@@ -1,19 +1,21 @@
 package pl.tinks.budgetbuddy.payment
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import pl.tinks.budgetbuddy.Result
 import java.util.UUID
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentDao) :
-    PaymentRepository {
+class PaymentRepositoryImpl(
+    private val paymentDao: PaymentDao, private val dispatcher: CoroutineDispatcher
+) : PaymentRepository {
 
     override fun getAllPayments(): Flow<Result<List<Payment>>> {
-        return paymentDao.getAllPayments().map { list ->
+        return paymentDao.getAllPayments().flowOn(dispatcher).map { list ->
             Result.Success(list) as Result<List<Payment>>
         }.catch { e ->
             emit(Result.Error(e))
@@ -37,5 +39,4 @@ class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentD
     override suspend fun deletePayments(payments: List<Payment>) {
         paymentDao.deletePayments(payments)
     }
-
 }
