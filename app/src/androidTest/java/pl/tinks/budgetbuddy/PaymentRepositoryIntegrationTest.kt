@@ -2,8 +2,8 @@ package pl.tinks.budgetbuddy
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,6 +20,8 @@ import pl.tinks.budgetbuddy.payment.PaymentRepositoryImpl
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 
 class PaymentRepositoryIntegrationTest {
     private lateinit var database: BudgetBuddyDatabase
@@ -28,13 +30,14 @@ class PaymentRepositoryIntegrationTest {
     private lateinit var payment: Payment
     private val paymentId = UUID.randomUUID()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(), BudgetBuddyDatabase::class.java
         ).build()
         paymentDao = database.getPaymentDao()
-        paymentRepository = PaymentRepositoryImpl(paymentDao)
+        paymentRepository = PaymentRepositoryImpl(paymentDao, UnconfinedTestDispatcher())
 
         payment = Payment(
             paymentId,
@@ -51,7 +54,7 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun getAllPayments_emitsSuccess_whenDataIsAvailable() = runBlocking {
+    fun getAllPayments_emitsSuccess_whenDataIsAvailable() = runTest {
         paymentRepository.addPayment(payment)
 
         val result = paymentRepository.getAllPayments().first()
@@ -59,13 +62,13 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun getAllPayments_emitsSuccessWithEmptyList_whenNoDataIsAvailable() = runBlocking {
+    fun getAllPayments_emitsSuccessWithEmptyList_whenNoDataIsAvailable() = runTest {
         val result = paymentRepository.getAllPayments().first()
         assertThat(result, `is`(Result.Success(emptyList())))
     }
 
     @Test
-    fun getPaymentById_retrievesCorrectPayment() = runBlocking {
+    fun getPaymentById_retrievesCorrectPayment() = runTest {
         paymentRepository.addPayment(payment)
 
         val result = paymentRepository.getPaymentById(paymentId)
@@ -73,7 +76,7 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun addPayment_addsPaymentToDatabase() = runBlocking {
+    fun addPayment_addsPaymentToDatabase() = runTest {
         paymentRepository.addPayment(payment)
 
         val result = paymentDao.getPaymentById(paymentId)
@@ -81,7 +84,7 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun updatePayment_updatesPaymentInDatabase() = runBlocking {
+    fun updatePayment_updatesPaymentInDatabase() = runTest {
         val updatedPayment = payment.copy(title = "Updated Payment")
 
         paymentRepository.addPayment(payment)
@@ -93,7 +96,7 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun deletePayment_removesPaymentFromDatabase() = runBlocking {
+    fun deletePayment_removesPaymentFromDatabase() = runTest {
         paymentRepository.addPayment(payment)
 
         val beforeDelete = paymentRepository.getPaymentById(paymentId)
@@ -106,7 +109,7 @@ class PaymentRepositoryIntegrationTest {
     }
 
     @Test
-    fun deletePayment_doesNotThrowException_whenPaymentDoesNotExist() = runBlocking {
+    fun deletePayment_doesNotThrowException_whenPaymentDoesNotExist() = runTest {
         assertThat (
             runCatching { paymentRepository.deletePayment(payment) }.exceptionOrNull(),
             `is`(nullValue())

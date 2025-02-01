@@ -1,9 +1,11 @@
 package pl.tinks.budgetbuddy
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -27,10 +29,11 @@ class PaymentRepositoryTest {
     private lateinit var paymentRepository: PaymentRepository
     private lateinit var payment: Payment
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         paymentDao = Mockito.mock(PaymentDao::class.java)
-        paymentRepository = PaymentRepositoryImpl(paymentDao)
+        paymentRepository = PaymentRepositoryImpl(paymentDao, UnconfinedTestDispatcher())
         payment = Payment(
             id = UUID.randomUUID(),
             title = "Test Payment",
@@ -41,7 +44,7 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `getAllPayments emits success when dao returns data`() = runBlocking {
+    fun `getAllPayments emits success when dao returns data`() = runTest {
         val payments = listOf(payment)
         Mockito.`when`(paymentDao.getAllPayments()).thenReturn(flowOf(payments))
 
@@ -52,7 +55,7 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `getAllPayments emits success with empty list when dao returns no data`() = runBlocking {
+    fun `getAllPayments emits success with empty list when dao returns no data`() = runTest {
         Mockito.`when`(paymentDao.getAllPayments()).thenReturn(flowOf(emptyList()))
 
         val result = paymentRepository.getAllPayments().first()
@@ -62,7 +65,7 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `getAllPayments emits error when dao throws exception`() = runBlocking {
+    fun `getAllPayments emits error when dao throws exception`() = runTest {
         val exception = RuntimeException("Database error")
         val flowWithError = flow<List<Payment>> { throw exception }
         Mockito.`when`(paymentDao.getAllPayments()).thenReturn(flowWithError)
@@ -70,11 +73,14 @@ class PaymentRepositoryTest {
         val result = paymentRepository.getAllPayments().first()
 
         verify(paymentDao).getAllPayments()
-        assertThat(result, `is`(Result.Error(exception)))
+        val resultError = result as Result.Error
+        val resultException = resultError.e
+        assertThat(resultException::class, `is`(RuntimeException::class))
+        assertThat(resultException.message, `is`(exception.message))
     }
 
     @Test
-    fun `getPaymentById retrieves payment by id`() = runBlocking {
+    fun `getPaymentById retrieves payment by id`() = runTest {
         val paymentId = payment.id
 
         Mockito.`when`(paymentDao.getPaymentById(paymentId)).thenReturn(payment)
@@ -86,7 +92,7 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `getPaymentById returns null when no payment found`() = runBlocking {
+    fun `getPaymentById returns null when no payment found`() = runTest {
         val paymentId = UUID.randomUUID()
         Mockito.`when`(paymentDao.getPaymentById(paymentId)).thenReturn(null)
 
@@ -97,14 +103,14 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `addPayment calls addPayment on dao`() = runBlocking {
+    fun `addPayment calls addPayment on dao`() = runTest {
         paymentRepository.addPayment(payment)
 
         verify(paymentDao).addPayment(payment)
     }
 
     @Test
-    fun `updatePayment calls updatePayment on dao`() = runBlocking {
+    fun `updatePayment calls updatePayment on dao`() = runTest {
         val updatedPayment = payment.copy(title = "Updated Payment")
 
         paymentRepository.updatePayment(updatedPayment)
@@ -113,7 +119,7 @@ class PaymentRepositoryTest {
     }
 
     @Test
-    fun `deletePayment calls deletePayment on dao`() = runBlocking {
+    fun `deletePayment calls deletePayment on dao`() = runTest {
         paymentRepository.deletePayment(payment)
 
         verify(paymentDao).deletePayment(payment)
