@@ -2,9 +2,10 @@ package pl.tinks.budgetbuddy
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import junit.framework.TestCase.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -25,13 +26,14 @@ class ShoppingRepositoryIntegrationTest {
     private lateinit var shoppingItem: ShoppingItem
     private val itemId = UUID.randomUUID()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(), BudgetBuddyDatabase::class.java
         ).build()
         shoppingDao = database.getShoppingDao()
-        shoppingRepository = ShoppingRepositoryImpl(shoppingDao)
+        shoppingRepository = ShoppingRepositoryImpl(shoppingDao, UnconfinedTestDispatcher())
         shoppingItem = ShoppingItem(itemId, "Test Item")
     }
 
@@ -41,7 +43,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun getAllShoppingItems_emitsSuccess_whenDataIsAvailable() = runBlocking {
+    fun getAllShoppingItems_emitsSuccess_whenDataIsAvailable() = runTest {
         shoppingRepository.addShoppingItem(shoppingItem)
 
         val result = shoppingRepository.getAllShoppingItems().first()
@@ -50,7 +52,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun getShoppingItemsByInBasketStatus_emitsSuccess_whenDataIsAvailable() = runBlocking {
+    fun getShoppingItemsByInBasketStatus_emitsSuccess_whenDataIsAvailable() = runTest {
         shoppingRepository.addShoppingItem(shoppingItem)
 
         val result = shoppingRepository.getShoppingItemsByInBasketStatus(inBasket = false).first()
@@ -59,7 +61,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun getShoppingItemById_retrievesCorrectShoppingItem() = runBlocking {
+    fun getShoppingItemById_retrievesCorrectShoppingItem() = runTest {
         shoppingRepository.addShoppingItem(shoppingItem)
 
         val result = shoppingRepository.getShoppingItemById(itemId)
@@ -68,7 +70,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun addShoppingItem_addsShoppingItemToDatabase() = runBlocking {
+    fun addShoppingItem_addsShoppingItemToDatabase() = runTest {
         shoppingRepository.addShoppingItem(shoppingItem)
 
         val result = shoppingRepository.getShoppingItemById(itemId)
@@ -77,7 +79,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun updateShoppingItem_updatesShoppingItemInDatabase() = runBlocking {
+    fun updateShoppingItem_updatesShoppingItemInDatabase() = runTest {
         val updatedItem = shoppingItem.copy(itemName = "Updated Item")
 
         shoppingRepository.addShoppingItem(shoppingItem)
@@ -89,7 +91,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun deleteShoppingItem_deletesShoppingItemFromDatabase() = runBlocking {
+    fun deleteShoppingItem_deletesShoppingItemFromDatabase() = runTest {
         shoppingRepository.addShoppingItem(shoppingItem)
 
         shoppingRepository.deleteShoppingItem(shoppingItem)
@@ -99,7 +101,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun deleteShoppingItemsByInBasketStatus_deletesOnlyItemsWithMatchingStatus() = runBlocking {
+    fun deleteShoppingItemsByInBasketStatus_deletesOnlyItemsWithMatchingStatus() = runTest {
         val itemToDelete = ShoppingItem(UUID.randomUUID(), "Item to Delete", inBasket = false)
         val itemToKeep = ShoppingItem(UUID.randomUUID(), "Item to Keep", inBasket = true)
 
@@ -115,7 +117,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun deleteAllShoppingItems_deletesAllShoppingItems() = runBlocking {
+    fun deleteAllShoppingItems_deletesAllShoppingItems() = runTest {
         val item1 = ShoppingItem(UUID.randomUUID(), "Test Item", inBasket = false)
         val item2 = ShoppingItem(UUID.randomUUID(), "Test Item 2", inBasket = true)
 
@@ -132,7 +134,7 @@ class ShoppingRepositoryIntegrationTest {
     }
 
     @Test
-    fun deleteShoppingItem_doesNotThrowException_whenItemDoesNotExist() = runBlocking {
+    fun deleteShoppingItem_doesNotThrowException_whenItemDoesNotExist() = runTest {
         assertThat(
             runCatching { shoppingRepository.deleteShoppingItem(shoppingItem) }.exceptionOrNull(),
             `is`(nullValue())

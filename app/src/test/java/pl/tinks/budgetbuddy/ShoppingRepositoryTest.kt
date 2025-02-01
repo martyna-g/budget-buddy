@@ -1,8 +1,10 @@
 package pl.tinks.budgetbuddy
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -22,15 +24,16 @@ class ShoppingRepositoryTest {
     private lateinit var shoppingRepository: ShoppingRepository
     private lateinit var itemId: UUID
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         shoppingDao = Mockito.mock(ShoppingDao::class.java)
-        shoppingRepository = ShoppingRepositoryImpl(shoppingDao)
+        shoppingRepository = ShoppingRepositoryImpl(shoppingDao, UnconfinedTestDispatcher())
         itemId = UUID.randomUUID()
     }
 
     @Test
-    fun `getAllShoppingItems emits success when dao returns data`() = runBlocking {
+    fun `getAllShoppingItems emits success when dao returns data`() = runTest {
         val shoppingItems = listOf(ShoppingItem(itemId, "Test Item"))
         Mockito.`when`(shoppingDao.getAllShoppingItems()).thenReturn(flowOf(shoppingItems))
 
@@ -42,7 +45,7 @@ class ShoppingRepositoryTest {
 
     @Test
     fun `getAllShoppingItems emits success with empty list when dao returns no data`() =
-        runBlocking {
+        runTest {
             Mockito.`when`(shoppingDao.getAllShoppingItems()).thenReturn(flowOf(emptyList()))
 
             val result = shoppingRepository.getAllShoppingItems().first()
@@ -52,7 +55,7 @@ class ShoppingRepositoryTest {
         }
 
     @Test
-    fun `getShoppingItemsByInBasketStatus emits success when dao returns data`() = runBlocking {
+    fun `getShoppingItemsByInBasketStatus emits success when dao returns data`() = runTest {
         val shoppingItems = listOf(ShoppingItem(itemId, "Test Item", inBasket = true))
         Mockito.`when`(shoppingDao.getShoppingItemsByInBasketStatus(true))
             .thenReturn(flowOf(shoppingItems))
@@ -64,7 +67,7 @@ class ShoppingRepositoryTest {
     }
 
     @Test
-    fun `getShoppingItemById returns correct item by id`() = runBlocking {
+    fun `getShoppingItemById returns correct item by id`() = runTest {
         val shoppingItem = ShoppingItem(itemId, "Test Item")
         Mockito.`when`(shoppingDao.getShoppingItemById(itemId)).thenReturn(shoppingItem)
 
@@ -77,7 +80,7 @@ class ShoppingRepositoryTest {
     }
 
     @Test
-    fun `getShoppingItemById returns null when item not found`() = runBlocking {
+    fun `getShoppingItemById returns null when item not found`() = runTest {
         val randomId = UUID.randomUUID()
 
         val result = shoppingRepository.getShoppingItemById(randomId)
@@ -87,7 +90,7 @@ class ShoppingRepositoryTest {
     }
 
     @Test
-    fun `addShoppingItem calls addShoppingItem on dao`() = runBlocking {
+    fun `addShoppingItem calls addShoppingItem on dao`() = runTest {
         val shoppingItem = ShoppingItem(itemId, "Test Item")
 
         shoppingRepository.addShoppingItem(shoppingItem)
@@ -96,7 +99,7 @@ class ShoppingRepositoryTest {
     }
 
     @Test
-    fun `updateShoppingItem calls updateShoppingItem on dao`() = runBlocking {
+    fun `updateShoppingItem calls updateShoppingItem on dao`() = runTest {
         val updatedShoppingItem = ShoppingItem(itemId, "Updated Shopping Item")
 
         shoppingRepository.updateShoppingItem(updatedShoppingItem)
@@ -107,7 +110,7 @@ class ShoppingRepositoryTest {
 
 
     @Test
-    fun `deleteShoppingItem calls deleteShoppingItem on dao`() = runBlocking {
+    fun `deleteShoppingItem calls deleteShoppingItem on dao`() = runTest {
         val shoppingItem = ShoppingItem(itemId, "Test Item")
         shoppingRepository.deleteShoppingItem(shoppingItem)
 
@@ -116,14 +119,14 @@ class ShoppingRepositoryTest {
 
     @Test
     fun `deleteShoppingItemsByInBasketStatus calls deleteShoppingItemsByInBasketStatus on dao`() =
-        runBlocking {
+        runTest {
             shoppingRepository.deleteShoppingItemsByInBasketStatus(inBasket = true)
 
             verify(shoppingDao).deleteShoppingItemsByInBasketStatus(true)
         }
 
     @Test
-    fun `deleteAllShoppingItems calls deleteAllShoppingItems on dao`() = runBlocking {
+    fun `deleteAllShoppingItems calls deleteAllShoppingItems on dao`() = runTest {
         shoppingRepository.deleteAllShoppingItems()
 
         verify(shoppingDao).deleteAllShoppingItems()
