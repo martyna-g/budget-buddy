@@ -100,6 +100,7 @@ dependencies {
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.5.1")
     androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
