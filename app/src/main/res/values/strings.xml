@@ -84,4 +84,7 @@
     <string name="shortcut_bank_holiday_short_label">Bank Holidays</string>
     <string name="shortcut_bank_holiday_long_label">Open Bank Holidays</string>
 
+    <string name="error_invalid_date_format">Enter the date in the format dd/MM/yyyy</string>
+    <string name="error_date_cannot_be_earlier_than_today">The date cannot be earlier than today</string>
+    <string name="error_invalid_date">Invalid date</string>
 </resources>

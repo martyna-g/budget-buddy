@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -26,6 +27,7 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import org.joda.money.CurrencyUnit
@@ -54,6 +56,8 @@ class PaymentDetailsFragment : DialogFragment() {
     private lateinit var paymentTitleEditText: EditText
     private lateinit var paymentAmountEditText: EditText
     private lateinit var paymentDateEditText: EditText
+    private lateinit var paymentDateTextInputLayout: TextInputLayout
+    private lateinit var paymentDateCalendarButton: Button
     private lateinit var paymentFrequencyTextView: AutoCompleteTextView
     private lateinit var datePicker: MaterialDatePicker<Long>
     private lateinit var selectedDate: LocalDateTime
@@ -100,6 +104,8 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentTitleEditText = binding.textInputEditTextPaymentTitle
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
         paymentDateEditText = binding.textInputEditTextPaymentDate
+        paymentDateTextInputLayout = binding.textInputLayoutPaymentDate
+        paymentDateCalendarButton = binding.buttonCalendar
         paymentFrequencyTextView = binding.autocompleteTextviewPaymentFrequency
         notificationSwitch = binding.switchPaymentNotification
         toolbar = binding.toolbarAddPayment
@@ -172,13 +178,7 @@ class PaymentDetailsFragment : DialogFragment() {
             )
         }
 
-        paymentDateEditText.setOnClickListener {
-            datePicker.show(
-                parentFragmentManager, DATE_PICKER_ADD_PAYMENT
-            )
-        }
-
-        binding.buttonCalendar.setOnClickListener {
+        paymentDateCalendarButton.setOnClickListener {
             datePicker.show(
                 parentFragmentManager, DATE_PICKER_ADD_PAYMENT
             )
@@ -192,11 +192,12 @@ class PaymentDetailsFragment : DialogFragment() {
             if (isChecked) checkAndRequestNotificationPermission()
         }
 
+        paymentDateEditText.addTextChangedListener(validateDateFieldTextWatcher)
+
         paymentTitleEditText.addTextChangedListener(validateFieldsTextWatcher)
         paymentAmountEditText.addTextChangedListener(validateFieldsTextWatcher)
         paymentDateEditText.addTextChangedListener(validateFieldsTextWatcher)
         paymentFrequencyTextView.addTextChangedListener(validateFieldsTextWatcher)
-
     }
 
     override fun onStart() {
@@ -275,9 +276,8 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentFrequencyTextView.setText(frequency, false)
         paymentTitleEditText.setText(payment.title)
         paymentAmountEditText.setText(payment.amount.amount.toPlainString())
-        paymentDateEditText.setText(
-            payment.date.format(formatter)
-        )
+        paymentDateEditText.setText(payment.date.format(formatter))
+        paymentDateTextInputLayout.error = null
         notificationSwitch.isChecked = payment.notificationEnabled
         isInitializing = false
     }
@@ -310,10 +310,10 @@ class PaymentDetailsFragment : DialogFragment() {
     private fun disableFieldInteractions() {
         paymentTitleEditText.isFocusable = false
         paymentAmountEditText.isFocusable = false
-        paymentDateEditText.setOnClickListener(null)
+        paymentDateEditText.isFocusable = false
+        paymentDateCalendarButton.setOnClickListener(null)
         paymentFrequencyTextView.isFocusable = false
         paymentFrequencyTextView.setAdapter(null)
-
     }
 
     private fun showDeleteConfirmationDialog(payment: Payment) {
@@ -337,17 +337,27 @@ class PaymentDetailsFragment : DialogFragment() {
     }
 
     private fun areFieldsValid(): Boolean {
+        val titleValid = paymentTitleEditText.text.toString().isNotBlank()
+        val amountValid = paymentAmountEditText.text.toString().isNotBlank()
+        val dateValid =
+            if (actionButtonType == ActionButtonType.INFO) true
+            else isDateValid(paymentDateEditText.text.toString())
+        val frequencyValid = paymentFrequencyTextView.text.toString().isNotBlank()
 
-        val valid: Boolean
+        return titleValid && amountValid && dateValid && frequencyValid
+    }
 
-        val title = paymentTitleEditText.text.toString()
-        val amount = paymentAmountEditText.text.toString()
-        val date = paymentDateEditText.text.toString()
-        val frequency = paymentFrequencyTextView.text.toString()
+    private fun isDateValid(date: String): Boolean {
+        val parsedDate = parseDateSafely(date) ?: return false
+        return !parsedDate.isBefore(LocalDate.now())
+    }
 
-        valid = !(title.isBlank() || amount.isBlank() || date.isBlank() || frequency.isBlank())
-
-        return valid
+    private fun parseDateSafely(dateString: String): LocalDate? {
+        return try {
+            LocalDate.parse(dateString, formatter)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private val validateFieldsTextWatcher = object : TextWatcher {
@@ -359,7 +369,6 @@ class PaymentDetailsFragment : DialogFragment() {
         }
 
         override fun afterTextChanged(p0: Editable?) {
-
             val valid = areFieldsValid()
 
             if (valid) {
@@ -385,7 +394,41 @@ class PaymentDetailsFragment : DialogFragment() {
                 toolbar.menu.findItem(R.id.action_save).setVisible(false)
             }
         }
+    }
 
+    private val validateDateFieldTextWatcher = object : TextWatcher {
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            paymentDateTextInputLayout.errorIconDrawable = null
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        override fun afterTextChanged(s: Editable?) {
+            if (s.isNullOrEmpty()) {
+                paymentDateTextInputLayout.error = null
+                return
+            }
+
+            val input = s.toString()
+
+            if (!input.matches(Regex("\\d{2}/\\d{2}/\\d{4}"))) {
+                paymentDateTextInputLayout.error = getString(R.string.error_invalid_date_format)
+                return
+            }
+            val parsedDate = parseDateSafely(input)
+            val today = LocalDate.now()
+            val canEditDate = actionButtonType != ActionButtonType.INFO
+
+            if (parsedDate != null && parsedDate.isBefore(today) && canEditDate) {
+                paymentDateTextInputLayout.error =
+                    getString(R.string.error_date_cannot_be_earlier_than_today)
+            } else if (parsedDate == null) {
+                paymentDateTextInputLayout.error = getString(R.string.error_invalid_date)
+            } else {
+                paymentDateTextInputLayout.error = null
+            }
+        }
     }
 
     companion object {
@@ -393,5 +436,4 @@ class PaymentDetailsFragment : DialogFragment() {
             INFO, EDIT, DELETE, ADD,
         }
     }
-
 }

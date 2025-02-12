@@ -102,7 +102,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:drawableTint="?attr/colorOnSurface"
-            android:focusable="false"
             android:inputType="date" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -113,8 +112,7 @@
         android:layout_height="wrap_content"
         app:icon="@drawable/baseline_edit_calendar_24"
         android:layout_margin="@dimen/margin_medium_16"
-        app:layout_constraintTop_toTopOf="@id/text_input_layout_payment_date"
-        app:layout_constraintBottom_toBottomOf="@id/text_input_layout_payment_date"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_input_layout_payment_date"
         app:layout_constraintEnd_toEndOf="@id/text_input_layout_payment_date"/>
 
     <com.google.android.material.textview.MaterialTextView
