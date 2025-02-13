@@ -1,8 +1,7 @@
 package pl.tinks.budgetbuddy
 
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
@@ -16,28 +15,34 @@ import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import pl.tinks.budgetbuddy.payment.PaymentRepositoryImpl
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
+import javax.inject.Inject
 
+@HiltAndroidTest
 class PaymentRepositoryIntegrationTest {
-    private lateinit var database: BudgetBuddyDatabase
-    private lateinit var paymentDao: PaymentDao
-    private lateinit var paymentRepository: PaymentRepository
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var database: BudgetBuddyDatabase
+
+    @Inject
+    lateinit var paymentDao: PaymentDao
+
+    @Inject
+    lateinit var paymentRepository: PaymentRepository
+
     private lateinit var payment: Payment
     private val paymentId = UUID.randomUUID()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(), BudgetBuddyDatabase::class.java
-        ).build()
-        paymentDao = database.getPaymentDao()
-        paymentRepository = PaymentRepositoryImpl(paymentDao, UnconfinedTestDispatcher())
+        hiltRule.inject()
 
         payment = Payment(
             paymentId,
