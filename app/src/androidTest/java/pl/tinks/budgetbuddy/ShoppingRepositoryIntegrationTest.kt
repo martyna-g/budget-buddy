@@ -1,39 +1,44 @@
 package pl.tinks.budgetbuddy
 
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import pl.tinks.budgetbuddy.shopping.ShoppingDao
 import pl.tinks.budgetbuddy.shopping.ShoppingItem
 import pl.tinks.budgetbuddy.shopping.ShoppingRepository
-import pl.tinks.budgetbuddy.shopping.ShoppingRepositoryImpl
 import java.util.UUID
+import javax.inject.Inject
 
+@HiltAndroidTest
 class ShoppingRepositoryIntegrationTest {
 
-    private lateinit var database: BudgetBuddyDatabase
-    private lateinit var shoppingDao: ShoppingDao
-    private lateinit var shoppingRepository: ShoppingRepository
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var database: BudgetBuddyDatabase
+
+    @Inject
+    lateinit var shoppingDao: ShoppingDao
+
+    @Inject
+    lateinit var shoppingRepository: ShoppingRepository
+
     private lateinit var shoppingItem: ShoppingItem
     private val itemId = UUID.randomUUID()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(), BudgetBuddyDatabase::class.java
-        ).build()
-        shoppingDao = database.getShoppingDao()
-        shoppingRepository = ShoppingRepositoryImpl(shoppingDao, UnconfinedTestDispatcher())
+        hiltRule.inject()
+
         shoppingItem = ShoppingItem(itemId, "Test Item")
     }
 
