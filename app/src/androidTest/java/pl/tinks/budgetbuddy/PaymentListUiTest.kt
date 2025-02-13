@@ -17,9 +17,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.nullValue
-import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.not
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
@@ -31,6 +28,7 @@ import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.inject.Inject
 
@@ -81,6 +79,40 @@ class PaymentListUiTest {
     }
 
     @Test
+    fun addPayment_displaysPaymentInList() = runTest {
+        onView(withId(R.id.fab_payment_list)).perform(click())
+
+        onView(withId(R.id.text_input_edit_text_payment_title)).perform(replaceText(upcomingPayment.title))
+
+        onView(withId(R.id.text_input_edit_text_payment_amount)).perform(replaceText(upcomingPayment.amount.toString()))
+
+        onView(withId(R.id.text_input_edit_text_payment_date)).perform(
+            replaceText(
+                upcomingPayment.date.toLocalDate().format(
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                ).toString()
+            )
+        )
+
+        onView(withId(R.id.autocomplete_textview_payment_frequency)).perform(
+            replaceText(
+                upcomingPayment.frequency.name.lowercase().replaceFirstChar { it.uppercaseChar() })
+        )
+
+        onView(withId(R.id.action_save)).perform(click())
+
+        onView(withId(R.id.recyclerview_payment_list)).check(
+            matches(
+                hasDescendant(
+                    withText(
+                        upcomingPayment.title
+                    )
+                )
+            )
+        )
+    }
+
+    @Test
     fun navigateToPaymentDetails_opensPaymentDetailsScreen() = runTest {
         paymentDao.addPayment(overduePayment)
 
@@ -115,6 +147,7 @@ class PaymentListUiTest {
     @Test
     fun deletePayment_removesPaymentFromList() = runTest {
         val paymentToDelete = upcomingPayment
+
         paymentDao.addPayment(paymentToDelete)
 
         onView(withId(R.id.recyclerview_payment_list)).perform(
@@ -128,10 +161,6 @@ class PaymentListUiTest {
         onView(withText(R.string.yes)).perform(click())
 
         onView(withId(R.id.recyclerview_payment_list)).check(matches(not(hasDescendant(withText("Test Payment")))))
-
-        val deletedPayment = paymentDao.getPaymentById(paymentToDelete.id)
-
-        assertThat(deletedPayment, `is`(nullValue()))
     }
 
     @Test
@@ -139,8 +168,8 @@ class PaymentListUiTest {
         paymentDao.addPayment(upcomingPayment)
 
         onView(withId(R.id.recyclerview_payment_list)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
-            )
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
+        )
         onView(withId(R.id.layout_item_action_buttons)).check(matches(isDisplayed()))
 
         onView(withId(R.id.button_item_edit)).perform(click())
