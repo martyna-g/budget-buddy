@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_delete_selected"
+        android:id="@+id/action_delete_selected_shopping_items"
         android:title="@string/delete"
         android:icon="@drawable/baseline_delete_24"
         android:iconTint="?attr/colorControlNormal"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_delete_checked"
+        android:id="@+id/action_delete_checked_shopping_items"
         android:title="@string/delete_checked_items"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_delete_unchecked"
+        android:id="@+id/action_delete_unchecked_shopping_items"
         android:title="@string/delete_unchecked_items"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_delete_all"
+        android:id="@+id/action_delete_all_shopping_items"
         android:title="@string/delete_all_items"
         app:showAsAction="never" />
 

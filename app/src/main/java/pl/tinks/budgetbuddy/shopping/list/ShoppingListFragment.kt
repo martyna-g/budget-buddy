@@ -63,7 +63,7 @@ class ShoppingListFragment : Fragment() {
 
         override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
             when (menuItem?.itemId) {
-                R.id.action_delete_selected -> {
+                R.id.action_delete_selected_shopping_items -> {
                     val itemsToDelete = adapter.selectedItems.toList()
                     val selectedItemsCount = itemsToDelete.size
                     val message = resources.getQuantityString(
@@ -77,7 +77,7 @@ class ShoppingListFragment : Fragment() {
                     return true
                 }
 
-                R.id.action_delete_checked -> {
+                R.id.action_delete_checked_shopping_items -> {
                     showConfirmationDialog(resources.getString(R.string.delete_checked_items_message),
                         {
                             viewModel.deleteCheckedItems()
@@ -88,7 +88,7 @@ class ShoppingListFragment : Fragment() {
                     return true
                 }
 
-                R.id.action_delete_unchecked -> {
+                R.id.action_delete_unchecked_shopping_items -> {
                     showConfirmationDialog(resources.getString(R.string.delete_unchecked_items_message),
                         {
                             viewModel.deleteUncheckedItems()
@@ -99,7 +99,7 @@ class ShoppingListFragment : Fragment() {
                     return true
                 }
 
-                R.id.action_delete_all -> {
+                R.id.action_delete_all_shopping_items -> {
                     showConfirmationDialog(resources.getString(R.string.delete_all_items_message), {
                         viewModel.deleteAllShoppingItems()
                     }, {
