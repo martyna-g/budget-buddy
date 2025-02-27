@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -35,7 +36,7 @@ class BankHolidayRetrieverTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        retriever = BankHolidayRetriever(apiService, apiMapper, context)
+        retriever = BankHolidayRetriever(apiService, apiMapper, context, Dispatchers.Unconfined)
     }
 
     @Test
