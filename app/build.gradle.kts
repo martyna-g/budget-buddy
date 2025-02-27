@@ -93,6 +93,7 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$roomVersion")
@@ -107,5 +108,7 @@ dependencies {
     androidTestImplementation("androidx.work:work-testing:$workVersion")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.55")
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    androidTestImplementation("com.squareup.okhttp3:okhttp:4.12.0")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.55")
 }
