@@ -110,5 +110,6 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.55")
     androidTestImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     androidTestImplementation("com.squareup.okhttp3:okhttp:4.12.0")
+    androidTestImplementation("androidx.test.espresso:espresso-idling-resource:3.6.1")
     kspAndroidTest("com.google.dagger:hilt-android-compiler:2.55")
 }
