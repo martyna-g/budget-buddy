@@ -9,6 +9,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
+import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
@@ -24,6 +25,7 @@ class ScheduleNextPaymentUseCaseTest {
 
     private lateinit var calculator: PaymentDateCalculator
     private lateinit var addAndConfigurePaymentUseCase: AddAndConfigurePaymentUseCase
+    private lateinit var deletePaymentAndCleanupUseCase: DeletePaymentAndCleanupUseCase
     private lateinit var paymentRepository: PaymentRepository
     private lateinit var useCase: ScheduleNextPaymentUseCase
     private lateinit var payment: Payment
@@ -33,9 +35,15 @@ class ScheduleNextPaymentUseCaseTest {
     fun setUp() {
         calculator = Mockito.mock(PaymentDateCalculator::class.java)
         addAndConfigurePaymentUseCase = Mockito.mock(AddAndConfigurePaymentUseCase::class.java)
+        deletePaymentAndCleanupUseCase = Mockito.mock(DeletePaymentAndCleanupUseCase::class.java)
         paymentRepository = Mockito.mock(PaymentRepository::class.java)
         useCase =
-            ScheduleNextPaymentUseCase(calculator, addAndConfigurePaymentUseCase, paymentRepository)
+            ScheduleNextPaymentUseCase(
+                calculator,
+                addAndConfigurePaymentUseCase,
+                deletePaymentAndCleanupUseCase,
+                paymentRepository
+            )
 
         payment = Payment(
             id = UUID.randomUUID(),

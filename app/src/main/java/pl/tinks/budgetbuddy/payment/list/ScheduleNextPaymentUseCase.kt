@@ -1,6 +1,10 @@
 package pl.tinks.budgetbuddy.payment.list
 
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
+import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDateTime
@@ -11,6 +15,7 @@ import javax.inject.Inject
 class ScheduleNextPaymentUseCase @Inject constructor(
     private val calculator: PaymentDateCalculator,
     private val addAndConfigurePaymentUseCase: AddAndConfigurePaymentUseCase,
+    private val deletePaymentAndCleanupUseCase: DeletePaymentAndCleanupUseCase,
     private val repository: PaymentRepository,
 ) {
 
@@ -27,9 +32,14 @@ class ScheduleNextPaymentUseCase @Inject constructor(
             id = nextPaymentId, date = nextPaymentDate
         )
 
-        addAndConfigurePaymentUseCase(nextPayment)
-
-        repository.updatePayment(currentPayment.copy(isNextPaymentScheduled = true))
+        try {
+            addAndConfigurePaymentUseCase(nextPayment)
+            repository.updatePayment(currentPayment.copy(isNextPaymentScheduled = true))
+        } catch (e: CancellationException) {
+            withContext(NonCancellable) {
+                deletePaymentAndCleanupUseCase(nextPayment)
+            }
+            throw e
+        }
     }
-
 }
