@@ -22,6 +22,7 @@ class PaymentListAdapter(
 ) : ListAdapter<PaymentItem, PaymentListAdapter.PaymentListViewHolder>(PaymentItemDiffCallback()) {
 
     private var selectedPayment: Payment? = null
+    private var recyclerView: RecyclerView? = null
 
     sealed class PaymentListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         class PaymentViewHolder(private val binding: ItemPaymentBinding) :
@@ -144,12 +145,31 @@ class PaymentListAdapter(
         val previousSelectedPayment = selectedPayment
         selectedPayment = if (previousSelectedPayment == payment) null else payment
 
-        notifyItemChanged(currentList.indexOfFirst {
+        val previousIndex = currentList.indexOfFirst {
             it is PaymentItem.PaymentEntry && it.payment == previousSelectedPayment
-        })
-        notifyItemChanged(currentList.indexOfFirst {
+        }
+        val newIndex = currentList.indexOfFirst {
             it is PaymentItem.PaymentEntry && it.payment == selectedPayment
-        })
+        }
+
+        notifyItemChanged(previousIndex)
+        notifyItemChanged(newIndex)
+
+        if (selectedPayment != null && newIndex != RecyclerView.NO_POSITION) {
+            recyclerView?.post {
+                recyclerView?.smoothScrollToPosition(newIndex)
+            }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
     }
 
     class PaymentItemDiffCallback : DiffUtil.ItemCallback<PaymentItem>() {
