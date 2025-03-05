@@ -13,6 +13,7 @@ import pl.tinks.budgetbuddy.payment.history.PaymentItem
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Locale
 import java.util.UUID
 
 class PaymentListAdapter(
@@ -48,7 +49,8 @@ class PaymentListAdapter(
                 with(binding) {
                     textPaymentTitle.text = payment.title
                     textPaymentAmount.text = payment.amount.toString()
-                    textPaymentDateDay.text = date.dayOfMonth.toString()
+                    textPaymentDateDay.text =
+                        String.format(Locale.getDefault(), "%d", date.dayOfMonth)
                     textPaymentDateMonth.text = date.month.toString().substring(0..2)
                     root.setOnClickListener {
                         onPaymentClick(payment)
@@ -165,5 +167,4 @@ class PaymentListAdapter(
             return oldItem == newItem
         }
     }
-
 }

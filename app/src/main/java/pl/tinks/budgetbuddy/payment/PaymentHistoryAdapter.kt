@@ -13,6 +13,7 @@ import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
 import pl.tinks.budgetbuddy.payment.history.PaymentItem
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.Locale
 
 class PaymentHistoryAdapter(
     private val paymentItemLongClickCallback: (Payment) -> Unit,
@@ -36,7 +37,8 @@ class PaymentHistoryAdapter(
                 with(binding) {
                     textPaymentTitle.text = payment.title
                     textPaymentAmount.text = payment.amount.toString()
-                    textPaymentDateDay.text = date.dayOfMonth.toString()
+                    textPaymentDateDay.text =
+                        String.format(Locale.getDefault(), "%d", date.dayOfMonth)
                     textPaymentDateMonth.text = date.month.toString().substring(0..2)
                     root.setOnClickListener {
                         paymentItemClickCallback(payment)
@@ -113,5 +115,4 @@ class PaymentHistoryAdapter(
             return oldItem == newItem
         }
     }
-
 }
