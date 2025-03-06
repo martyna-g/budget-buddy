@@ -44,6 +44,12 @@ class PaymentListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentPaymentListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         recyclerView = binding.recyclerviewPaymentList
         toolbar = binding.toolbarPaymentList
         floatingActionButton = binding.fabPaymentList.also { it.visibility = View.GONE }
@@ -53,12 +59,6 @@ class PaymentListFragment : Fragment() {
         floatingActionButton.setOnClickListener {
             navigateToPaymentDetailFragment(null, null)
         }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())

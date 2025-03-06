@@ -42,9 +42,11 @@ class BankHolidayListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        binding = FragmentBankHolidayListBinding.inflate(inflater, container, false)
 
-        binding = FragmentBankHolidayListBinding.inflate(layoutInflater, container, false)
-        recyclerView = binding.recyclerViewBankHoliday
+        recyclerView = binding.recyclerViewBankHoliday.apply {
+            layoutManager = LinearLayoutManager(requireActivity())
+        }
         progressIndicator = binding.progressIndicatorBankHoliday
 
         return binding.root
@@ -53,11 +55,8 @@ class BankHolidayListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-
                 viewModel.uiState.collectLatest { uiState ->
                     when (uiState) {
                         is BankHolidayUiState.Loading -> {

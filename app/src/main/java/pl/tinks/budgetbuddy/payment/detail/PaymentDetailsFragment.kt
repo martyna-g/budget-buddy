@@ -92,6 +92,7 @@ class PaymentDetailsFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        binding = FragmentPaymentDetailsBinding.inflate(inflater, container, false)
 
         actionButtonType = args.buttonType
         paymentId = if (args.paymentId != null) UUID.fromString(args.paymentId) else null
@@ -99,8 +100,18 @@ class PaymentDetailsFragment : DialogFragment() {
         val constraintsBuilder =
             CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now())
 
-        binding = FragmentPaymentDetailsBinding.inflate(inflater, container, false)
+        datePicker =
+            MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.select_date))
+                .setCalendarConstraints(constraintsBuilder.build())
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        toolbar = binding.toolbarAddPayment
         paymentTitleEditText = binding.textInputEditTextPaymentTitle
         paymentAmountEditText = binding.textInputEditTextPaymentAmount
         paymentDateEditText = binding.textInputEditTextPaymentDate
@@ -108,7 +119,6 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentDateCalendarButton = binding.buttonCalendar
         paymentFrequencyTextView = binding.autocompleteTextviewPaymentFrequency
         notificationSwitch = binding.switchPaymentNotification
-        toolbar = binding.toolbarAddPayment
         paymentFrequencies = resources.getStringArray(R.array.payment_frequencies)
 
         toolbar.inflateMenu(R.menu.add_payment_menu)
@@ -119,27 +129,6 @@ class PaymentDetailsFragment : DialogFragment() {
                 requireContext(), R.layout.item_payment_frequency, paymentFrequencies
             )
         )
-
-        datePicker =
-            MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.select_date))
-                .setCalendarConstraints(constraintsBuilder.build())
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds()).build()
-
-        paymentId?.let { id ->
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.initPaymentDetails(id)
-                viewModel.selectedPayment.collect {
-                    populateFields(it)
-                    payment = it
-                }
-            }
-        }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -179,13 +168,17 @@ class PaymentDetailsFragment : DialogFragment() {
         }
 
         paymentDateCalendarButton.setOnClickListener {
-            datePicker.show(
-                parentFragmentManager, DATE_PICKER_ADD_PAYMENT
-            )
+            datePicker.show(parentFragmentManager, DATE_PICKER_ADD_PAYMENT)
         }
 
-        with(paymentAmountEditText) {
-            addTextChangedListener(DecimalDigitsInputFilter(this))
+        paymentId?.let { id ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.initPaymentDetails(id)
+                viewModel.selectedPayment.collect {
+                    populateFields(it)
+                    payment = it
+                }
+            }
         }
 
         notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -193,8 +186,8 @@ class PaymentDetailsFragment : DialogFragment() {
         }
 
         paymentDateEditText.addTextChangedListener(validateDateFieldTextWatcher)
-
         paymentTitleEditText.addTextChangedListener(validateFieldsTextWatcher)
+        paymentAmountEditText.addTextChangedListener(DecimalDigitsInputFilter(paymentAmountEditText))
         paymentAmountEditText.addTextChangedListener(validateFieldsTextWatcher)
         paymentDateEditText.addTextChangedListener(validateFieldsTextWatcher)
         paymentFrequencyTextView.addTextChangedListener(validateFieldsTextWatcher)

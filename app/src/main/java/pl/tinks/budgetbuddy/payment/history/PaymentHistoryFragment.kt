@@ -74,19 +74,7 @@ class PaymentHistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-
-        paymentHistoryAdapter = PaymentHistoryAdapter(
-            ::onPaymentLongClicked,
-            ::onPaymentClicked
-        ) { payment -> selectedPayments.contains(payment) }
-
         binding = FragmentPaymentHistoryBinding.inflate(inflater, container, false)
-
-        toolbar = binding.toolbarPaymentHistory
-        recyclerView = binding.recyclerviewPaymentHistory
-        recyclerView.adapter = paymentHistoryAdapter
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-
         return binding.root
     }
 
@@ -98,6 +86,17 @@ class PaymentHistoryFragment : Fragment() {
         navController.addOnDestinationChangedListener { _, _, _ ->
             actionMode?.finish()
         }
+
+        toolbar = binding.toolbarPaymentHistory
+        recyclerView = binding.recyclerviewPaymentHistory
+
+        paymentHistoryAdapter = PaymentHistoryAdapter(
+            ::onPaymentLongClicked,
+            ::onPaymentClicked
+        ) { payment -> selectedPayments.contains(payment) }
+
+        recyclerView.adapter = paymentHistoryAdapter
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
         ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
