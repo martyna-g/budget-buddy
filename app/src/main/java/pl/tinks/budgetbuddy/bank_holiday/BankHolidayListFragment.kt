@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -58,20 +59,11 @@ class BankHolidayListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.uiState.collectLatest { uiState ->
+                    progressIndicator.isVisible = uiState is BankHolidayUiState.Loading
                     when (uiState) {
-                        is BankHolidayUiState.Loading -> {
-                            progressIndicator.visibility = View.VISIBLE
-                        }
-
-                        is BankHolidayUiState.Success -> {
-                            val bankHolidays = uiState.bankHolidays
-                            updateUi(bankHolidays)
-                            progressIndicator.visibility = View.GONE
-                        }
-
-                        is BankHolidayUiState.Error -> {
-                            showErrorDialog()
-                        }
+                        is BankHolidayUiState.Success -> updateUi(uiState.bankHolidays)
+                        is BankHolidayUiState.Error -> showErrorDialog()
+                        else -> Unit
                     }
                 }
             }
