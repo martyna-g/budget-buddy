@@ -36,7 +36,7 @@ class BankHolidayFragment : Fragment() {
                 0 -> getString(R.string.region_england_and_wales)
                 1 -> getString(R.string.region_scotland)
                 2 -> getString(R.string.region_northern_ireland)
-                else -> throw IllegalArgumentException(getString(R.string.invalid_position))
+                else -> throw IllegalArgumentException("Invalid position")
             }
         }.attach()
 
