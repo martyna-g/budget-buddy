@@ -23,5 +23,4 @@ abstract class BudgetBuddyDatabase : RoomDatabase() {
     abstract fun getNextPaymentRequestDao(): NextPaymentRequestDao
     abstract fun getNotificationRequestDao(): NotificationRequestDao
     abstract fun getShoppingDao(): ShoppingDao
-
 }

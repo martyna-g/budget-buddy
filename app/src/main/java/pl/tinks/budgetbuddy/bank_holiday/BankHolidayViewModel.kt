@@ -40,7 +40,6 @@ class BankHolidayViewModel @Inject constructor(
             }
         }
     }
-
 }
 
 sealed class BankHolidayUiState {

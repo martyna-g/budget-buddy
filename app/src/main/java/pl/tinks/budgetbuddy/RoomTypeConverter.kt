@@ -28,5 +28,4 @@ class RoomTypeConverter {
     @TypeConverter
     fun toLocalDateTime(timeInMillis: Long): LocalDateTime =
         LocalDateTime.ofInstant(Instant.ofEpochMilli(timeInMillis), ZoneOffset.UTC)
-
 }

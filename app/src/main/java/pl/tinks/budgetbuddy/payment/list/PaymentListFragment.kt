@@ -155,5 +155,4 @@ class PaymentListFragment : Fragment() {
             )
         findNavController().navigate(action)
     }
-
 }

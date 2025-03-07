@@ -27,5 +27,4 @@ class ApiMapper @Inject constructor() {
 
         return list
     }
-
 }

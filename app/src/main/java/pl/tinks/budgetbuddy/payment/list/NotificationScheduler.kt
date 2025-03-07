@@ -9,5 +9,4 @@ interface NotificationScheduler {
     suspend fun updateNotification(payment: Payment)
 
     suspend fun cancelNotification(payment: Payment)
-
 }

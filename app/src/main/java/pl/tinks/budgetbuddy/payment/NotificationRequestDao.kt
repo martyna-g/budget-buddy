@@ -17,5 +17,4 @@ interface NotificationRequestDao {
 
     @Delete
     suspend fun deleteNotificationRequest(notificationRequest: NotificationRequest)
-
 }

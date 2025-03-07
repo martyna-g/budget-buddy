@@ -124,7 +124,6 @@ class PaymentHistoryFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun setupAdapter(payments: List<Payment>) {

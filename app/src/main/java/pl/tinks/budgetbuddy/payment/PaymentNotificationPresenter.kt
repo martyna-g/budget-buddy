@@ -21,7 +21,6 @@ class PaymentNotificationPresenter @Inject constructor(val context: Context) {
     }
 
     fun sendPaymentReminderNotification(title: String, id: UUID) {
-
         val notificationId = id.hashCode()
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notifications)
@@ -52,5 +51,4 @@ class PaymentNotificationPresenter @Inject constructor(val context: Context) {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
-
 }

@@ -13,7 +13,6 @@ class DecimalDigitsInputFilter(private val editText: EditText) : TextWatcher {
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
     override fun afterTextChanged(input: Editable?) {
-
         if (isUpdating) return
 
         isUpdating = true
@@ -34,6 +33,5 @@ class DecimalDigitsInputFilter(private val editText: EditText) : TextWatcher {
         }
 
         isUpdating = false
-
     }
 }

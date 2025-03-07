@@ -15,5 +15,4 @@ abstract class PaymentSchedulerModule {
     @Singleton
     @Binds
     abstract fun bindPaymentScheduler(paymentScheduler: PaymentSchedulerImpl) : PaymentScheduler
-
 }

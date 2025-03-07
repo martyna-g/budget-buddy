@@ -17,5 +17,4 @@ interface NextPaymentRequestDao {
 
     @Delete
     suspend fun deleteNextPaymentRequest(nextPaymentRequest: NextPaymentRequest)
-
 }

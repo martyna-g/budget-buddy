@@ -29,5 +29,4 @@ class PaymentNotificationWorker @AssistedInject constructor(
         }
         return Result.success()
     }
-
 }

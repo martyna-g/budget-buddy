@@ -74,5 +74,4 @@ class PaymentSchedulerImpl @Inject constructor(
         val nextPaymentDateEpochSeconds = payment.date.toEpochSecond(ZoneOffset.UTC)
         return nextPaymentDateEpochSeconds - nowEpochSeconds
     }
-
 }

@@ -39,7 +39,6 @@ class PaymentHistoryViewModel @Inject constructor(
             repository.deletePayments(paymentList)
         }
     }
-
 }
 
 sealed class PaymentHistoryUiState {

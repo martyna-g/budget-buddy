@@ -94,5 +94,4 @@ class NotificationSchedulerImpl @Inject constructor(
             payment.date.minusDays(1).with(LocalTime.NOON).toEpochSecond(ZoneOffset.UTC)
         return notificationTimeEpochSeconds - nowEpochSeconds
     }
-
 }

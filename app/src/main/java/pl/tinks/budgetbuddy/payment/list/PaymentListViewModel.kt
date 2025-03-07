@@ -87,7 +87,6 @@ class PaymentListViewModel @Inject constructor(
             deletePaymentAndCleanupUseCase(payment)
         }
     }
-
 }
 
 sealed class PaymentUiState {

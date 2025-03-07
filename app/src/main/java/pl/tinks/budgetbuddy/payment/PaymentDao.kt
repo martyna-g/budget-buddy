@@ -28,5 +28,4 @@ interface PaymentDao {
 
     @Delete
     suspend fun deletePayments(payments: List<Payment>)
-
 }

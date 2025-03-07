@@ -7,10 +7,8 @@ import javax.inject.Inject
 class PaymentDateCalculator @Inject constructor() {
 
     fun calculateNextPaymentDate(
-        paymentDate: LocalDate,
-        paymentFrequency: PaymentFrequency
+        paymentDate: LocalDate, paymentFrequency: PaymentFrequency
     ): LocalDate? {
-
         val nextPaymentDate = when (paymentFrequency) {
             PaymentFrequency.SINGLE_PAYMENT -> paymentDate
             PaymentFrequency.DAILY -> paymentDate.plusDays(1)
@@ -22,7 +20,5 @@ class PaymentDateCalculator @Inject constructor() {
         }
 
         return nextPaymentDate
-
     }
-
 }

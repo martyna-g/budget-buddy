@@ -9,5 +9,4 @@ interface PaymentScheduler {
     suspend fun cancelRecurringPayment(payment: Payment)
 
     suspend fun updateRecurringPayment(payment: Payment)
-
 }

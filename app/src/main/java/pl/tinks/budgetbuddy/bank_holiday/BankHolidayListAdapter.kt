@@ -26,7 +26,6 @@ class BankHolidayListAdapter :
             binding.textViewItemBankHolidayDayOfWeek.text = dayOfWeek
             binding.textViewItemBankHolidayTitle.text = bankHoliday.title
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BankHolidayViewHolder {
@@ -52,7 +51,5 @@ class BankHolidayListAdapter :
         ): Boolean {
             return oldItem == newItem
         }
-
     }
-
 }
