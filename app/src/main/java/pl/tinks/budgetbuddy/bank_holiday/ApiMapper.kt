@@ -8,23 +8,21 @@ import javax.inject.Inject
 
 class ApiMapper @Inject constructor() {
 
-    fun toBankHoliday(response: BankHolidayResponse, context: Context): MutableList<BankHoliday> {
-        val list: MutableList<BankHoliday> = mutableListOf()
+    fun toBankHoliday(response: BankHolidayResponse, context: Context): List<BankHoliday> {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-        response.englandAndWales.events.forEach {
-            val date = LocalDate.parse(it.date, formatter)
-            list.add(BankHoliday(context.getString(R.string.region_england_and_wales), it.title, date))
+        return listOf(
+            R.string.region_england_and_wales to response.englandAndWales.events,
+            R.string.region_scotland to response.scotland.events,
+            R.string.region_northern_ireland to response.northernIreland.events
+        ).flatMap { (regionResId, events) ->
+            events.map { event ->
+                BankHoliday(
+                    region = context.getString(regionResId),
+                    title = event.title,
+                    date = LocalDate.parse(event.date, formatter)
+                )
+            }
         }
-        response.scotland.events.forEach {
-            val date = LocalDate.parse(it.date)
-            list.add(BankHoliday(context.getString(R.string.region_scotland), it.title, date))
-        }
-        response.northernIreland.events.forEach {
-            val date = LocalDate.parse(it.date)
-            list.add(BankHoliday(context.getString(R.string.region_northern_ireland), it.title, date))
-        }
-
-        return list
     }
 }
