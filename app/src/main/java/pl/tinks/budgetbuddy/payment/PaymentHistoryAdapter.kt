@@ -16,9 +16,9 @@ import java.time.ZonedDateTime
 import java.util.Locale
 
 class PaymentHistoryAdapter(
-    private val paymentItemLongClickCallback: (Payment) -> Unit,
-    private val paymentItemClickCallback: (Payment) -> Unit,
-    private val isSelected: (Payment) -> Boolean
+    private val onPaymentLongClicked: (Payment) -> Unit,
+    private val onPaymentClicked: (Payment) -> Unit,
+    private val isPaymentSelected: (Payment) -> Boolean
 ) : ListAdapter<PaymentItem, PaymentHistoryAdapter.PaymentHistoryViewHolder>(PaymentItemDiffCallback()) {
 
     sealed class PaymentHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -82,9 +82,9 @@ class PaymentHistoryAdapter(
                 val paymentEntry = getItem(position) as PaymentItem.PaymentEntry
                 holder.bind(
                     paymentEntry.payment,
-                    isSelected(paymentEntry.payment),
-                    paymentItemClickCallback,
-                    paymentItemLongClickCallback
+                    isPaymentSelected(paymentEntry.payment),
+                    onPaymentClicked,
+                    onPaymentLongClicked
                 )
             }
             is PaymentHistoryViewHolder.HeaderViewHolder -> holder.bind(
