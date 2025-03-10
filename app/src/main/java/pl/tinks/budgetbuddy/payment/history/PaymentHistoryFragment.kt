@@ -131,13 +131,12 @@ class PaymentHistoryFragment : Fragment() {
     private fun setupAdapter(payments: List<Payment>) {
         val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
 
-        val items = mutableListOf<PaymentItem>()
-        val groupedByMonth = payments.groupBy { it.date.format(formatter) }
-
-        groupedByMonth.forEach { (month, paymentsInMonth) ->
-            items.add(PaymentItem.Header(month))
-            paymentsInMonth.forEach { items.add(PaymentItem.PaymentEntry(it)) }
-        }
+        val items = payments.groupBy { it.date.format(formatter) }
+            .flatMap { (month, paymentsInMonth) ->
+                listOf(PaymentItem.Header(month)) + paymentsInMonth.map {
+                    PaymentItem.PaymentEntry(it)
+                }
+            }
 
         paymentHistoryAdapter.submitList(items)
     }

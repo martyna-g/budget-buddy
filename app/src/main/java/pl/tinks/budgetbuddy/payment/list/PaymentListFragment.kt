@@ -96,18 +96,15 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun setupAdapter(payments: List<Payment>) {
-        val items = mutableListOf<PaymentItem>()
-        val groupedByCategory = payments.groupBy {
+        val items = payments.groupBy {
             when {
                 it.date.toLocalDate() < LocalDate.now() -> R.string.overdue_payments
                 it.date.toLocalDate() == LocalDate.now() -> R.string.payments_due_today
                 else -> R.string.upcoming_payments
             }
-        }
-
-        groupedByCategory.forEach { (category, paymentsInCategory) ->
-            items.add(PaymentItem.Header(resources.getString(category)))
-            paymentsInCategory.forEach { items.add(PaymentItem.PaymentEntry(it)) }
+        }.flatMap { (category, paymentsInCategory) ->
+            listOf(PaymentItem.Header(getString(category))) + paymentsInCategory
+                .map { PaymentItem.PaymentEntry(it) }
         }
 
         paymentListAdapter.submitList(items)
