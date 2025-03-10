@@ -27,6 +27,8 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentHistoryBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentHistoryAdapter
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @AndroidEntryPoint
 class PaymentHistoryFragment : Fragment() {
@@ -127,10 +129,10 @@ class PaymentHistoryFragment : Fragment() {
     }
 
     private fun setupAdapter(payments: List<Payment>) {
+        val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
+
         val items = mutableListOf<PaymentItem>()
-        val groupedByMonth = payments.groupBy {
-            "${it.date.month.toString().substring(0..2)} ${it.date.year}"
-        }
+        val groupedByMonth = payments.groupBy { it.date.format(formatter) }
 
         groupedByMonth.forEach { (month, paymentsInMonth) ->
             items.add(PaymentItem.Header(month))

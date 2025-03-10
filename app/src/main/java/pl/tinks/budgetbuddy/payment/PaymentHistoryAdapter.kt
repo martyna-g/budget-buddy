@@ -13,6 +13,7 @@ import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
 import pl.tinks.budgetbuddy.payment.history.PaymentItem
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class PaymentHistoryAdapter(
@@ -22,7 +23,8 @@ class PaymentHistoryAdapter(
 ) : ListAdapter<PaymentItem, PaymentHistoryAdapter.PaymentHistoryViewHolder>(PaymentItemDiffCallback()) {
 
     sealed class PaymentHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        class PaymentViewHolder(val binding: ItemPaymentBinding) : PaymentHistoryViewHolder(binding.root) {
+        class PaymentViewHolder(val binding: ItemPaymentBinding) :
+            PaymentHistoryViewHolder(binding.root) {
             fun bind(
                 payment: Payment,
                 isSelected: Boolean,
@@ -30,8 +32,11 @@ class PaymentHistoryAdapter(
                 paymentItemLongClickCallback: (Payment) -> Unit
             ) {
                 val date = ZonedDateTime.of(payment.date, ZoneId.of("UTC"))
-                val itemBackground = ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background)
-                val selectedItemBackground = ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background_selected)
+                val itemBackground =
+                    ContextCompat.getDrawable(itemView.context, R.drawable.item_view_background)
+                val selectedItemBackground = ContextCompat.getDrawable(
+                    itemView.context, R.drawable.item_view_background_selected
+                )
                 itemView.background = if (isSelected) selectedItemBackground else itemBackground
 
                 with(binding) {
@@ -39,7 +44,9 @@ class PaymentHistoryAdapter(
                     textPaymentAmount.text = payment.amount.toString()
                     textPaymentDateDay.text =
                         String.format(Locale.getDefault(), "%d", date.dayOfMonth)
-                    textPaymentDateMonth.text = date.month.toString().substring(0..2)
+                    textPaymentDateMonth.text =
+                        date.format(DateTimeFormatter.ofPattern("MMM", Locale.getDefault()))
+                            .uppercase(Locale.getDefault())
                     root.setOnClickListener {
                         paymentItemClickCallback(payment)
                     }
@@ -51,7 +58,8 @@ class PaymentHistoryAdapter(
             }
         }
 
-        class HeaderViewHolder(val binding: ItemHeaderBinding) : PaymentHistoryViewHolder(binding.root) {
+        class HeaderViewHolder(val binding: ItemHeaderBinding) :
+            PaymentHistoryViewHolder(binding.root) {
             fun bind(title: String) {
                 binding.textHeader.text = title
             }
@@ -66,12 +74,14 @@ class PaymentHistoryAdapter(
                 )
                 PaymentHistoryViewHolder.PaymentViewHolder(binding)
             }
+
             R.layout.item_header -> {
                 val binding = ItemHeaderBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
                 PaymentHistoryViewHolder.HeaderViewHolder(binding)
             }
+
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -87,6 +97,7 @@ class PaymentHistoryAdapter(
                     onPaymentLongClicked
                 )
             }
+
             is PaymentHistoryViewHolder.HeaderViewHolder -> holder.bind(
                 (getItem(position) as PaymentItem.Header).title
             )
