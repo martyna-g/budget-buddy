@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -52,7 +53,8 @@ class PaymentListFragment : Fragment() {
 
         recyclerView = binding.recyclerviewPaymentList
         toolbar = binding.toolbarPaymentList
-        floatingActionButton = binding.fabPaymentList.also { it.visibility = View.GONE }
+        floatingActionButton = binding.fabPaymentList
+        floatingActionButton.isVisible = false
 
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
@@ -111,13 +113,13 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun disableUserInteractions() {
-        recyclerView.visibility = View.GONE
-        floatingActionButton.visibility = View.GONE
+        recyclerView.isVisible = false
+        floatingActionButton.isVisible = false
     }
 
     private fun enableUserInteractions() {
-        recyclerView.visibility = View.VISIBLE
-        floatingActionButton.visibility = View.VISIBLE
+        recyclerView.isVisible = true
+        floatingActionButton.isVisible = true
     }
 
     private fun showErrorDialog() {

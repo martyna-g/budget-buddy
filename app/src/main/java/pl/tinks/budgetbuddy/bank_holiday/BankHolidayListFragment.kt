@@ -109,7 +109,7 @@ class BankHolidayListFragment : Fragment() {
         AlertDialog.Builder(requireActivity())
             .setMessage(R.string.bank_holiday_loading_error_message)
             .setPositiveButton(R.string.dialog_ok) { _, _ ->
-                progressIndicator.visibility = View.GONE
+                progressIndicator.isVisible = false
             }.show()
     }
 

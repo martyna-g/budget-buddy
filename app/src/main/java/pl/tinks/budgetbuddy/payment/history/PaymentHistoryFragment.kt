@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -180,13 +181,13 @@ class PaymentHistoryFragment : Fragment() {
     }
 
     private fun disableUserInteractions() {
-        recyclerView.visibility = View.GONE
-        toolbar.visibility = View.GONE
+        recyclerView.isVisible = false
+        toolbar.isVisible = false
     }
 
     private fun enableUserInteractions() {
-        recyclerView.visibility = View.VISIBLE
-        toolbar.visibility = View.VISIBLE
+        recyclerView.isVisible = true
+        toolbar.isVisible = true
     }
 
     private fun showConfirmationDialog(count: Int, onConfirm: () -> Unit, onDismiss: () -> Unit) {
