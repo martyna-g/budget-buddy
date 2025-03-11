@@ -130,18 +130,11 @@ class PaymentDetailsFragment : DialogFragment() {
             )
         )
 
-        toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.action_save -> {
-
-                    if (actionButtonType == ActionButtonType.ADD) {
-                        addPayment()
-                        dismiss()
-                    } else {
-                        updatePayment(paymentId!!)
-                        dismiss()
-                    }
+                    paymentId?.let { updatePayment(it) } ?: addPayment()
+                    dismiss()
                     true
                 }
 
