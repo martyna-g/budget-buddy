@@ -302,24 +302,22 @@ class PaymentDetailsFragment : DialogFragment() {
         paymentFrequencyTextView.setAdapter(null)
     }
 
+    private fun showConfirmationDialog(message: Int, onConfirm: () -> Unit) {
+        AlertDialog.Builder(requireContext())
+            .setMessage(message)
+            .setPositiveButton(R.string.yes) { _, _ -> onConfirm() }
+            .setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss()}
+            .show()
+    }
+
     private fun showDeleteConfirmationDialog(payment: Payment) {
-        AlertDialog.Builder(requireContext()).setMessage(R.string.delete_payment_message)
-            .setPositiveButton(R.string.yes) { dialog, _ ->
-                deletePayment(payment)
-                dialog.dismiss()
-                dismiss()
-            }.setNegativeButton(R.string.no) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
+        showConfirmationDialog(R.string.delete_payment_message) {
+            deletePayment(payment)
+            dismiss() }
     }
 
     private fun showDiscardChangesConfirmationDialog() {
-        AlertDialog.Builder(requireContext()).setMessage(R.string.discard_changes_message)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                dismiss()
-            }.setNegativeButton(R.string.no) { dialog, _ ->
-                dialog.dismiss()
-            }.show()
+        showConfirmationDialog(R.string.discard_changes_message) { dismiss() }
     }
 
     private fun areFieldsValid(): Boolean {
