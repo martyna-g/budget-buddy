@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment.detail
+package pl.tinks.budgetbuddy.payment.list
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -37,7 +37,6 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentDetailsBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
-import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime

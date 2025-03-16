@@ -26,7 +26,6 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentListAdapter
-import pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment
 import pl.tinks.budgetbuddy.payment.history.PaymentItem
 import java.time.LocalDate
 import java.util.UUID

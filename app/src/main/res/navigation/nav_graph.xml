@@ -17,12 +17,12 @@
 
     <dialog
         android:id="@+id/payment_details_fragment"
-        android:name="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment"
+        android:name="pl.tinks.budgetbuddy.payment.list.PaymentDetailsFragment"
         android:label="fragment_add_payment"
         tools:layout="@layout/fragment_payment_details">
         <argument
             android:name="buttonType"
-            app:argType="pl.tinks.budgetbuddy.payment.detail.PaymentDetailsFragment$Companion$ActionButtonType" />
+            app:argType="pl.tinks.budgetbuddy.payment.list.PaymentDetailsFragment$Companion$ActionButtonType" />
         <argument
             android:name="paymentId"
             app:argType="string"
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/bank_holiday_fragment"
-        android:name="pl.tinks.budgetbuddy.bank_holiday.BankHolidayFragment">
+        android:name="pl.tinks.budgetbuddy.bankholiday.BankHolidayFragment">
         <deepLink
             app:uri="budgetbuddy://bankholiday" />
     </fragment>
