@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import okhttp3.mockwebserver.MockWebServer
-import pl.tinks.budgetbuddy.bank_holiday.ApiService
-import pl.tinks.budgetbuddy.bank_holiday.NetworkModule
+import pl.tinks.budgetbuddy.bankholiday.ApiService
+import pl.tinks.budgetbuddy.bankholiday.NetworkModule
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton

@@ -20,8 +20,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import pl.tinks.budgetbuddy.bank_holiday.ApiService
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayRetriever
+import pl.tinks.budgetbuddy.bankholiday.ApiService
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayRetriever
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject

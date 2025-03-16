@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.bank_holiday
+package pl.tinks.budgetbuddy.bankholiday
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentBankHolidayListBinding
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint

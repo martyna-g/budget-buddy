@@ -7,10 +7,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import kotlinx.coroutines.Dispatchers
-import pl.tinks.budgetbuddy.bank_holiday.ApiMapper
-import pl.tinks.budgetbuddy.bank_holiday.ApiService
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayRetriever
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayRetrieverModule
+import pl.tinks.budgetbuddy.bankholiday.ApiMapper
+import pl.tinks.budgetbuddy.bankholiday.ApiService
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayRetriever
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayRetrieverModule
 import javax.inject.Singleton
 
 @Module

@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.bank_holiday
+package pl.tinks.budgetbuddy.bankholiday
 
 import java.time.LocalDate
 

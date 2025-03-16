@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.bank_holiday
+package pl.tinks.budgetbuddy.bankholiday
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext

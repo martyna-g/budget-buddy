@@ -11,13 +11,13 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.verify
-import pl.tinks.budgetbuddy.bank_holiday.ApiMapper
-import pl.tinks.budgetbuddy.bank_holiday.ApiService
-import pl.tinks.budgetbuddy.bank_holiday.BankHoliday
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayEvent
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayRegion
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayResponse
-import pl.tinks.budgetbuddy.bank_holiday.BankHolidayRetriever
+import pl.tinks.budgetbuddy.bankholiday.ApiMapper
+import pl.tinks.budgetbuddy.bankholiday.ApiService
+import pl.tinks.budgetbuddy.bankholiday.BankHoliday
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayEvent
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayRegion
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayResponse
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayRetriever
 import java.time.LocalDate
 
 class BankHolidayRetrieverTest {
