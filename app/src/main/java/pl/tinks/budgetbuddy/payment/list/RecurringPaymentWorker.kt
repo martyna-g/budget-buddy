@@ -7,7 +7,6 @@ import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CancellationException
-import pl.tinks.budgetbuddy.payment.GetPaymentByIdUseCase
 import java.util.UUID
 
 @HiltWorker

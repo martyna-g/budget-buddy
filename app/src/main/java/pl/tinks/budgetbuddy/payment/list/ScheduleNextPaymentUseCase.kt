@@ -3,8 +3,6 @@ package pl.tinks.budgetbuddy.payment.list
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
-import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
-import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDateTime

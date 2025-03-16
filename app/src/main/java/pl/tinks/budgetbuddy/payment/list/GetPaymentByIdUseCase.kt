@@ -1,5 +1,7 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.list
 
+import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.util.UUID
 import javax.inject.Inject
 

@@ -12,14 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
-import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
-import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
-import pl.tinks.budgetbuddy.payment.GetPaymentByIdUseCase
-import pl.tinks.budgetbuddy.payment.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import pl.tinks.budgetbuddy.payment.UndoMoveToHistoryUseCase
-import pl.tinks.budgetbuddy.payment.UpdateAndReconfigurePaymentUseCase
 import java.util.UUID
 import javax.inject.Inject
 

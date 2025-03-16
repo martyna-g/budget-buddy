@@ -10,7 +10,7 @@ import org.mockito.kotlin.verify
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import pl.tinks.budgetbuddy.payment.UndoMoveToHistoryUseCase
+import pl.tinks.budgetbuddy.payment.list.UndoMoveToHistoryUseCase
 import java.time.LocalDateTime
 import java.util.UUID
 

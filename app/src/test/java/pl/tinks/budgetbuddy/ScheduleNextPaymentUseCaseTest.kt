@@ -8,8 +8,8 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
-import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
-import pl.tinks.budgetbuddy.payment.DeletePaymentAndCleanupUseCase
+import pl.tinks.budgetbuddy.payment.list.AddAndConfigurePaymentUseCase
+import pl.tinks.budgetbuddy.payment.list.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository

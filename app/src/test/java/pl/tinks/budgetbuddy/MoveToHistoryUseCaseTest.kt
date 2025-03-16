@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.verify
-import pl.tinks.budgetbuddy.payment.MoveToHistoryUseCase
+import pl.tinks.budgetbuddy.payment.list.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository

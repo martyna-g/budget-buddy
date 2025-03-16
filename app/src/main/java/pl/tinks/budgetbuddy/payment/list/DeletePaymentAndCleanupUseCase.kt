@@ -1,7 +1,8 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.list
 
+import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.notification.NotificationScheduler
-import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 import javax.inject.Inject
 
 class DeletePaymentAndCleanupUseCase @Inject constructor(
