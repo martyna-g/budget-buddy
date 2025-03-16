@@ -5,8 +5,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import pl.tinks.budgetbuddy.payment.NextPaymentRequest
 import pl.tinks.budgetbuddy.payment.NextPaymentRequestDao
-import pl.tinks.budgetbuddy.payment.NotificationRequest
-import pl.tinks.budgetbuddy.payment.NotificationRequestDao
+import pl.tinks.budgetbuddy.payment.notification.NotificationRequest
+import pl.tinks.budgetbuddy.payment.notification.NotificationRequestDao
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
 import pl.tinks.budgetbuddy.shopping.ShoppingDao

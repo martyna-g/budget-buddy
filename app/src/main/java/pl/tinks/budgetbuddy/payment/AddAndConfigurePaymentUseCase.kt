@@ -1,6 +1,6 @@
 package pl.tinks.budgetbuddy.payment
 
-import pl.tinks.budgetbuddy.payment.list.NotificationScheduler
+import pl.tinks.budgetbuddy.payment.notification.NotificationScheduler
 import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.notification
 
 import androidx.room.Dao
 import androidx.room.Delete

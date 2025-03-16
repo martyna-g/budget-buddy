@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment.list
+package pl.tinks.budgetbuddy.payment.notification
 
 import pl.tinks.budgetbuddy.payment.Payment
 

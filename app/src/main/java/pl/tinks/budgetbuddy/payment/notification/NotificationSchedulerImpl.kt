@@ -1,13 +1,10 @@
-package pl.tinks.budgetbuddy.payment.list
+package pl.tinks.budgetbuddy.payment.notification
 
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import pl.tinks.budgetbuddy.payment.NotificationRequest
-import pl.tinks.budgetbuddy.payment.NotificationRequestDao
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentNotificationWorker
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneOffset

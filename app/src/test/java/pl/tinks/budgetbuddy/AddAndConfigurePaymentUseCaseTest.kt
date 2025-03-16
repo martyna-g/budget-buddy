@@ -14,7 +14,7 @@ import pl.tinks.budgetbuddy.payment.AddAndConfigurePaymentUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import pl.tinks.budgetbuddy.payment.list.NotificationScheduler
+import pl.tinks.budgetbuddy.payment.notification.NotificationScheduler
 import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
 import java.time.LocalDateTime
 import java.util.UUID

@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.notification
 
 import android.Manifest
 import android.app.NotificationChannel
