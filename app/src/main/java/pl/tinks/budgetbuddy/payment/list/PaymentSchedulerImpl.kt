@@ -4,9 +4,6 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
-import pl.tinks.budgetbuddy.payment.NextPaymentRequestDao
-import pl.tinks.budgetbuddy.payment.NextPaymentRequest
 import pl.tinks.budgetbuddy.payment.Payment
 import java.time.LocalDateTime
 import java.time.ZoneOffset

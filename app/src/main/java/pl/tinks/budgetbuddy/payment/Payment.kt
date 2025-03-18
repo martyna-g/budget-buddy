@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.joda.money.Money
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import java.time.LocalDateTime
 import java.util.UUID
 

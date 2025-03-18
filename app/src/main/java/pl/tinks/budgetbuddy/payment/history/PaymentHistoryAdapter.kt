@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.history
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.ItemHeaderBinding
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
-import pl.tinks.budgetbuddy.payment.history.PaymentItem
+import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentItem
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

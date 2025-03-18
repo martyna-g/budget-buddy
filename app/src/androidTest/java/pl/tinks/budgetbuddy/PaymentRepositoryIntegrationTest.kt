@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit

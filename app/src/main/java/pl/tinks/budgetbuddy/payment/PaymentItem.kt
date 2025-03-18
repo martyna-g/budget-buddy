@@ -1,6 +1,4 @@
-package pl.tinks.budgetbuddy.payment.history
-
-import pl.tinks.budgetbuddy.payment.Payment
+package pl.tinks.budgetbuddy.payment
 
 sealed class PaymentItem {
     data class Header(val title: String) : PaymentItem()

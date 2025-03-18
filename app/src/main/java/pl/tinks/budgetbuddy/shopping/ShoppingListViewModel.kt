@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.shopping.list
+package pl.tinks.budgetbuddy.shopping
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +9,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
-import pl.tinks.budgetbuddy.shopping.ShoppingItem
-import pl.tinks.budgetbuddy.shopping.ShoppingRepository
 import javax.inject.Inject
 
 @HiltViewModel

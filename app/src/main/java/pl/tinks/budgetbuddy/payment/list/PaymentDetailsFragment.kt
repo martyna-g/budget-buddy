@@ -36,7 +36,6 @@ import pl.tinks.budgetbuddy.DecimalDigitsInputFilter
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentDetailsBinding
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime

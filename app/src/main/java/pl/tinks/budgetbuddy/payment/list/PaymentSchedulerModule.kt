@@ -1,11 +1,9 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.list
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import pl.tinks.budgetbuddy.payment.list.PaymentScheduler
-import pl.tinks.budgetbuddy.payment.list.PaymentSchedulerImpl
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)

@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.list
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -12,7 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import pl.tinks.budgetbuddy.payment.list.AddAndConfigurePaymentUseCase
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.notification.NotificationScheduler
 import pl.tinks.budgetbuddy.payment.list.PaymentScheduler

@@ -13,8 +13,8 @@ import org.mockito.Mockito
 import org.mockito.kotlin.verify
 import pl.tinks.budgetbuddy.shopping.ShoppingItem
 import pl.tinks.budgetbuddy.shopping.ShoppingRepository
-import pl.tinks.budgetbuddy.shopping.list.ShoppingListUiState
-import pl.tinks.budgetbuddy.shopping.list.ShoppingListViewModel
+import pl.tinks.budgetbuddy.shopping.ShoppingListUiState
+import pl.tinks.budgetbuddy.shopping.ShoppingListViewModel
 import java.util.UUID
 
 class ShoppingListViewModelTest {

@@ -13,9 +13,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.verify
-import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.history.PaymentHistoryUiState
 import pl.tinks.budgetbuddy.payment.history.PaymentHistoryViewModel

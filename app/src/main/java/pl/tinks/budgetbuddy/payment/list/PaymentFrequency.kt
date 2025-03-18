@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment
+package pl.tinks.budgetbuddy.payment.list
 
 enum class PaymentFrequency {
     SINGLE_PAYMENT,

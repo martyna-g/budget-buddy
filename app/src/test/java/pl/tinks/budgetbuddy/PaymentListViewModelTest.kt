@@ -20,7 +20,7 @@ import pl.tinks.budgetbuddy.payment.list.DeletePaymentAndCleanupUseCase
 import pl.tinks.budgetbuddy.payment.list.GetPaymentByIdUseCase
 import pl.tinks.budgetbuddy.payment.list.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.list.UndoMoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.list.UpdateAndReconfigurePaymentUseCase

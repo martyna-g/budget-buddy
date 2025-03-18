@@ -36,7 +36,7 @@
         tools:layout="@layout/fragment_payment_history" />
     <fragment
         android:id="@+id/shopping_list_fragment"
-        android:name="pl.tinks.budgetbuddy.shopping.list.ShoppingListFragment">
+        android:name="pl.tinks.budgetbuddy.shopping.ShoppingListFragment">
         <deepLink
             app:uri="budgetbuddy://shoppinglist" />
     </fragment>

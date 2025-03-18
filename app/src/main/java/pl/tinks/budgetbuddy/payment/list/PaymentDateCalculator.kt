@@ -1,6 +1,5 @@
 package pl.tinks.budgetbuddy.payment.list
 
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
 import java.time.LocalDate
 import javax.inject.Inject
 

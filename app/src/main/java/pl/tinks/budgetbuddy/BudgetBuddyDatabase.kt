@@ -3,8 +3,8 @@ package pl.tinks.budgetbuddy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import pl.tinks.budgetbuddy.payment.NextPaymentRequest
-import pl.tinks.budgetbuddy.payment.NextPaymentRequestDao
+import pl.tinks.budgetbuddy.payment.list.NextPaymentRequest
+import pl.tinks.budgetbuddy.payment.list.NextPaymentRequestDao
 import pl.tinks.budgetbuddy.payment.notification.NotificationRequest
 import pl.tinks.budgetbuddy.payment.notification.NotificationRequestDao
 import pl.tinks.budgetbuddy.payment.Payment

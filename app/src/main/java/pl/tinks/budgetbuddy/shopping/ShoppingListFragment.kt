@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.shopping.list
+package pl.tinks.budgetbuddy.shopping
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -32,8 +32,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentShoppingListBinding
-import pl.tinks.budgetbuddy.shopping.ShoppingItem
-import pl.tinks.budgetbuddy.shopping.ShoppingListAdapter
 import java.util.UUID
 
 @AndroidEntryPoint

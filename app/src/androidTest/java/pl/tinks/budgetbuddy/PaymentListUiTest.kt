@@ -26,7 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentDao
-import pl.tinks.budgetbuddy.payment.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
