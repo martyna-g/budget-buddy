@@ -36,6 +36,7 @@ class ScheduleNextPaymentUseCase @Inject constructor(
         } catch (e: CancellationException) {
             withContext(NonCancellable) {
                 deletePaymentAndCleanupUseCase(nextPayment)
+                repository.updatePayment(currentPayment.copy(isNextPaymentScheduled = false))
             }
             throw e
         }
