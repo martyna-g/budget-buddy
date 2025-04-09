@@ -1,8 +1,10 @@
 package pl.tinks.budgetbuddy
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -62,18 +64,19 @@ class ScheduleNextPaymentUseCaseTest {
     }
 
     @Test
-    fun `calculates next payment date adds new payment and marks as scheduled`() = runBlocking {
+    fun `calculates next payment date adds new payment and marks as scheduled`() = runTest {
         val generatedUuid = UUID.fromString("00000000-0000-0000-0000-000000000000")
-        val nextPayment = payment.copy(
-            id = generatedUuid, date = LocalDateTime.of(nextPaymentDate, LocalTime.MIDNIGHT)
-        )
+        val nextPayment = createNextPayment(generatedUuid)
 
         Mockito.mockStatic(UUID::class.java).use { mockedUuid ->
             mockedUuid.`when`<UUID> { UUID.randomUUID() }.thenReturn(generatedUuid)
 
             useCase(payment)
 
-            verify(calculator).calculateNextPaymentDate(payment.date.toLocalDate(), payment.frequency)
+            verify(calculator).calculateNextPaymentDate(
+                payment.date.toLocalDate(),
+                payment.frequency
+            )
             verify(addAndConfigurePaymentUseCase).invoke(nextPayment)
             verify(paymentRepository).updatePayment(payment.copy(isNextPaymentScheduled = true))
         }
@@ -81,11 +84,9 @@ class ScheduleNextPaymentUseCaseTest {
 
     @Test
     fun `does not mark payment as scheduled when AddAndConfigurePaymentUseCase throws exception`() =
-        runBlocking {
+        runTest {
             val generatedUuid = UUID.fromString("00000000-0000-0000-0000-000000000000")
-            val nextPayment = payment.copy(
-                id = generatedUuid, date = LocalDateTime.of(nextPaymentDate, LocalTime.MIDNIGHT)
-            )
+            val nextPayment = createNextPayment(generatedUuid)
 
             Mockito.mockStatic(UUID::class.java).use { mockedUuid ->
                 mockedUuid.`when`<UUID> { UUID.randomUUID() }.thenReturn(generatedUuid)
@@ -96,9 +97,42 @@ class ScheduleNextPaymentUseCaseTest {
                     CancellationException()
                 )
 
-                verify(calculator).calculateNextPaymentDate(payment.date.toLocalDate(), payment.frequency)
+                verify(calculator).calculateNextPaymentDate(
+                    payment.date.toLocalDate(),
+                    payment.frequency
+                )
                 verify(addAndConfigurePaymentUseCase).invoke(nextPayment)
-                verify(paymentRepository, never()).updatePayment(payment.copy(paymentCompleted = true))
+                verify(
+                    paymentRepository,
+                    never()
+                ).updatePayment(payment.copy(paymentCompleted = true))
             }
         }
+
+    @Test
+    fun `handles CancellationException by deleting payment and rethrowing`() = runTest {
+        val generatedUuid = UUID.fromString("00000000-0000-0000-0000-000000000000")
+        val nextPayment = createNextPayment(generatedUuid)
+
+        Mockito.mockStatic(UUID::class.java).use { mockedUuid ->
+            mockedUuid.`when`<UUID> { UUID.randomUUID() }.thenReturn(generatedUuid)
+
+            Mockito.`when`(addAndConfigurePaymentUseCase(nextPayment))
+                .thenThrow(CancellationException())
+
+            assertThrows(CancellationException::class.java) {
+                runBlocking { useCase(payment) }
+            }
+
+            verify(deletePaymentAndCleanupUseCase).invoke(nextPayment)
+            verify(paymentRepository).updatePayment(payment.copy(isNextPaymentScheduled = false))
+        }
+    }
+
+    private fun createNextPayment(id: UUID): Payment {
+        return payment.copy(
+            id = id,
+            date = LocalDateTime.of(nextPaymentDate, LocalTime.MIDNIGHT)
+        )
+    }
 }

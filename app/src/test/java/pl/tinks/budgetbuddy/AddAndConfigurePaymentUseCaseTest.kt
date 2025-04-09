@@ -1,15 +1,12 @@
 package pl.tinks.budgetbuddy
 
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
-import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import pl.tinks.budgetbuddy.payment.list.AddAndConfigurePaymentUseCase
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
@@ -47,24 +44,11 @@ class AddAndConfigurePaymentUseCaseTest {
     }
 
     @Test
-    fun `adds payment schedules recurring payment and notification`() = runBlocking {
+    fun `adds payment schedules recurring payment and notification`() = runTest {
         useCase(payment)
 
         verify(paymentRepository).addPayment(payment)
         verify(paymentScheduler).scheduleRecurringPayment(payment)
         verify(notificationScheduler).scheduleNotification(payment)
-    }
-
-    @Test
-    fun `handles CancellationException by deleting payment and rethrowing`() = runBlocking {
-        Mockito.`when`(paymentRepository.addPayment(payment)).thenThrow(CancellationException())
-
-        assertThrows(CancellationException::class.java) {
-            runBlocking { useCase(payment) }
-        }
-
-        verify(paymentRepository).addPayment(payment)
-        verify(paymentRepository).deletePayment(payment)
-        verifyNoInteractions(paymentScheduler, notificationScheduler)
     }
 }
