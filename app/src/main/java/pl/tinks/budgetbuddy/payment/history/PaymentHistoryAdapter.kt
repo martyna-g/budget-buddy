@@ -11,7 +11,7 @@ import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.ItemHeaderBinding
 import pl.tinks.budgetbuddy.databinding.ItemPaymentBinding
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentItem
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -21,7 +21,7 @@ class PaymentHistoryAdapter(
     private val onPaymentLongClicked: (Payment) -> Unit,
     private val onPaymentClicked: (Payment) -> Unit,
     private val isPaymentSelected: (Payment) -> Boolean
-) : ListAdapter<PaymentItem, PaymentHistoryAdapter.PaymentHistoryViewHolder>(PaymentItemDiffCallback()) {
+) : ListAdapter<PaymentListItem, PaymentHistoryAdapter.PaymentHistoryViewHolder>(PaymentItemDiffCallback()) {
 
     sealed class PaymentHistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         class PaymentViewHolder(val binding: ItemPaymentBinding) :
@@ -90,7 +90,7 @@ class PaymentHistoryAdapter(
     override fun onBindViewHolder(holder: PaymentHistoryViewHolder, position: Int) {
         when (holder) {
             is PaymentHistoryViewHolder.PaymentViewHolder -> {
-                val paymentEntry = getItem(position) as PaymentItem.PaymentEntry
+                val paymentEntry = getItem(position) as PaymentListItem.PaymentEntry
                 holder.bind(
                     paymentEntry.payment,
                     isPaymentSelected(paymentEntry.payment),
@@ -100,30 +100,30 @@ class PaymentHistoryAdapter(
             }
 
             is PaymentHistoryViewHolder.HeaderViewHolder -> holder.bind(
-                (getItem(position) as PaymentItem.Header).title
+                (getItem(position) as PaymentListItem.Header).title
             )
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is PaymentItem.Header -> R.layout.item_header
-            is PaymentItem.PaymentEntry -> R.layout.item_payment
+            is PaymentListItem.Header -> R.layout.item_header
+            is PaymentListItem.PaymentEntry -> R.layout.item_payment
         }
     }
 
-    class PaymentItemDiffCallback : DiffUtil.ItemCallback<PaymentItem>() {
-        override fun areItemsTheSame(oldItem: PaymentItem, newItem: PaymentItem): Boolean {
-            return if (oldItem is PaymentItem.Header && newItem is PaymentItem.Header) {
+    class PaymentItemDiffCallback : DiffUtil.ItemCallback<PaymentListItem>() {
+        override fun areItemsTheSame(oldItem: PaymentListItem, newItem: PaymentListItem): Boolean {
+            return if (oldItem is PaymentListItem.Header && newItem is PaymentListItem.Header) {
                 oldItem.title == newItem.title
-            } else if (oldItem is PaymentItem.PaymentEntry && newItem is PaymentItem.PaymentEntry) {
+            } else if (oldItem is PaymentListItem.PaymentEntry && newItem is PaymentListItem.PaymentEntry) {
                 oldItem.payment.id == newItem.payment.id
             } else {
                 false
             }
         }
 
-        override fun areContentsTheSame(oldItem: PaymentItem, newItem: PaymentItem): Boolean {
+        override fun areContentsTheSame(oldItem: PaymentListItem, newItem: PaymentListItem): Boolean {
             return oldItem == newItem
         }
     }

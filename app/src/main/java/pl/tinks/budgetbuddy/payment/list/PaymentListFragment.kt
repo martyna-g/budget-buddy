@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentListBinding
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentItem
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import java.time.LocalDate
 import java.util.UUID
 
@@ -103,8 +103,8 @@ class PaymentListFragment : Fragment() {
                 else -> R.string.upcoming_payments
             }
         }.flatMap { (category, paymentsInCategory) ->
-            listOf(PaymentItem.Header(getString(category))) + paymentsInCategory
-                .map { PaymentItem.PaymentEntry(it) }
+            listOf(PaymentListItem.Header(getString(category))) + paymentsInCategory
+                .map { PaymentListItem.PaymentEntry(it) }
         }
 
         paymentListAdapter.submitList(items)

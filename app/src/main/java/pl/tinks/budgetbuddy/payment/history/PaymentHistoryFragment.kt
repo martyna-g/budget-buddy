@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.databinding.FragmentPaymentHistoryBinding
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentItem
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -133,8 +133,8 @@ class PaymentHistoryFragment : Fragment() {
 
         val items = payments.groupBy { it.date.format(formatter) }
             .flatMap { (month, paymentsInMonth) ->
-                listOf(PaymentItem.Header(month)) + paymentsInMonth.map {
-                    PaymentItem.PaymentEntry(it)
+                listOf(PaymentListItem.Header(month)) + paymentsInMonth.map {
+                    PaymentListItem.PaymentEntry(it)
                 }
             }
 
@@ -143,7 +143,7 @@ class PaymentHistoryFragment : Fragment() {
 
     private fun onPaymentLongClicked(payment: Payment) {
         val index = paymentHistoryAdapter.currentList.indexOfFirst {
-            it is PaymentItem.PaymentEntry && it.payment == payment
+            it is PaymentListItem.PaymentEntry && it.payment == payment
         }
         if (selectedPayments.isEmpty()) {
             selectedPayments.add(payment)
@@ -157,7 +157,7 @@ class PaymentHistoryFragment : Fragment() {
     private fun onPaymentClicked(payment: Payment) {
         if (actionMode != null) {
             val index = paymentHistoryAdapter.currentList.indexOfFirst {
-                it is PaymentItem.PaymentEntry && it.payment == payment
+                it is PaymentListItem.PaymentEntry && it.payment == payment
             }
             if (selectedPayments.contains(payment)) {
                 selectedPayments.remove(payment)
