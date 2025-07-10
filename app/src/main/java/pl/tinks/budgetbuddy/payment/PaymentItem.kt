@@ -55,9 +55,7 @@ fun PaymentItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Card(modifier = modifier
-        .padding(8.dp)
-        .fillMaxWidth(),
+    Card(modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         onClick = { expanded = !expanded }) {
         Column {
