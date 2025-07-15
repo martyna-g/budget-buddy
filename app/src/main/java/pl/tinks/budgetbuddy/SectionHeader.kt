@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ItemHeader(text: String, modifier: Modifier = Modifier) {
+fun SectionHeader(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
@@ -25,5 +25,5 @@ fun ItemHeader(text: String, modifier: Modifier = Modifier) {
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun ItemHeaderPreview() {
-    ItemHeader(text = "Preview Text")
+    SectionHeader(text = "Preview Text")
 }

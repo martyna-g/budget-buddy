@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
-import pl.tinks.budgetbuddy.ItemHeader
+import pl.tinks.budgetbuddy.SectionHeader
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentItem
@@ -44,7 +44,7 @@ fun PaymentListScreen(
             }
         }) { item ->
             when (item) {
-                is PaymentListItem.Header -> ItemHeader(stringResource(item.resId))
+                is PaymentListItem.Header -> SectionHeader(stringResource(item.resId))
                 is PaymentListItem.PaymentEntry -> PaymentItem(
                     item.payment, onInfoClick, onEditClick, onDeleteClick, onMoveToHistoryClick
                 )
