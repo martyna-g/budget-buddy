@@ -1,12 +1,24 @@
 package pl.tinks.budgetbuddy.payment.list
 
-import android.content.res.Configuration
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import pl.tinks.budgetbuddy.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentDetailsScreen(
     viewModel: PaymentDetailsScreenViewModel,
@@ -20,39 +32,31 @@ fun PaymentDetailsScreen(
         }
     }
 
-    PaymentDetailsScreenContent(
-        state = state,
-        onTitleChange = viewModel::onTitleChange,
-        onAmountChange = viewModel::onAmountChange,
-        onDateChange = viewModel::onDateChange,
-        onFrequencyChange = viewModel::onFrequencyChange,
-        onNotificationChange = viewModel::onNotificationChange,
-        onSavePayment = viewModel::onSavePayment,
-        onCancel = onCancel,
-    )
+    Scaffold(topBar = {
+        TopAppBar(title = {
+            Text(
+                if (state.isEdit) stringResource(R.string.edit_payment) else stringResource(
+                    R.string.add_payment
+                )
+            )
+        }, navigationIcon = {
+            IconButton(onClick = onCancel) {
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cancel))
+            }
+        }, actions = {
+            IconButton(onClick = viewModel::onSavePayment) {
+                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
+            }
+        })
+    }) { innerPadding ->
+        PaymentDetailsScreenContent(
+            state = state,
+            onTitleChange = viewModel::onTitleChange,
+            onAmountChange = viewModel::onAmountChange,
+            onDateChange = viewModel::onDateChange,
+            onFrequencyChange = viewModel::onFrequencyChange,
+            onNotificationChange = viewModel::onNotificationChange,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
 }
-
-@Preview(apiLevel = 33, showBackground = true)
-@Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Composable
-fun PaymentDetailsScreenPreview() {
-    PaymentDetailsScreenContent(
-        state = previewState,
-        onTitleChange = { },
-        onAmountChange = { },
-        onDateChange = { },
-        onFrequencyChange = { },
-        onNotificationChange = { },
-        onSavePayment = { },
-        onCancel = { },
-    )
-}
-
-val previewState = PaymentDetailsUiState(
-    title = "Netflix",
-    amount = "42.00",
-    date = "10/07/2025",
-    frequency = PaymentFrequency.MONTHLY,
-    notificationEnabled = true,
-    isEdit = true
-)

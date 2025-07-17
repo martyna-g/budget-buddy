@@ -15,6 +15,7 @@
     <string name="next_payment_date">Next payment date</string>
     <string name="payment_frequency">Payment frequency</string>
     <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
     <string name="single_payment">Single payment</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
@@ -39,6 +40,8 @@
     <string name="date">Date</string>
     <string name="day">Day</string>
     <string name="bank_holiday">Bank holiday</string>
+    <string name="edit_payment">Edit Payment</string>
+    <string name="add_payment">Add Payment</string>
 
     <string name="delete_selected_items_message">Are you sure you want to delete the selected item(s)?</string>
 
