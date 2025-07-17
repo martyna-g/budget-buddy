@@ -39,12 +39,14 @@ fun PaymentListScreen(
     ) {
         items(paymentListItems, key = { item ->
             when (item) {
-                is PaymentListItem.Header -> "header_${item.resId}"
+                is PaymentListItem.StaticHeader -> "static_header_${item.resId}"
+                is PaymentListItem.DynamicHeader -> "dynamic_header_${item.headerText}"
                 is PaymentListItem.PaymentEntry -> item.payment.id
             }
         }) { item ->
             when (item) {
-                is PaymentListItem.Header -> SectionHeader(stringResource(item.resId))
+                is PaymentListItem.StaticHeader -> SectionHeader(stringResource(item.resId))
+                is PaymentListItem.DynamicHeader -> SectionHeader(item.headerText)
                 is PaymentListItem.PaymentEntry -> PaymentItem(
                     item.payment, onInfoClick, onEditClick, onDeleteClick, onMoveToHistoryClick
                 )
@@ -69,9 +71,9 @@ val previewListScreenPayment = Payment(
 )
 
 val previewList = listOf(
-    PaymentListItem.Header(R.string.overdue_payments),
+    PaymentListItem.StaticHeader(R.string.overdue_payments),
     PaymentListItem.PaymentEntry(previewListScreenPayment),
-    PaymentListItem.Header(R.string.payments_due_today),
+    PaymentListItem.StaticHeader(R.string.payments_due_today),
     PaymentListItem.PaymentEntry(
         previewListScreenPayment.copy(
             title = "Today's Payment", id = UUID.randomUUID()
@@ -82,7 +84,7 @@ val previewList = listOf(
             title = "Today's Payment 2", id = UUID.randomUUID()
         )
     ),
-    PaymentListItem.Header(R.string.upcoming_payments),
+    PaymentListItem.StaticHeader(R.string.upcoming_payments),
     PaymentListItem.PaymentEntry(
         previewListScreenPayment.copy(
             title = "Upcoming Payment", id = UUID.randomUUID()

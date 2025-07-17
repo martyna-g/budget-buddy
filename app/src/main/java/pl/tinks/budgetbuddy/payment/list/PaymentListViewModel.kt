@@ -44,7 +44,7 @@ class PaymentListViewModel @Inject constructor(
                             }
                         }
                     val listItems = grouped.flatMap { (categoryResId, paymentsInCategory) ->
-                        listOf(PaymentListItem.Header(categoryResId)) + paymentsInCategory.map {
+                        listOf(PaymentListItem.StaticHeader(categoryResId)) + paymentsInCategory.map {
                             PaymentListItem.PaymentEntry(
                                 it
                             )
