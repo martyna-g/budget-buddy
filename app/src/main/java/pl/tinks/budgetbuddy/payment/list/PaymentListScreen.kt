@@ -1,103 +1,67 @@
 package pl.tinks.budgetbuddy.payment.list
 
-import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import org.joda.money.CurrencyUnit
-import org.joda.money.Money
-import pl.tinks.budgetbuddy.SectionHeader
+import androidx.compose.ui.text.style.TextAlign
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentItem
 import pl.tinks.budgetbuddy.payment.PaymentListItem
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import java.util.UUID
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListScreen(
     paymentListItems: List<PaymentListItem>,
     onInfoClick: () -> Unit,
-    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
     onMoveToHistoryClick: () -> Unit,
+    onFabClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(paymentListItems, key = { item ->
-            when (item) {
-                is PaymentListItem.StaticHeader -> "static_header_${item.resId}"
-                is PaymentListItem.DynamicHeader -> "dynamic_header_${item.headerText}"
-                is PaymentListItem.PaymentEntry -> item.payment.id
-            }
-        }) { item ->
-            when (item) {
-                is PaymentListItem.StaticHeader -> SectionHeader(stringResource(item.resId))
-                is PaymentListItem.DynamicHeader -> SectionHeader(item.headerText)
-                is PaymentListItem.PaymentEntry -> PaymentItem(
-                    item.payment, onInfoClick, onEditClick, onDeleteClick, onMoveToHistoryClick
+    Scaffold(topBar = {
+        CenterAlignedTopAppBar(title = {
+            Column {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = stringResource(R.string.app_tagline),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
+        })
+    }, floatingActionButton = {
+        FloatingActionButton(onClick = onFabClick) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(R.string.add_payment)
+            )
         }
+    }) { innerPadding ->
+        PaymentListScreenContent(
+            paymentListItems = paymentListItems,
+            onInfoClick = onInfoClick,
+            onDeleteClick = onDeleteClick,
+            onEditClick = onEditClick,
+            onMoveToHistoryClick = onMoveToHistoryClick,
+            modifier = modifier.padding(innerPadding)
+        )
     }
 }
-
-@Preview(apiLevel = 33, showBackground = true)
-@Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Composable
-fun PaymentListScreenPreview() {
-    PaymentListScreen(previewList, {}, {}, {}, {})
-}
-
-val previewListScreenPayment = Payment(
-    UUID.randomUUID(),
-    "Preview Payment",
-    Money.of(CurrencyUnit.GBP, 42.50),
-    LocalDateTime.now().plusDays(14).truncatedTo(ChronoUnit.SECONDS),
-    PaymentFrequency.DAILY,
-)
-
-val previewList = listOf(
-    PaymentListItem.StaticHeader(R.string.overdue_payments),
-    PaymentListItem.PaymentEntry(previewListScreenPayment),
-    PaymentListItem.StaticHeader(R.string.payments_due_today),
-    PaymentListItem.PaymentEntry(
-        previewListScreenPayment.copy(
-            title = "Today's Payment", id = UUID.randomUUID()
-        )
-    ),
-    PaymentListItem.PaymentEntry(
-        previewListScreenPayment.copy(
-            title = "Today's Payment 2", id = UUID.randomUUID()
-        )
-    ),
-    PaymentListItem.StaticHeader(R.string.upcoming_payments),
-    PaymentListItem.PaymentEntry(
-        previewListScreenPayment.copy(
-            title = "Upcoming Payment", id = UUID.randomUUID()
-        )
-    ),
-    PaymentListItem.PaymentEntry(
-        previewListScreenPayment.copy(
-            title = "Upcoming Payment 2", id = UUID.randomUUID()
-        )
-    ),
-    PaymentListItem.PaymentEntry(
-        previewListScreenPayment.copy(
-            title = "Upcoming Payment 3", id = UUID.randomUUID()
-        )
-    )
-)
