@@ -59,7 +59,7 @@ fun PaymentListScreenContent(
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentListScreenPreview() {
-    PaymentListScreen(previewList, {}, {}, {}, {}, {})
+    PaymentListScreen(previewList, {}, {}, {}, {}, {}, {})
 }
 
 val previewListScreenPayment = Payment(
