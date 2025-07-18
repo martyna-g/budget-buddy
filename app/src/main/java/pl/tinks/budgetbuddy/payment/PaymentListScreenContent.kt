@@ -1,4 +1,4 @@
-package pl.tinks.budgetbuddy.payment.list
+package pl.tinks.budgetbuddy.payment
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +15,8 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.SectionHeader
-import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentItem
-import pl.tinks.budgetbuddy.payment.PaymentListItem
+import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentListScreen
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID

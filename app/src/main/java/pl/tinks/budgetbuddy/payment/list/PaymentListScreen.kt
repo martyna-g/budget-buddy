@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.payment.PaymentListItem
+import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
