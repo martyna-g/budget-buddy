@@ -17,6 +17,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>
+    <string name="loading">Loading</string>
     <string name="single_payment">Single payment</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
@@ -80,7 +81,7 @@
 
     <string name="next_bank_holiday_text">The next bank holiday in %s is</string>
     <string name="upcoming_bank_holidays_text">Upcoming bank holidays in %s</string>
-    <string name="bank_holiday_loading_error_message">There was an error loading data. Please try again later.</string>
+    <string name="loading_error_message">There was an error loading data.\nPlease try again later.</string>
     <string name="undo">Undo</string>
 
     <string name="shortcut_shopping_list_short_label">Shopping List</string>
