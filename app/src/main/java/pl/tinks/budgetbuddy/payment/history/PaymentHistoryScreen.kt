@@ -10,21 +10,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import pl.tinks.budgetbuddy.ErrorScreen
+import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentHistoryScreen(
-    paymentListItems: List<PaymentListItem>,
+    viewModel: PaymentHistoryViewModel,
     onInfoClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state by viewModel.uiState.collectAsState(initial = PaymentHistoryUiState.Loading)
+
     Scaffold(topBar = {
         TopAppBar(title = { Text(stringResource(R.string.payment_history)) }, navigationIcon = {
             IconButton(onClick = onNavigateBack) {
@@ -35,11 +40,22 @@ fun PaymentHistoryScreen(
             }
         })
     }) { innerPadding ->
-        PaymentListScreenContent(
-            paymentListItems = paymentListItems,
-            onInfoClick = onInfoClick,
-            onDeleteClick = onDeleteClick,
-            modifier = modifier.padding(innerPadding),
-        )
+        when (state) {
+            is PaymentHistoryUiState.Success -> {
+                PaymentListScreenContent(
+                    paymentListItems = (state as PaymentHistoryUiState.Success).data,
+                    onInfoClick = onInfoClick,
+                    onDeleteClick = onDeleteClick,
+                    modifier = modifier.padding(innerPadding),
+                )
+            }
+
+            is PaymentHistoryUiState.Error -> {
+                ErrorScreen(onOk = onNavigateBack, modifier = modifier.padding(innerPadding))
+            }
+            PaymentHistoryUiState.Loading -> {
+                LoadingScreen(modifier = modifier.padding(innerPadding))
+            }
+        }
     }
 }

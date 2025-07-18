@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,11 +24,17 @@ class PaymentHistoryViewModel @Inject constructor(
     private var _uiState = repository.getAllPayments().map { result ->
         when (result) {
             is Result.Success -> {
-                PaymentHistoryUiState.Success(
-                    result.data.filter { payment ->
-                        payment.paymentCompleted
-                    }.sortedBy { it.date }.reversed()
-                )
+                val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
+                val historyItems = result.data
+                    .filter { it.paymentCompleted }
+                    .sortedByDescending { it.date }
+                    .groupBy { it.date.format(formatter) }
+                    .flatMap { (month, paymentsInMonth) ->
+                        listOf(PaymentListItem.DynamicHeader(month)) + paymentsInMonth.map {
+                            PaymentListItem.PaymentEntry(it)
+                        }
+                    }
+                PaymentHistoryUiState.Success(historyItems)
             }
 
             is Result.Error -> PaymentHistoryUiState.Error(result.e)
@@ -43,6 +52,6 @@ class PaymentHistoryViewModel @Inject constructor(
 
 sealed class PaymentHistoryUiState {
     data object Loading : PaymentHistoryUiState()
-    data class Success(val data: List<Payment>) : PaymentHistoryUiState()
+    data class Success(val data: List<PaymentListItem>) : PaymentHistoryUiState()
     data class Error(val e: Throwable) : PaymentHistoryUiState()
 }

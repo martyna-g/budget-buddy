@@ -15,7 +15,6 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.SectionHeader
-import pl.tinks.budgetbuddy.payment.history.PaymentHistoryScreen
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.list.PaymentListScreen
 import java.time.LocalDate
@@ -69,7 +68,7 @@ fun PaymentListScreenPreview() {
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentListHistoryScreenPreview() {
-    PaymentHistoryScreen(previewHistoryList, {}, {}, {})
+    PaymentListScreenContent(previewHistoryList, {}, {}, {}, {})
 }
 
 val previewListScreenPayment = Payment(
