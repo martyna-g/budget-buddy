@@ -16,6 +16,7 @@
     <string name="payment_frequency">Payment frequency</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
     <string name="single_payment">Single payment</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>

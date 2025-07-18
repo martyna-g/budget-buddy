@@ -15,9 +15,12 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.SectionHeader
+import pl.tinks.budgetbuddy.payment.history.PaymentHistoryScreen
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.list.PaymentListScreen
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -54,11 +57,19 @@ fun PaymentListScreenContent(
     }
 }
 
+
 @Preview(apiLevel = 33, showBackground = true)
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentListScreenPreview() {
     PaymentListScreen(previewList, {}, {}, {}, {}, {}, {})
+}
+
+@Preview(apiLevel = 33, showBackground = true)
+@Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun PaymentListHistoryScreenPreview() {
+    PaymentHistoryScreen(previewHistoryList, {}, {}, {})
 }
 
 val previewListScreenPayment = Payment(
@@ -84,4 +95,25 @@ val previewList = listOf(
             title = "Upcoming Payment", id = UUID.randomUUID()
         )
     )
+)
+
+val previewHistoryPayment = Payment(
+    UUID.randomUUID(),
+    "Preview Payment",
+    Money.of(CurrencyUnit.GBP, 42.50),
+    LocalDateTime.of(LocalDate.of(2024, 7, 23), LocalTime.now()),
+    PaymentFrequency.DAILY,
+    paymentCompleted = true
+)
+
+val previewHistoryList = listOf(
+    PaymentListItem.DynamicHeader("August 2025"),
+    PaymentListItem.PaymentEntry(
+        previewHistoryPayment.copy(
+            date = LocalDateTime.of(LocalDate.of(2025, 8, 1), LocalTime.now())
+        )
+    ),
+    PaymentListItem.DynamicHeader("July 2024"),
+    PaymentListItem.PaymentEntry(previewHistoryPayment.copy(id = UUID.randomUUID())),
+    PaymentListItem.PaymentEntry(previewHistoryPayment.copy(id = UUID.randomUUID()))
 )
