@@ -1,7 +1,7 @@
 package pl.tinks.budgetbuddy
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,13 +21,13 @@ fun AppNavGraph(
     ) {
         composable(Routes.PaymentList) {
             PaymentListScreen(
-                viewModel = viewModel(),
+                viewModel = hiltViewModel(),
                 navController = navController,
             )
         }
         composable(Routes.PaymentHistory) {
             PaymentHistoryScreen(
-                viewModel = viewModel(),
+                viewModel = hiltViewModel(),
                 navController = navController,
             )
         }
@@ -35,7 +35,7 @@ fun AppNavGraph(
             val paymentId =
                 backStackEntry.arguments?.getString(Routes.PaymentId)?.let { UUID.fromString(it) }
             PaymentDetailsScreen(
-                viewModel = viewModel(),
+                viewModel = hiltViewModel(),
                 onCancel = { navController.popBackStack() },
             )
         }
