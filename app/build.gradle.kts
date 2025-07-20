@@ -93,6 +93,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+    implementation("androidx.navigation:navigation-compose:2.9.2")
 
     implementation("org.joda:joda-money:2.0.1")
     implementation("org.joda:joda-convert:3.0.1")
