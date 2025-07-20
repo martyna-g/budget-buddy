@@ -14,25 +14,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import pl.tinks.budgetbuddy.ErrorScreen
 import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.Routes
 import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentHistoryScreen(
-    viewModel: PaymentHistoryViewModel,
-    onInfoClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    viewModel: PaymentHistoryViewModel, navController: NavController, modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState(initial = PaymentHistoryUiState.Loading)
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(stringResource(R.string.payment_history)) }, navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back)
@@ -44,15 +42,21 @@ fun PaymentHistoryScreen(
             is PaymentHistoryUiState.Success -> {
                 PaymentListScreenContent(
                     paymentListItems = (state as PaymentHistoryUiState.Success).data,
-                    onInfoClick = onInfoClick,
-                    onDeleteClick = onDeleteClick,
+                    onInfoClick = { payment ->
+                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
+                    },
+                    onDeleteClick = viewModel::deletePayment,
                     modifier = modifier.padding(innerPadding),
                 )
             }
 
             is PaymentHistoryUiState.Error -> {
-                ErrorScreen(onOk = onNavigateBack, modifier = modifier.padding(innerPadding))
+                ErrorScreen(
+                    onOk = { navController.popBackStack() },
+                    modifier = modifier.padding(innerPadding)
+                )
             }
+
             PaymentHistoryUiState.Loading -> {
                 LoadingScreen(modifier = modifier.padding(innerPadding))
             }

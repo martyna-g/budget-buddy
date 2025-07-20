@@ -15,25 +15,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
+import pl.tinks.budgetbuddy.ErrorScreen
+import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.payment.PaymentListItem
+import pl.tinks.budgetbuddy.Routes
 import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListScreen(
-    paymentListItems: List<PaymentListItem>,
-    onInfoClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onHistoryClick: () -> Unit,
-    onMoveToHistoryClick: () -> Unit,
-    onFabClick: () -> Unit,
-    modifier: Modifier = Modifier
+    viewModel: PaymentListViewModel, navController: NavController, modifier: Modifier = Modifier
 ) {
+    val state by viewModel.uiState.collectAsState(PaymentUiState.Loading)
+
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
             Column {
@@ -51,7 +51,7 @@ fun PaymentListScreen(
                 )
             }
         }, actions = {
-            IconButton(onClick = onHistoryClick) {
+            IconButton(onClick = { navController.navigate(Routes.PaymentHistory) }) {
                 Icon(
                     imageVector = Icons.Default.History,
                     contentDescription = stringResource(R.string.open_payment_history)
@@ -59,20 +59,38 @@ fun PaymentListScreen(
             }
         })
     }, floatingActionButton = {
-        FloatingActionButton(onClick = onFabClick) {
+        FloatingActionButton(onClick = { navController.navigate(Routes.PaymentDetails) }) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = stringResource(R.string.add_payment)
             )
         }
     }) { innerPadding ->
-        PaymentListScreenContent(
-            paymentListItems = paymentListItems,
-            onInfoClick = onInfoClick,
-            onDeleteClick = onDeleteClick,
-            onEditClick = onEditClick,
-            onMoveToHistoryClick = onMoveToHistoryClick,
-            modifier = modifier.padding(innerPadding)
-        )
+        when (state) {
+            is PaymentUiState.Success -> {
+                PaymentListScreenContent(
+                    paymentListItems = (state as PaymentUiState.Success).data,
+                    onInfoClick = { payment ->
+                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
+                    },
+                    onDeleteClick = viewModel::deletePayment,
+                    onEditClick = { payment ->
+                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
+                    },
+                    onMoveToHistoryClick = viewModel::moveToHistory,
+                    modifier = modifier.padding(innerPadding)
+                )
+            }
+
+            is PaymentUiState.Error -> {
+                ErrorScreen(
+                    { navController.popBackStack() }, modifier = modifier.padding(innerPadding)
+                )
+            }
+
+            PaymentUiState.Loading -> {
+                LoadingScreen(modifier = modifier.padding(innerPadding))
+            }
+        }
     }
 }
