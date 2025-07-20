@@ -16,7 +16,6 @@ import org.joda.money.Money
 import pl.tinks.budgetbuddy.R
 import pl.tinks.budgetbuddy.SectionHeader
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
-import pl.tinks.budgetbuddy.payment.list.PaymentListScreen
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -26,10 +25,10 @@ import java.util.UUID
 @Composable
 fun PaymentListScreenContent(
     paymentListItems: List<PaymentListItem>,
-    onInfoClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit = { },
-    onMoveToHistoryClick: () -> Unit = { },
+    onInfoClick: (Payment) -> Unit,
+    onDeleteClick: (Payment) -> Unit,
+    onEditClick: (Payment) -> Unit = { },
+    onMoveToHistoryClick: (Payment) -> Unit = { },
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -49,7 +48,11 @@ fun PaymentListScreenContent(
                 is PaymentListItem.StaticHeader -> SectionHeader(stringResource(item.resId))
                 is PaymentListItem.DynamicHeader -> SectionHeader(item.headerText)
                 is PaymentListItem.PaymentEntry -> PaymentItem(
-                    item.payment, onInfoClick, onEditClick, onDeleteClick, onMoveToHistoryClick
+                    payment = item.payment,
+                    onInfoClick = { onInfoClick(item.payment) },
+                    onEditClick = { onEditClick(item.payment) },
+                    onDeleteClick = { onDeleteClick(item.payment) },
+                    onMoveToHistoryClick = { onMoveToHistoryClick(item.payment) },
                 )
             }
         }
@@ -61,7 +64,7 @@ fun PaymentListScreenContent(
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentListScreenPreview() {
-    PaymentListScreen(previewList, {}, {}, {}, {}, {}, {})
+    PaymentListScreenContent(previewList, {}, {}, {}, {})
 }
 
 @Preview(apiLevel = 33, showBackground = true)
