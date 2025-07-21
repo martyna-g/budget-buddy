@@ -17,18 +17,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import pl.tinks.budgetbuddy.R
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentDetailsScreen(
     viewModel: PaymentDetailsScreenViewModel,
     onCancel: () -> Unit,
+    paymentId: UUID? = null,
 ) {
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(state.isSaved) {
         if (state.isSaved) {
             onCancel()
+        }
+    }
+
+    LaunchedEffect(paymentId) {
+        if (paymentId != null) {
+            viewModel.loadPayment(paymentId)
         }
     }
 

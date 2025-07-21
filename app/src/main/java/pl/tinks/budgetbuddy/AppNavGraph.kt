@@ -31,12 +31,19 @@ fun AppNavGraph(
                 navController = navController,
             )
         }
-        composable(Routes.PaymentDetails) { backStackEntry ->
+        composable(Routes.PaymentDetails) {
+            PaymentDetailsScreen(
+                viewModel = hiltViewModel(),
+                onCancel = { navController.popBackStack() }
+            )
+        }
+        composable(Routes.PaymentDetailsWithId) { backStackEntry ->
             val paymentId =
                 backStackEntry.arguments?.getString(Routes.PaymentId)?.let { UUID.fromString(it) }
             PaymentDetailsScreen(
                 viewModel = hiltViewModel(),
                 onCancel = { navController.popBackStack() },
+                paymentId = paymentId
             )
         }
     }
