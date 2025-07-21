@@ -24,10 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -47,17 +43,18 @@ import java.util.UUID
 @Composable
 fun PaymentItem(
     payment: Payment,
+    isExpanded: Boolean,
+    onExpandClick: () -> Unit,
     onInfoClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onMoveToHistoryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
 
     Card(modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        onClick = { expanded = !expanded }) {
+        onClick = { onExpandClick() }) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 PaymentDate(payment.date)
@@ -71,7 +68,7 @@ fun PaymentItem(
                     PaymentAmount(payment.amount)
                 }
             }
-            if (expanded) {
+            if (isExpanded) {
                 if (payment.paymentCompleted) {
                     PaymentCompletedActionsRow(onInfoClick, onDeleteClick)
                 } else if (payment.date.toLocalDate() > LocalDate.now()) {
@@ -189,7 +186,10 @@ fun PaymentCompletedActionsRow(
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentItemPreview() {
-    PaymentItem(previewPayment,
+    PaymentItem(
+        previewPayment,
+        isExpanded = false,
+        onExpandClick = {},
         onInfoClick = {},
         onEditClick = {},
         onDeleteClick = { },
