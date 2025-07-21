@@ -12,15 +12,17 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,10 +47,10 @@ fun PaymentItem(
     payment: Payment,
     isExpanded: Boolean,
     onExpandClick: () -> Unit,
-    onInfoClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onMoveToHistoryClick: () -> Unit,
+    onCompleteClick: () -> Unit,
+    onUndoCompleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -70,11 +72,11 @@ fun PaymentItem(
             }
             if (isExpanded) {
                 if (payment.paymentCompleted) {
-                    PaymentCompletedActionsRow(onInfoClick, onDeleteClick)
+                    PaymentCompletedActionsRow(onUndoCompleteClick, onDeleteClick)
                 } else if (payment.date.toLocalDate() > LocalDate.now()) {
-                    PaymentUpcomingActionsRow(onInfoClick, onEditClick, onDeleteClick)
+                    PaymentUpcomingActionsRow(onEditClick, onDeleteClick)
                 } else {
-                    PaymentDueActionsRow(onInfoClick, onMoveToHistoryClick)
+                    PaymentDueActionsRow(onCompleteClick, onCompleteClick)
                 }
             }
         }
@@ -121,63 +123,92 @@ fun PaymentAmount(amount: Money, modifier: Modifier = Modifier) {
 
 @Composable
 fun PaymentUpcomingActionsRow(
-    onInfoClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onEditClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .padding(8.dp)
-            .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            .fillMaxWidth()
     ) {
-        IconButton(onClick = onInfoClick) {
-            Icon(Icons.Default.Info, contentDescription = stringResource(R.string.action_info))
+        Button(
+            onClick = onEditClick, shape = RoundedCornerShape(8.dp), modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Edit, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.edit))
         }
-        IconButton(onClick = onEditClick) {
-            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.action_edit))
-        }
-        IconButton(onClick = onDeleteClick) {
-            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_delete))
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(
+            onClick = onDeleteClick,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Delete, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.delete))
         }
     }
 }
 
 @Composable
 fun PaymentDueActionsRow(
-    onInfoClick: () -> Unit, onMoveToHistoryClick: () -> Unit, modifier: Modifier = Modifier
+    onMoveToHistoryClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .padding(8.dp)
-            .fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            .fillMaxWidth()
     ) {
-        IconButton(onClick = onInfoClick) {
-            Icon(Icons.Default.Info, contentDescription = stringResource(R.string.action_info))
+        Button(
+            onClick = onMoveToHistoryClick, shape = RoundedCornerShape(8.dp), modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Check, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.complete))
         }
-        IconButton(onClick = onMoveToHistoryClick) {
-            Icon(
-                Icons.Default.Check,
-                contentDescription = stringResource(R.string.action_move_to_history)
-            )
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(
+            onClick = onDeleteClick,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Delete, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.delete))
         }
     }
 }
 
 @Composable
 fun PaymentCompletedActionsRow(
-    onInfoClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
+    onUndoMoveToHistoryClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .padding(8.dp)
             .fillMaxWidth(), horizontalArrangement = Arrangement.Center
     ) {
-        IconButton(onClick = onInfoClick) {
-            Icon(Icons.Default.Info, contentDescription = stringResource(R.string.action_info))
+        Button(
+            onClick = onUndoMoveToHistoryClick,
+            shape = RoundedCornerShape(8.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Restore, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.restore))
         }
-        IconButton(onClick = onDeleteClick) {
-            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_delete))
+        Spacer(modifier = Modifier.width(8.dp))
+        Button(
+            onClick = onDeleteClick,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(Icons.Outlined.Delete, contentDescription = null)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.delete))
         }
     }
 }
@@ -186,14 +217,13 @@ fun PaymentCompletedActionsRow(
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun PaymentItemPreview() {
-    PaymentItem(
-        previewPayment,
-        isExpanded = false,
+    PaymentItem(previewPayment,
+        isExpanded = true,
         onExpandClick = {},
-        onInfoClick = {},
         onEditClick = {},
-        onDeleteClick = { },
-        onMoveToHistoryClick = { },
+        onDeleteClick = {},
+        onCompleteClick = {},
+        onUndoCompleteClick = {},
         modifier = Modifier
     )
 }

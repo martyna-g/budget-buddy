@@ -70,14 +70,11 @@ fun PaymentListScreen(
             is PaymentUiState.Success -> {
                 PaymentListScreenContent(
                     paymentListItems = (state as PaymentUiState.Success).data,
-                    onInfoClick = { payment ->
-                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
-                    },
                     onDeleteClick = viewModel::deletePayment,
                     onEditClick = { payment ->
                         navController.navigate(Routes.paymentDetailsWithId(payment.id))
                     },
-                    onMoveToHistoryClick = viewModel::moveToHistory,
+                    onCompleteClick = viewModel::moveToHistory,
                     modifier = modifier.padding(innerPadding)
                 )
             }

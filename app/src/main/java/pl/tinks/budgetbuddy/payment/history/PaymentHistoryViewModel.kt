@@ -12,13 +12,15 @@ import pl.tinks.budgetbuddy.Result
 import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.PaymentRepository
+import pl.tinks.budgetbuddy.payment.list.UndoMoveToHistoryUseCase
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentHistoryViewModel @Inject constructor(
-    private val repository: PaymentRepository
+    private val repository: PaymentRepository,
+    private val undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase,
 ) : ViewModel() {
 
     private var _uiState = repository.getAllPayments().map { result ->
@@ -40,12 +42,17 @@ class PaymentHistoryViewModel @Inject constructor(
             is Result.Error -> PaymentHistoryUiState.Error(result.e)
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, PaymentHistoryUiState.Loading)
-
     val uiState: Flow<PaymentHistoryUiState> = _uiState
 
-    fun deleteSelectedPayments(paymentList: List<Payment>) {
+    fun undoMoveToHistory(payment: Payment) {
         viewModelScope.launch {
-            repository.deletePayments(paymentList)
+            undoMoveToHistoryUseCase(payment)
+        }
+    }
+
+    fun deletePayment(payment: Payment) {
+        viewModelScope.launch {
+            repository.deletePayment(payment)
         }
     }
 }

@@ -29,10 +29,10 @@ import java.util.UUID
 @Composable
 fun PaymentListScreenContent(
     paymentListItems: List<PaymentListItem>,
-    onInfoClick: (Payment) -> Unit,
     onDeleteClick: (Payment) -> Unit,
     onEditClick: (Payment) -> Unit = { },
-    onMoveToHistoryClick: (Payment) -> Unit = { },
+    onCompleteClick: (Payment) -> Unit = { },
+    onUndoCompleteClick: (Payment) -> Unit = { },
     modifier: Modifier = Modifier
 ) {
     var expandedPaymentId by remember { mutableStateOf<UUID?>(null) }
@@ -60,10 +60,10 @@ fun PaymentListScreenContent(
                         expandedPaymentId =
                             if (expandedPaymentId == item.payment.id) null else item.payment.id
                     },
-                    onInfoClick = { onInfoClick(item.payment) },
                     onEditClick = { onEditClick(item.payment) },
                     onDeleteClick = { onDeleteClick(item.payment) },
-                    onMoveToHistoryClick = { onMoveToHistoryClick(item.payment) },
+                    onCompleteClick = { onCompleteClick(item.payment) },
+                    onUndoCompleteClick = { onUndoCompleteClick(item.payment) }
                 )
             }
         }

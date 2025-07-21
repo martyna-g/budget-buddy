@@ -18,7 +18,6 @@ import androidx.navigation.NavController
 import pl.tinks.budgetbuddy.ErrorScreen
 import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.Routes
 import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,10 +41,8 @@ fun PaymentHistoryScreen(
             is PaymentHistoryUiState.Success -> {
                 PaymentListScreenContent(
                     paymentListItems = (state as PaymentHistoryUiState.Success).data,
-                    onInfoClick = { payment ->
-                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
-                    },
                     onDeleteClick = viewModel::deletePayment,
+                    onUndoCompleteClick = viewModel::undoMoveToHistory,
                     modifier = modifier.padding(innerPadding),
                 )
             }
