@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.Result
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,12 +38,11 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun deleteSelectedItems(selectedItems: List<ShoppingItem>) {
-        val items = ArrayList(selectedItems)
+    fun deleteItems(selectedIds: Set<UUID>) {
         viewModelScope.launch {
-            items.forEach {
-                shoppingRepository.deleteShoppingItem(it)
-            }
+            val currentList = (_uiState.value as? ShoppingListUiState.Success)?.data.orEmpty()
+            val itemsToDelete = currentList.filter { it.id in selectedIds }
+            shoppingRepository.deleteShoppingItems(itemsToDelete)
         }
     }
 

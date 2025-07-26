@@ -46,6 +46,10 @@ class ShoppingRepositoryImpl(
         shoppingDao.deleteShoppingItem(shoppingItem)
     }
 
+    override suspend fun deleteShoppingItems(items: List<ShoppingItem>) {
+        shoppingDao.deleteShoppingItems(items)
+    }
+
     override suspend fun deleteShoppingItemsByInBasketStatus(inBasket: Boolean) {
         shoppingDao.deleteShoppingItemsByInBasketStatus(inBasket)
     }

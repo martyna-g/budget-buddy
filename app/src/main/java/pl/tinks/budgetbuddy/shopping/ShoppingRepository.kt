@@ -18,6 +18,8 @@ interface ShoppingRepository {
 
     suspend fun deleteShoppingItem(shoppingItem: ShoppingItem)
 
+    suspend fun deleteShoppingItems(items: List<ShoppingItem>)
+
     suspend fun deleteShoppingItemsByInBasketStatus(inBasket: Boolean)
 
     suspend fun deleteAllShoppingItems()
