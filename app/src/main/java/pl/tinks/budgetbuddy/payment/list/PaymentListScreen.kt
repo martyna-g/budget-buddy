@@ -20,17 +20,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavController
 import pl.tinks.budgetbuddy.ErrorScreen
 import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
-import pl.tinks.budgetbuddy.Routes
 import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListScreen(
-    viewModel: PaymentListViewModel, navController: NavController, modifier: Modifier = Modifier
+    viewModel: PaymentListViewModel,
+    onAddClick: () -> Unit,
+    onEditClick: (UUID) -> Unit,
+    onHistoryClick: () -> Unit,
+    onErrorDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState(PaymentUiState.Loading)
 
@@ -51,7 +55,7 @@ fun PaymentListScreen(
                 )
             }
         }, actions = {
-            IconButton(onClick = { navController.navigate(Routes.PaymentHistory) }) {
+            IconButton(onClick = onHistoryClick) {
                 Icon(
                     imageVector = Icons.Default.History,
                     contentDescription = stringResource(R.string.open_payment_history)
@@ -59,7 +63,7 @@ fun PaymentListScreen(
             }
         })
     }, floatingActionButton = {
-        FloatingActionButton(onClick = { navController.navigate(Routes.PaymentDetails) }) {
+        FloatingActionButton(onClick = onAddClick) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = stringResource(R.string.add_payment)
@@ -71,18 +75,14 @@ fun PaymentListScreen(
                 PaymentListScreenContent(
                     paymentListItems = (state as PaymentUiState.Success).data,
                     onDeleteClick = viewModel::deletePayment,
-                    onEditClick = { payment ->
-                        navController.navigate(Routes.paymentDetailsWithId(payment.id))
-                    },
+                    onEditClick = { payment -> onEditClick(payment.id) },
                     onCompleteClick = viewModel::moveToHistory,
                     modifier = modifier.padding(innerPadding)
                 )
             }
 
             is PaymentUiState.Error -> {
-                ErrorScreen(
-                    { navController.popBackStack() }, modifier = modifier.padding(innerPadding)
-                )
+                ErrorScreen(onErrorDialogDismiss, modifier = modifier.padding(innerPadding))
             }
 
             PaymentUiState.Loading -> {

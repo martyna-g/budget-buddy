@@ -22,13 +22,17 @@ fun AppNavGraph(
         composable(Routes.PaymentList) {
             PaymentListScreen(
                 viewModel = hiltViewModel(),
-                navController = navController,
+                onAddClick = { navController.navigate(Routes.PaymentDetails) },
+                onEditClick = { paymentId -> navController.navigate(Routes.paymentDetailsWithId(paymentId)) },
+                onHistoryClick = { navController.navigate(Routes.PaymentHistory) },
+                onErrorDialogDismiss = { navController.popBackStack() }
             )
         }
         composable(Routes.PaymentHistory) {
             PaymentHistoryScreen(
                 viewModel = hiltViewModel(),
-                navController = navController,
+                onBackClick = { navController.popBackStack() },
+                onErrorDialogDismiss = { navController.popBackStack() }
             )
         }
         composable(Routes.PaymentDetails) {

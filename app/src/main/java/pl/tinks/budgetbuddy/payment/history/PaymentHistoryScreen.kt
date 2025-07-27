@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import pl.tinks.budgetbuddy.ErrorScreen
 import pl.tinks.budgetbuddy.LoadingScreen
 import pl.tinks.budgetbuddy.R
@@ -23,13 +22,16 @@ import pl.tinks.budgetbuddy.payment.PaymentListScreenContent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentHistoryScreen(
-    viewModel: PaymentHistoryViewModel, navController: NavController, modifier: Modifier = Modifier
+    viewModel: PaymentHistoryViewModel,
+    onBackClick: () -> Unit,
+    onErrorDialogDismiss: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState(initial = PaymentHistoryUiState.Loading)
 
     Scaffold(topBar = {
         TopAppBar(title = { Text(stringResource(R.string.payment_history)) }, navigationIcon = {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.back)
@@ -49,7 +51,7 @@ fun PaymentHistoryScreen(
 
             is PaymentHistoryUiState.Error -> {
                 ErrorScreen(
-                    onOk = { navController.popBackStack() },
+                    onOk = onErrorDialogDismiss,
                     modifier = modifier.padding(innerPadding)
                 )
             }
