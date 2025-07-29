@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -17,18 +15,13 @@ import pl.tinks.budgetbuddy.payment.Payment
 import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import java.time.LocalDate
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     private val paymentRepository: PaymentRepository,
-    private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
-    private val updateAndReconfigurePaymentUseCase: UpdateAndReconfigurePaymentUseCase,
-    private val addAndConfigurePaymentUseCase: AddAndConfigurePaymentUseCase,
     private val deletePaymentAndCleanupUseCase: DeletePaymentAndCleanupUseCase,
     private val moveToHistoryUseCase: MoveToHistoryUseCase,
-    private val undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase,
 ) : ViewModel() {
 
     private var _uiState: StateFlow<PaymentUiState> =
@@ -59,37 +52,9 @@ class PaymentListViewModel @Inject constructor(
 
     val uiState: Flow<PaymentUiState> = _uiState
 
-    private var _selectedPayment: MutableSharedFlow<Payment> = MutableSharedFlow()
-    val selectedPayment: SharedFlow<Payment> = _selectedPayment
-
-    fun initPaymentDetails(id: UUID) {
-        viewModelScope.launch {
-            val payment = getPaymentByIdUseCase(id)
-            _selectedPayment.emit(payment)
-        }
-    }
-
-    fun addPayment(payment: Payment) {
-        viewModelScope.launch {
-            addAndConfigurePaymentUseCase(payment)
-        }
-    }
-
-    fun updatePayment(payment: Payment) {
-        viewModelScope.launch {
-            updateAndReconfigurePaymentUseCase(payment)
-        }
-    }
-
     fun moveToHistory(payment: Payment) {
         viewModelScope.launch {
             moveToHistoryUseCase(payment)
-        }
-    }
-
-    fun undoMoveToHistory(payment: Payment) {
-        viewModelScope.launch {
-            undoMoveToHistoryUseCase(payment)
         }
     }
 
