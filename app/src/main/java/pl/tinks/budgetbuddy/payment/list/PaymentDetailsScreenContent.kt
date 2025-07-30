@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -125,8 +126,12 @@ fun PaymentDetailsScreenContent(
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
-            Text(stringResource(R.string.payment_notification_switch_text))
-            Spacer(Modifier.weight(1f))
+            Text(
+                stringResource(R.string.payment_notification_switch_text),
+                modifier = Modifier.weight(1f),
+                maxLines = 2
+            )
+            Spacer(modifier = Modifier.width(16.dp))
             Switch(checked = state.notificationEnabled, onCheckedChange = {
                 onNotificationChange(it)
             })
