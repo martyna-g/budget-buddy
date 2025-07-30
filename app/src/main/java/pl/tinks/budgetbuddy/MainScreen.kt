@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +32,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
         if (isBottomNavScreen(currentRoute)) {
             NavigationBar {
                 bottomNavScreens.forEach { screen ->
-                    NavigationBarItem(icon = { Icon(screen.icon, stringResource(screen.labelRes)) },
+                    NavigationBarItem(
+                        icon = { Icon(screen.icon, stringResource(screen.labelRes)) },
                         label = { Text(stringResource(screen.labelRes)) },
                         selected = currentRoute == screen.route,
                         onClick = {
@@ -43,7 +46,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
                                     restoreState = true
                                 }
                             }
-                        })
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                        )
+                    )
                 }
             }
         }

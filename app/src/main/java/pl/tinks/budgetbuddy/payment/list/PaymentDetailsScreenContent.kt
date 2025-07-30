@@ -18,6 +18,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -80,7 +81,8 @@ fun PaymentDetailsScreenContent(
                 IconButton(onClick = { showDatePicker = true }) {
                     Icon(
                         Icons.Default.DateRange,
-                        contentDescription = stringResource(R.string.select_date)
+                        contentDescription = stringResource(R.string.select_date),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             },

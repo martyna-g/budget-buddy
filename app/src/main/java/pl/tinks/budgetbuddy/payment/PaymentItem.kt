@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,6 +57,9 @@ fun PaymentItem(
 
     Card(modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         onClick = { onExpandClick() }) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -141,7 +145,7 @@ fun PaymentUpcomingActionsRow(
         Button(
             onClick = onDeleteClick,
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
@@ -171,7 +175,7 @@ fun PaymentDueActionsRow(
         Button(
             onClick = onDeleteClick,
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, contentDescription = null)
@@ -203,7 +207,7 @@ fun PaymentCompletedActionsRow(
         Button(
             onClick = onDeleteClick,
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
             modifier = Modifier.weight(1f)
         ) {
             Icon(Icons.Outlined.Delete, contentDescription = null)

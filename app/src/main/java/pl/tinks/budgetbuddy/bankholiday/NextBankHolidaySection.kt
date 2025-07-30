@@ -36,7 +36,7 @@ fun NextBankHolidaySection(
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)

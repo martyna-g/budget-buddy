@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import pl.tinks.budgetbuddy.ui.theme.BudgetBuddyTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainScreen()
+            BudgetBuddyTheme {
+                MainScreen()
+            }
         }
     }
 }

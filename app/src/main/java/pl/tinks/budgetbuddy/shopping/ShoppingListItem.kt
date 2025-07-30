@@ -30,7 +30,7 @@ fun ShoppingListItem(
     modifier: Modifier = Modifier
 ) {
     val background = if (isSelected) {
-        MaterialTheme.colorScheme.primaryContainer
+        MaterialTheme.colorScheme.surfaceVariant
     } else {
         MaterialTheme.colorScheme.surface
     }
