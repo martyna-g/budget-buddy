@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -38,6 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.payment.PaymentNotificationSwitch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -112,7 +112,8 @@ fun PaymentDetailsScreenContent(
                     .menuAnchor(type = MenuAnchorType.PrimaryEditable, true),
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = freqDropdownExpanded) })
-            ExposedDropdownMenu(expanded = freqDropdownExpanded,
+            ExposedDropdownMenu(
+                expanded = freqDropdownExpanded,
                 onDismissRequest = { freqDropdownExpanded = false }) {
                 PaymentFrequency.entries.forEach { freq ->
                     DropdownMenuItem(text = { Text(freq.getLabel()) }, onClick = {
@@ -124,19 +125,20 @@ fun PaymentDetailsScreenContent(
         }
 
         Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                stringResource(R.string.payment_notification_switch_text),
-                modifier = Modifier.weight(1f),
-                maxLines = 2
+                text = stringResource(R.string.payment_notification_switch_text),
+                maxLines = 2,
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Switch(checked = state.notificationEnabled, onCheckedChange = {
-                onNotificationChange(it)
-            })
+            PaymentNotificationSwitch(
+                checked = state.notificationEnabled, onNotificationChange = onNotificationChange
+            )
         }
-
     }
 }
 
