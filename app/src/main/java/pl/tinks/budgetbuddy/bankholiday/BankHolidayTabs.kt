@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -14,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import pl.tinks.budgetbuddy.R
+import pl.tinks.budgetbuddy.ui.theme.StatusBarBackground
 
 @Composable
 fun BankHolidayTabs(
@@ -30,6 +32,7 @@ fun BankHolidayTabs(
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = modifier) {
+        StatusBarBackground(color = MaterialTheme.colorScheme.surface)
         TabRow(selectedTabIndex = pagerState.currentPage) {
             regions.forEachIndexed { idx, region ->
                 Tab(selected = pagerState.currentPage == idx, onClick = {
