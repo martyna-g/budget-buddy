@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -14,16 +15,21 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.verify
 import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
 import pl.tinks.budgetbuddy.payment.history.PaymentHistoryUiState
 import pl.tinks.budgetbuddy.payment.history.PaymentHistoryViewModel
+import pl.tinks.budgetbuddy.payment.list.UndoMoveToHistoryUseCase
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.UUID
 
 class PaymentHistoryViewModelTest {
 
     private lateinit var paymentRepository: PaymentRepository
+    private lateinit var undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase
     private lateinit var payment: Payment
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,6 +39,7 @@ class PaymentHistoryViewModelTest {
     @Before
     fun setUp() {
         paymentRepository = Mockito.mock()
+        undoMoveToHistoryUseCase = Mockito.mock()
         payment = Payment(
             id = UUID.randomUUID(),
             title = "Test Payment",
@@ -45,23 +52,43 @@ class PaymentHistoryViewModelTest {
 
     @Test
     fun `uiState reflects Success when repository returns data`() = runTest {
+        val payments = listOf(payment)
+
         Mockito.`when`(paymentRepository.getAllPayments())
-            .thenReturn(flowOf(Result.Success(listOf(payment))))
+            .thenReturn(flowOf(Result.Success(payments)))
 
-        val viewModel = PaymentHistoryViewModel(paymentRepository)
+        val viewModel = PaymentHistoryViewModel(paymentRepository, undoMoveToHistoryUseCase)
 
-        val result = viewModel.uiState.first()
+        val formatter = DateTimeFormatter.ofPattern("MMM yyyy", Locale.getDefault())
+        val historyItems = payments.filter { it.paymentCompleted }.sortedByDescending { it.date }
+            .groupBy { it.date.format(formatter) }.flatMap { (month, paymentsInMonth) ->
+                listOf(PaymentListItem.DynamicHeader(month)) + paymentsInMonth.map {
+                    PaymentListItem.PaymentEntry(it)
+                }
+            }
 
-        assertThat(result, `is`(PaymentHistoryUiState.Success(listOf(payment))))
+        val expected = PaymentHistoryUiState.Success(historyItems)
+
+        val result = viewModel.uiState.dropWhile { it is PaymentHistoryUiState.Loading }.first()
+
+        assertThat(result, `is`(expected))
     }
 
     @Test
-    fun `deleteSelectedPayments calls deletePayments on repository`() = runTest {
-        val viewModel = PaymentHistoryViewModel(paymentRepository)
-        val payments = listOf(payment)
+    fun `deletePayment calls deletePayment on repository`() = runTest {
+        val viewModel = PaymentHistoryViewModel(paymentRepository, undoMoveToHistoryUseCase)
 
-        viewModel.deleteSelectedPayments(payments)
+        viewModel.deletePayment(payment)
 
-        verify(paymentRepository).deletePayments(payments)
+        verify(paymentRepository).deletePayment(payment)
+    }
+
+    @Test
+    fun `undoMoveToHistory calls undoMoveToHistoryUseCase`() = runTest {
+        val viewModel = PaymentHistoryViewModel(paymentRepository, undoMoveToHistoryUseCase)
+
+        viewModel.undoMoveToHistory(payment)
+
+        verify(undoMoveToHistoryUseCase).invoke(payment)
     }
 }
