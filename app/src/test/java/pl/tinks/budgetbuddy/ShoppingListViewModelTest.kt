@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -63,16 +64,22 @@ class ShoppingListViewModelTest {
     }
 
     @Test
-    fun `deleteSelectedItems calls deleteShoppingItem on repository for all items in list`() =
-        runTest {
-            val item2 = ShoppingItem(UUID.randomUUID(), "Test Item 2")
-            val items = listOf(item, item2)
+    fun `deleteItems calls deleteShoppingItems`() = runTest {
+        val item2 = ShoppingItem(UUID.randomUUID(), "Test Item 2")
+        val items = listOf(item, item2)
+        val itemIds = setOf(item.id, item2.id)
 
-            viewModel.deleteSelectedItems(items)
+        Mockito.`when`(shoppingRepository.getAllShoppingItems())
+            .thenReturn(flowOf(Result.Success(items)))
 
-            verify(shoppingRepository).deleteShoppingItem(item)
-            verify(shoppingRepository).deleteShoppingItem(item2)
-        }
+        val viewModel = ShoppingListViewModel(shoppingRepository)
+
+        viewModel.uiState.dropWhile { it is ShoppingListUiState.Loading }.first()
+
+        viewModel.deleteItems(itemIds)
+
+        verify(shoppingRepository).deleteShoppingItems(items)
+    }
 
     @Test
     fun `deleteCheckedItems calls repository to delete items in basket`() = runTest {
