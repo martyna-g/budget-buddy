@@ -1,6 +1,7 @@
 package pl.tinks.budgetbuddy
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -15,17 +16,15 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.verify
-import pl.tinks.budgetbuddy.payment.list.AddAndConfigurePaymentUseCase
 import pl.tinks.budgetbuddy.payment.list.DeletePaymentAndCleanupUseCase
-import pl.tinks.budgetbuddy.payment.list.GetPaymentByIdUseCase
 import pl.tinks.budgetbuddy.payment.list.MoveToHistoryUseCase
 import pl.tinks.budgetbuddy.payment.Payment
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
 import pl.tinks.budgetbuddy.payment.PaymentRepository
-import pl.tinks.budgetbuddy.payment.list.UndoMoveToHistoryUseCase
-import pl.tinks.budgetbuddy.payment.list.UpdateAndReconfigurePaymentUseCase
 import pl.tinks.budgetbuddy.payment.list.PaymentListViewModel
 import pl.tinks.budgetbuddy.payment.list.PaymentUiState
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -42,22 +41,10 @@ class PaymentListViewModelTest {
     private lateinit var repository: PaymentRepository
 
     @Mock
-    private lateinit var getPaymentByIdUseCase: GetPaymentByIdUseCase
-
-    @Mock
-    private lateinit var updateAndReconfigurePaymentUseCase: UpdateAndReconfigurePaymentUseCase
-
-    @Mock
-    private lateinit var addAndConfigurePaymentUseCase: AddAndConfigurePaymentUseCase
-
-    @Mock
     private lateinit var deletePaymentAndCleanupUseCase: DeletePaymentAndCleanupUseCase
 
     @Mock
     private lateinit var moveToHistoryUseCase: MoveToHistoryUseCase
-
-    @Mock
-    private lateinit var undoMoveToHistoryUseCase: UndoMoveToHistoryUseCase
 
     @Before
     fun setUp() {
@@ -77,26 +64,31 @@ class PaymentListViewModelTest {
     @Test
     fun `getAllPayments emits Success when repository returns data`() = runTest {
         val payments = listOf(payment)
-
         `when`(repository.getAllPayments()).thenReturn(flowOf(Result.Success(payments)))
 
         val viewModel = createViewModel()
 
-        assertThat(viewModel.uiState.first(), `is`(PaymentUiState.Success(payments)))
-    }
+        val grouped = payments.filter { !it.paymentCompleted }
+            .sortedBy { it.date }
+            .groupBy { payment ->
+                when {
+                    payment.date.toLocalDate() < LocalDate.now() -> R.string.overdue_payments
+                    payment.date.toLocalDate() == LocalDate.now() -> R.string.payments_due_today
+                    else -> R.string.upcoming_payments
+                }
+            }
+        val expectedListItems = grouped.flatMap { (categoryResId, paymentsInCategory) ->
+            listOf(PaymentListItem.StaticHeader(categoryResId)) + paymentsInCategory.map {
+                PaymentListItem.PaymentEntry(it)
+            }
+        }
+        val expected = PaymentUiState.Success(expectedListItems)
 
-    @Test
-    fun `addPayment calls addAndConfigurePaymentUseCase`() = runTest {
-        viewModel.addPayment(payment)
+        val actual = viewModel.uiState
+            .dropWhile { it is PaymentUiState.Loading }
+            .first()
 
-        verify(addAndConfigurePaymentUseCase).invoke(payment)
-    }
-
-    @Test
-    fun `updatePayment calls updateAndReconfigurePaymentUseCase`() = runTest {
-        viewModel.updatePayment(payment)
-
-        verify(updateAndReconfigurePaymentUseCase).invoke(payment)
+        assertThat(actual, `is`(expected))
     }
 
     @Test
@@ -104,13 +96,6 @@ class PaymentListViewModelTest {
         viewModel.moveToHistory(payment)
 
         verify(moveToHistoryUseCase).invoke(payment)
-    }
-
-    @Test
-    fun `undoMoveToHistory calls undoMoveToHistoryUseCase`() = runTest {
-        viewModel.undoMoveToHistory(payment)
-
-        verify(undoMoveToHistoryUseCase).invoke(payment)
     }
 
     @Test
@@ -122,11 +107,7 @@ class PaymentListViewModelTest {
 
     private fun createViewModel(): PaymentListViewModel = PaymentListViewModel(
         repository,
-        getPaymentByIdUseCase,
-        updateAndReconfigurePaymentUseCase,
-        addAndConfigurePaymentUseCase,
         deletePaymentAndCleanupUseCase,
         moveToHistoryUseCase,
-        undoMoveToHistoryUseCase
     )
 }
