@@ -16,7 +16,7 @@ import pl.tinks.budgetbuddy.shopping.ShoppingListScreenContent
 import pl.tinks.budgetbuddy.shopping.ShoppingListUiState
 import java.util.UUID
 
-class ShoppingListUiTest {
+class ShoppingListScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
