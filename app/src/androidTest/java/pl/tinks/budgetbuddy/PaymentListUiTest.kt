@@ -1,196 +1,259 @@
 package pl.tinks.budgetbuddy
 
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.platform.app.InstrumentationRegistry
-import dagger.hilt.android.testing.HiltAndroidRule
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.not
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
-import org.junit.After
-import org.junit.Before
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import pl.tinks.budgetbuddy.payment.Payment
-import pl.tinks.budgetbuddy.payment.PaymentDao
+import pl.tinks.budgetbuddy.payment.PaymentListContent
+import pl.tinks.budgetbuddy.payment.PaymentListItem
 import pl.tinks.budgetbuddy.payment.list.PaymentFrequency
+import pl.tinks.budgetbuddy.payment.list.PaymentListScreenContent
+import pl.tinks.budgetbuddy.payment.list.PaymentUiState
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltAndroidTest
 class PaymentListUiTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
-    @get:Rule(order = 1)
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    @Test
+    fun paymentListScreenContent_displaysAllPaymentsAndHeaders() {
+        val overduePayment = Payment(
+            id = UUID.randomUUID(),
+            title = "Overdue Payment",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now().minusDays(1),
+            frequency = PaymentFrequency.MONTHLY
+        )
+        val paymentDueToday = Payment(
+            id = UUID.randomUUID(),
+            title = "Today's Payment",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now(),
+            frequency = PaymentFrequency.MONTHLY
+        )
+        val upcomingPayment = paymentDueToday.copy(
+            id = UUID.randomUUID(),
+            title = "Upcoming Payment",
+            date = paymentDueToday.date.plusDays(1)
+        )
 
-    @Inject
-    lateinit var database: BudgetBuddyDatabase
+        val items = listOf(
+            PaymentListItem.StaticHeader(R.string.overdue_payments),
+            PaymentListItem.PaymentEntry(overduePayment),
+            PaymentListItem.StaticHeader(R.string.payments_due_today),
+            PaymentListItem.PaymentEntry(paymentDueToday),
+            PaymentListItem.StaticHeader(R.string.upcoming_payments),
+            PaymentListItem.PaymentEntry(upcomingPayment)
+        )
 
-    @Inject
-    lateinit var paymentDao: PaymentDao
+        composeTestRule.setContent {
+            PaymentListContent(paymentListItems = items)
+        }
 
-    private lateinit var overduePayment: Payment
-    private lateinit var upcomingPayment: Payment
+        composeTestRule.onNodeWithText(overduePayment.title).assertIsDisplayed()
+        composeTestRule.onNodeWithText(paymentDueToday.title).assertIsDisplayed()
+        composeTestRule.onNodeWithText(upcomingPayment.title).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Overdue payments").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Payments due today").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Upcoming payments").assertIsDisplayed()
+    }
 
-
-    @Before
-    fun setUp() {
-        disableAnimations()
-        hiltRule.inject()
-
-        overduePayment = Payment(
+    @Test
+    fun paymentItem_expand_showsActions() {
+        val payment = Payment(
             id = UUID.randomUUID(),
             title = "Test Payment",
             amount = Money.of(CurrencyUnit.GBP, 10.00),
             date = LocalDateTime.now(),
             frequency = PaymentFrequency.MONTHLY
         )
-        upcomingPayment = overduePayment.copy(date = overduePayment.date.plusDays(1))
+        val items = listOf(PaymentListItem.PaymentEntry(payment))
 
-        ActivityScenario.launch(MainActivity::class.java)
-    }
+        composeTestRule.setContent {
+            PaymentListContent(paymentListItems = items)
+        }
 
-    @After
-    fun tearDown() {
-        database.close()
-    }
-
-    @Test
-    fun paymentListScreen_opensSuccessfully() {
-        onView(withId(R.id.recyclerview_payment_list)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(payment.title).performClick()
+        composeTestRule.onNodeWithText("Complete").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Delete").assertIsDisplayed()
     }
 
     @Test
-    fun addPayment_displaysPaymentInList() = runTest {
-        onView(withId(R.id.fab_payment_list)).perform(click())
-
-        onView(withId(R.id.text_input_edit_text_payment_title)).perform(replaceText(upcomingPayment.title))
-
-        onView(withId(R.id.text_input_edit_text_payment_amount)).perform(replaceText(upcomingPayment.amount.toString()))
-
-        onView(withId(R.id.text_input_edit_text_payment_date)).perform(
-            replaceText(
-                upcomingPayment.date.toLocalDate().format(
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                ).toString()
-            )
+    fun paymentItem_expand_showsActionsOnlyOneAtATime() {
+        val payment = Payment(
+            id = UUID.randomUUID(),
+            title = "Payment 1",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now(),
+            frequency = PaymentFrequency.MONTHLY
         )
+        val payment2 = payment.copy(id = UUID.randomUUID(), title = "Payment 2")
 
-        onView(withId(R.id.autocomplete_textview_payment_frequency)).perform(
-            replaceText(
-                upcomingPayment.frequency.name.lowercase().replaceFirstChar { it.uppercaseChar() })
-        )
-
-        onView(withId(R.id.action_save)).perform(click())
-
-        onView(withId(R.id.recyclerview_payment_list)).check(
-            matches(
-                hasDescendant(
-                    withText(
-                        upcomingPayment.title
-                    )
+        composeTestRule.setContent {
+            PaymentListContent(
+                listOf(
+                    PaymentListItem.PaymentEntry(payment), PaymentListItem.PaymentEntry(payment2)
                 )
             )
-        )
+        }
+
+        composeTestRule.onNodeWithText("Payment 1").performClick()
+        composeTestRule.onAllNodesWithText("Complete").assertCountEquals(1)
+        composeTestRule.onNodeWithText("Payment 2").performClick()
+        composeTestRule.onAllNodesWithText("Complete").assertCountEquals(1)
     }
 
     @Test
-    fun navigateToPaymentDetails_opensPaymentDetailsScreen() = runTest {
-        paymentDao.addPayment(overduePayment)
-
-        onView(withId(R.id.recyclerview_payment_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
+    fun paymentItem_editButton_callsOnEditClick() {
+        val payment = Payment(
+            id = UUID.randomUUID(),
+            title = "Test Payment",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now().plusDays(1),
+            frequency = PaymentFrequency.MONTHLY
         )
+        var editCalled = false
+        val items = listOf(PaymentListItem.PaymentEntry(payment))
 
-        onView(withId(R.id.button_item_info_payment_due)).perform(click())
+        composeTestRule.setContent {
+            PaymentListContent(paymentListItems = items, onEditClick = { editCalled = true })
+        }
 
-        onView(withId(R.id.text_input_edit_text_payment_title)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(payment.title).performClick()
+        composeTestRule.onNodeWithText("Edit").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit").performClick()
+
+        assertTrue(editCalled)
     }
 
     @Test
-    fun movePaymentToHistory_movesPayment_whenPaymentIsOverdue() = runTest {
-        paymentDao.addPayment(overduePayment)
-
-        onView(withId(R.id.recyclerview_payment_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
+    fun paymentItem_deleteButton_callsOnDeleteClick() {
+        val payment = Payment(
+            id = UUID.randomUUID(),
+            title = "Test Payment",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now().plusDays(1),
+            frequency = PaymentFrequency.MONTHLY
         )
+        var deleteClicked = false
 
-        onView(withId(R.id.layout_item_action_buttons_payment_due)).check(matches(isDisplayed()))
+        composeTestRule.setContent {
+            PaymentListContent(listOf(PaymentListItem.PaymentEntry(payment)),
+                onDeleteClick = { deleteClicked = true })
+        }
 
-        onView(withId(R.id.button_item_move_to_history)).perform(click())
+        composeTestRule.onNodeWithText(payment.title).performClick()
+        composeTestRule.onNodeWithText("Delete").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Delete").performClick()
 
-        onView(withText("Test Payment")).check(doesNotExist())
-
-        onView(withId(R.id.payment_history_fragment)).perform(click())
-
-        onView(withId(R.id.recyclerview_payment_history)).check(matches(hasDescendant(withText("Test Payment"))))
+        assertTrue(deleteClicked)
     }
 
     @Test
-    fun deletePayment_removesPaymentFromList() = runTest {
-        val paymentToDelete = upcomingPayment
-
-        paymentDao.addPayment(paymentToDelete)
-
-        onView(withId(R.id.recyclerview_payment_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
+    fun paymentItem_completeButton_callsOnCompleteClick() {
+        val payment = Payment(
+            id = UUID.randomUUID(),
+            title = "Test Payment",
+            amount = Money.of(CurrencyUnit.GBP, 10.00),
+            date = LocalDateTime.now(),
+            frequency = PaymentFrequency.MONTHLY
         )
+        var completeClicked = false
 
-        onView(withId(R.id.button_item_delete)).perform(click())
+        composeTestRule.setContent {
+            PaymentListContent(paymentListItems = listOf(PaymentListItem.PaymentEntry(payment)),
+                onCompleteClick = { completeClicked = true })
+        }
 
-        onView(withId(R.id.action_delete)).perform(click())
+        composeTestRule.onNodeWithText(payment.title).performClick()
+        composeTestRule.onNodeWithText("Complete").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Complete").performClick()
 
-        onView(withText(R.string.yes)).perform(click())
-
-        onView(withId(R.id.recyclerview_payment_list)).check(matches(not(hasDescendant(withText("Test Payment")))))
+        assertTrue(completeClicked)
     }
 
     @Test
-    fun editPayment_updatesPaymentDetails() = runTest {
-        paymentDao.addPayment(upcomingPayment)
+    fun fabClick_callsOnAddClick() {
+        var fabClicked = false
 
-        onView(withId(R.id.recyclerview_payment_list)).check(matches(isDisplayed())).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click())
-        )
-        onView(withId(R.id.layout_item_action_buttons)).check(matches(isDisplayed()))
+        composeTestRule.setContent {
+            PaymentListScreenContent(
+                state = PaymentUiState.Success(listOf()),
+                onAddClick = { fabClicked = true },
+                onHistoryClick = {},
+                onErrorDialogDismiss = {},
+                onDeleteClick = {},
+            )
+        }
 
-        onView(withId(R.id.button_item_edit)).perform(click())
-
-        onView(withId(R.id.text_input_edit_text_payment_title)).check(matches(isDisplayed()))
-            .perform(replaceText("Updated Payment"))
-
-        onView(withId(R.id.text_input_edit_text_payment_title)).check(matches(withText("Updated Payment")))
-
-        onView(withId(R.id.action_save)).check(matches(isDisplayed())).perform(click())
-
-        onView(withText("Updated Payment")).check(matches(isDisplayed()))
-
-        onView(withText("Test Payment")).check(doesNotExist())
+        composeTestRule.onNodeWithContentDescription("Add Payment").performClick()
+        assertTrue(fabClicked)
     }
 
+    @Test
+    fun historyIconClick_callsOnHistoryClick() {
+        var historyIconClicked = false
 
-    private fun disableAnimations() {
-        val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
-        uiAutomation.executeShellCommand("settings put global animator_duration_scale 0")
-        uiAutomation.executeShellCommand("settings put global transition_animation_scale 0")
-        uiAutomation.executeShellCommand("settings put global window_animation_scale 0")
+        composeTestRule.setContent {
+            PaymentListScreenContent(state = PaymentUiState.Success(listOf()),
+                onHistoryClick = { historyIconClicked = true },
+                onAddClick = {},
+                onErrorDialogDismiss = {},
+                onDeleteClick = {})
+        }
+
+        composeTestRule.onNodeWithContentDescription("Open Payment History").performClick()
+        assertTrue(historyIconClicked)
+    }
+
+    @Test
+    fun paymentListContent_emptyList_showsNoItems() {
+        composeTestRule.setContent {
+            PaymentListContent(
+                paymentListItems = listOf()
+            )
+        }
+        composeTestRule.onNodeWithText("Overdue payments").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Payments due today").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Upcoming payments").assertDoesNotExist()
+    }
+
+    @Test
+    fun paymentListScreenContent_loading_showsLoadingScreen() {
+        composeTestRule.setContent {
+            PaymentListScreenContent(state = PaymentUiState.Loading,
+                onAddClick = {},
+                onHistoryClick = {},
+                onErrorDialogDismiss = {},
+                onDeleteClick = {})
+        }
+
+        composeTestRule.onNodeWithText("Loading").assertIsDisplayed()
+    }
+
+    @Test
+    fun paymentListScreenContent_error_showsErrorScreen() {
+        composeTestRule.setContent {
+            PaymentListScreenContent(state = PaymentUiState.Error(Throwable("error")),
+                onAddClick = {},
+                onHistoryClick = {},
+                onErrorDialogDismiss = {},
+                onDeleteClick = {})
+        }
+
+        composeTestRule.onNodeWithText("There was an error loading data.\nPlease try again later.")
+            .assertIsDisplayed()
     }
 }
