@@ -7,7 +7,6 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.junit.Assert.assertTrue
@@ -22,7 +21,7 @@ import pl.tinks.budgetbuddy.payment.list.PaymentUiState
 import java.time.LocalDateTime
 import java.util.UUID
 
-class PaymentListUiTest {
+class PaymentListScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
