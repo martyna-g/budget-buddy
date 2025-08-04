@@ -1,275 +1,270 @@
 package pl.tinks.budgetbuddy
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.longClick
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.not
-import org.junit.After
-import org.junit.Before
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import pl.tinks.budgetbuddy.shopping.ShoppingDao
 import pl.tinks.budgetbuddy.shopping.ShoppingItem
-import pl.tinks.budgetbuddy.shopping.ShoppingListAdapter
+import pl.tinks.budgetbuddy.shopping.ShoppingListContent
+import pl.tinks.budgetbuddy.shopping.ShoppingListScreenContent
+import pl.tinks.budgetbuddy.shopping.ShoppingListUiState
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltAndroidTest
 class ShoppingListUiTest {
 
-    @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
-    @get:Rule(order = 1)
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    @Test
+    fun shoppingListScreenContent_displaysAllItems() {
+        val shoppingItem = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 1")
+        val shoppingItem2 = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 2")
+        val shoppingItem3 = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 3")
+        val items = listOf(shoppingItem, shoppingItem2, shoppingItem3)
 
-    @Inject
-    lateinit var database: BudgetBuddyDatabase
+        composeTestRule.setContent {
+            ShoppingListContent(items = items, onItemClick = {})
+        }
 
-    @Inject
-    lateinit var shoppingDao: ShoppingDao
-
-    private lateinit var item: ShoppingItem
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-
-        item = ShoppingItem(
-            id = UUID.randomUUID(), itemName = "Test Item", inBasket = false
-        )
-    }
-
-    @After
-    fun tearDown() {
-        database.close()
+        composeTestRule.onNodeWithText("Test Item 1").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test Item 2").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test Item 3").assertIsDisplayed()
     }
 
     @Test
-    fun shoppingListScreen_opensSuccessfully() {
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+    fun addItemButton_callsOnAddClick() {
+        var onAddClickCalled = false
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(isDisplayed()))
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf()),
+                onAddClick = { onAddClickCalled = true },
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
+
+        composeTestRule.onNodeWithText("Add item").performTextInput("Test")
+        composeTestRule.onNodeWithContentDescription("Add item").performClick()
+        assertTrue(onAddClickCalled)
     }
 
     @Test
-    fun addItem_displaysItemInList() {
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+    fun shoppingItem_click_callsOnItemClick() {
+        var onItemClickCalled = false
+        val shoppingItem = ShoppingItem(UUID.randomUUID(), "Test Item")
 
-        onView(withId(R.id.edit_text_shopping_item)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListContent(items = listOf(shoppingItem),
+                onItemClick = { onItemClickCalled = true })
+        }
 
-        onView(withId(R.id.edit_text_shopping_item)).perform(replaceText("Test Item"))
-
-        onView(withId(R.id.button_add_new_item)).perform(click())
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Test Item"))))
+        composeTestRule.onNodeWithText("Test Item").performClick()
+        assertTrue(onItemClickCalled)
     }
 
     @Test
-    fun clickUncheckedItem_marksItemAsChecked() = runTest {
-        shoppingDao.addShoppingItem(item)
+    fun selectMultipleItems_entersSelectionModeAndShowsDeleteIcon() {
+        val shoppingItem = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 1")
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf(shoppingItem)),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.image_shopping_item_checked)).check(matches(not(isDisplayed())))
-
-        onView(withText("Test Item")).perform(click())
-
-        onView(withId(R.id.image_shopping_item_checked)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Select multiple").performClick()
+        composeTestRule.onNodeWithText("Test Item 1").performClick()
+        composeTestRule.onNodeWithText("1 selected").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Delete selected").assertIsDisplayed()
     }
 
     @Test
-    fun clickCheckedItem_marksItemAsUnchecked() = runTest {
-        shoppingDao.addShoppingItem(item.copy(inBasket = true))
+    fun deselectAllItems_exitsSelectionModeAndHidesDeleteIcon() {
+        val shoppingItem = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 1")
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf(shoppingItem)),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.image_shopping_item_checked)).check(matches(isDisplayed()))
-
-        onView(withText("Test Item")).perform(click())
-
-        onView(withId(R.id.image_shopping_item_checked)).check(matches(not(isDisplayed())))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Select multiple").performClick()
+        composeTestRule.onNodeWithText("Test Item 1").performClick()
+        composeTestRule.onNodeWithText("1 selected").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Delete selected").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test Item 1").performClick()
+        composeTestRule.onNodeWithText("1 selected").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription("Delete selected").assertIsNotDisplayed()
     }
 
     @Test
-    fun deleteSelectedItems_deletesSelectedItemsFromList() = runTest {
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Item to delete", inBasket = true
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Item to delete 2", inBasket = false
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Item to keep", inBasket = false
-            )
-        )
+    fun selectMultiple_countsSelectedItems() {
+        val shoppingItem = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 1")
+        val shoppingItem2 = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 2")
+        val shoppingItem3 = ShoppingItem(id = UUID.randomUUID(), itemName = "Test Item 3")
+        val items = listOf(shoppingItem, shoppingItem2, shoppingItem3)
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(items),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Item to delete"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Item to delete 2"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Item to keep"))))
-
-        onView(withText("Item to delete")).perform(longClick())
-
-        onView(withText("Item to delete 2")).perform(click())
-
-        onView(withId(R.id.action_delete_selected_shopping_items)).perform(click())
-
-        onView(withText("Yes")).check(matches(isDisplayed()))
-
-        onView(withText("Yes")).perform(click())
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Item to delete")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Item to delete 2")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Item to keep"))))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Select multiple").performClick()
+        composeTestRule.onNodeWithText("Test Item 1").performClick()
+        composeTestRule.onNodeWithText("1 selected").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test Item 2").performClick()
+        composeTestRule.onNodeWithText("2 selected").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test Item 3").performClick()
+        composeTestRule.onNodeWithText("3 selected").assertIsDisplayed()
     }
 
     @Test
-    fun deleteCheckedItems_deletesCheckedItemsFromList() = runTest {
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Checked Item", inBasket = true
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Checked Item 2", inBasket = true
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Unchecked Item", inBasket = false
-            )
-        )
+    fun deleteSelectedItems_callsOnDeleteItems() {
+        var onDeleteItemsCalled = false
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf()),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = { onDeleteItemsCalled = true },
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Checked Item"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Checked Item 2"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Unchecked Item"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<ShoppingListAdapter.ShoppingListViewHolder>(
-                0, longClick()
-            )
-        )
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-
-        onView(withText("Delete checked items")).perform(click())
-
-        onView(withText("Yes")).perform(click())
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Checked Item")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Checked Item 2")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Unchecked Item"))))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Select multiple").performClick()
+        composeTestRule.onNodeWithContentDescription("Delete selected").performClick()
+        assertTrue(onDeleteItemsCalled)
     }
 
     @Test
-    fun deleteUncheckedItems_deletesUncheckedItemsFromList() = runTest {
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Checked Item", inBasket = true
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Unchecked Item", inBasket = false
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Unchecked Item 2", inBasket = false
-            )
-        )
+    fun deleteAllItemsMenu_callsDeleteAll() {
+        var onDeleteAllCalled = false
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf()),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = { onDeleteAllCalled = true },
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Checked Item"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Unchecked Item"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Unchecked Item 2"))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<ShoppingListAdapter.ShoppingListViewHolder>(
-                0, longClick()
-            )
-        )
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
-
-        onView(withText("Delete unchecked items")).perform(click())
-
-        onView(withText("Yes")).perform(click())
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Unchecked Item")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Unchecked Item 2")))))
-
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Checked Item"))))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Delete all").performClick()
+        assertTrue(onDeleteAllCalled)
     }
 
     @Test
-    fun deleteAllItems_deletesAllItemsFromList() = runTest {
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Checked Item", inBasket = true
-            )
-        )
-        shoppingDao.addShoppingItem(
-            ShoppingItem(
-                UUID.randomUUID(), "Unchecked Item", inBasket = false
-            )
-        )
+    fun deleteCheckedItemsMenu_callsDeleteChecked() {
+        var onDeleteCheckedCalled = false
 
-        onView(withId(R.id.shopping_list_fragment)).perform(click())
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf()),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = { onDeleteCheckedCalled = true },
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Checked Item"))))
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Delete checked").performClick()
+        assertTrue(onDeleteCheckedCalled)
+    }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(hasDescendant(withText("Unchecked Item"))))
+    @Test
+    fun deleteUncheckedItemsMenu_callsOnDeleteUnchecked() {
+        var onDeleteUncheckedCalled = false
 
-        onView(withId(R.id.recyclerview_shopping_list)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<ShoppingListAdapter.ShoppingListViewHolder>(
-                0, longClick()
-            )
-        )
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Success(listOf()),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = { onDeleteUncheckedCalled = true },
+                onErrorDialogDismiss = {})
+        }
 
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().targetContext)
+        composeTestRule.onNodeWithContentDescription("More options").performClick()
+        composeTestRule.onNodeWithText("Delete unchecked").performClick()
+        assertTrue(onDeleteUncheckedCalled)
+    }
 
-        onView(withText("Delete all items")).perform(click())
+    @Test
+    fun shoppingListScreenContent_error_showsErrorScreen() {
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Error(Throwable("error")),
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withText("Yes")).perform(click())
+        composeTestRule.onNodeWithText(
+            "There was an error loading data.\n" + "Please try again later."
+        ).assertIsDisplayed()
+    }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Checked Item")))))
+    @Test
+    fun shoppingListScreenContent_loading_showsLoadingScreen() {
+        composeTestRule.setContent {
+            ShoppingListScreenContent(state = ShoppingListUiState.Loading,
+                onAddClick = {},
+                onUpdateItem = {},
+                onDeleteItems = {},
+                onDeleteAll = {},
+                onDeleteChecked = {},
+                onDeleteUnchecked = {},
+                onErrorDialogDismiss = {})
+        }
 
-        onView(withId(R.id.recyclerview_shopping_list)).check(matches(not(hasDescendant(withText("Unchecked Item")))))
+        composeTestRule.onNodeWithText("Loading").assertIsDisplayed()
+    }
+
+    @Test
+    fun shoppingListContent_emptyList_showsNoItems() {
+        composeTestRule.setContent {
+            ShoppingListContent(items = listOf(), onItemClick = {})
+        }
     }
 }
