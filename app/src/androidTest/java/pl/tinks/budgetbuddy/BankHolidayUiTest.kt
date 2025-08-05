@@ -1,166 +1,88 @@
 package pl.tinks.budgetbuddy
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.viewpager2.widget.ViewPager2
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.test.runTest
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.hamcrest.CoreMatchers.allOf
-import org.junit.After
-import org.junit.Before
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
-import pl.tinks.budgetbuddy.bankholiday.ApiService
-import pl.tinks.budgetbuddy.bankholiday.BankHolidayRetriever
+import pl.tinks.budgetbuddy.bankholiday.BankHoliday
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayListItem
+import pl.tinks.budgetbuddy.bankholiday.BankHolidayScreenContent
+import pl.tinks.budgetbuddy.bankholiday.NextBankHolidaySection
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-
-@HiltAndroidTest
 class BankHolidayUiTest {
 
     @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+    val composeTestRule = createComposeRule()
 
-    @get:Rule
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    @Test
+    fun bankHolidayScreenContent_displaysBankHolidayList() {
+        val bankHolidays = listOf(
+            BankHoliday("England and Wales", "Test BH", LocalDate.of(2025, 1, 1)),
+            BankHoliday("England and Wales", "Test BH 2", LocalDate.of(2025, 12, 1)),
+        )
 
-    @Inject
-    lateinit var mockWebServer: MockWebServer
+        composeTestRule.setContent {
+            BankHolidayScreenContent(bankHolidays = bankHolidays)
+        }
 
-    @Inject
-    lateinit var retriever: BankHolidayRetriever
-
-    @Inject
-    lateinit var apiService: ApiService
-
-    private lateinit var viewPagerReference: ViewPager2
-    private lateinit var idlingResource: ViewPager2IdlingResource
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-    }
-
-    @After
-    fun tearDown() {
-        mockWebServer.shutdown()
+        composeTestRule.onNodeWithText("2025").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test BH").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test BH 2").assertIsDisplayed()
+        composeTestRule.onNodeWithText("01 Jan").assertIsDisplayed()
+        composeTestRule.onNodeWithText("01 Dec").assertIsDisplayed()
     }
 
     @Test
-    fun openBankHolidayFragment_displaysBankHolidaysList(): Unit = runTest {
-        enqueueMockResponse(1)
+    fun nextBankHolidaySection_displaysDateAndTitle() {
+        val bankHoliday = BankHoliday(
+            date = LocalDate.of(2025, 1, 1), title = "Test BH", region = "England and Wales"
+        )
 
-        onView(withId(R.id.bank_holiday_fragment)).perform(click())
+        composeTestRule.setContent {
+            NextBankHolidaySection(bankHoliday)
+        }
 
-        onView(withId(R.id.recyclerView_bank_holiday)).check(matches(isDisplayed()))
-
-        onView(
-            allOf(
-                withText("Test England Holiday"), withId(R.id.text_view_next_bank_holiday_title)
-            )
-        ).check(matches(isDisplayed()))
-
-        onView(
-            allOf(
-                withText("Test England Holiday"), withId(R.id.text_view_item_bank_holiday_title)
-            )
-        ).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("01 January").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test BH").assertIsDisplayed()
     }
 
     @Test
-    fun swipeViewPager_changesDisplayedCountry() {
-        enqueueMockResponse(3)
+    fun bankHolidayScreenContent_groupsByYear() {
+        val bankHolidays = listOf(
+            BankHoliday("England and Wales", "Test BH", LocalDate.of(2025, 1, 1)),
+            BankHoliday("England and Wales", "Test BH 2", LocalDate.of(2026, 12, 1)),
+        )
 
-        onView(withId(R.id.bank_holiday_fragment)).perform(click())
-
-        activityRule.scenario.onActivity { activity ->
-            viewPagerReference = activity.findViewById(R.id.view_pager_bank_holiday)
-            idlingResource = ViewPager2IdlingResource(viewPagerReference)
-            IdlingRegistry.getInstance().register(idlingResource)
+        composeTestRule.setContent {
+            BankHolidayScreenContent(bankHolidays = bankHolidays)
         }
 
-        onView(
-            allOf(
-                withText("Test England Holiday"), withId(R.id.text_view_next_bank_holiday_title)
-            )
-        ).check(matches(isDisplayed()))
-
-        onView(withId(R.id.view_pager_bank_holiday)).perform(swipeLeft())
-
-        onView(
-            allOf(
-                withText("Test Scotland Holiday"), withId(R.id.text_view_next_bank_holiday_title)
-            )
-        ).check(matches(isDisplayed()))
-
-        onView(withId(R.id.view_pager_bank_holiday)).perform(swipeLeft())
-
-        onView(
-            allOf(
-                withText("Test NI Holiday"), withId(R.id.text_view_next_bank_holiday_title)
-            )
-        ).check(matches(isDisplayed()))
-
-        IdlingRegistry.getInstance().unregister(idlingResource)
+        composeTestRule.onNodeWithText("2025").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2026").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test BH").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Test BH 2").assertIsDisplayed()
     }
 
     @Test
-    fun apiError_showsErrorDialog() {
-        mockWebServer.enqueue(MockResponse().setResponseCode(500))
-
-        onView(withId(R.id.bank_holiday_fragment)).perform(click())
-
-        onView(withText(R.string.bank_holiday_loading_error_message)).check(matches(isDisplayed()))
-
-        onView(withText(R.string.dialog_ok)).check(matches(isDisplayed()))
-
-        onView(withText(R.string.dialog_ok)).perform(click())
-    }
-
-    private fun enqueueMockResponse(times: Int) {
-        repeat(times) {
-            mockWebServer.enqueue(
-                MockResponse().setBody(getMockBankHolidayResponse()).setResponseCode(200)
-            )
+    fun bankHolidayListItem_displaysCorrectDayOfWeek() {
+        val bankHoliday = BankHoliday(
+            "England and Wales", "Test BH", LocalDate.of(2025, 1, 1)
+        )
+        composeTestRule.setContent {
+            BankHolidayListItem(bankHoliday)
         }
+        composeTestRule.onNodeWithText("Wednesday").assertIsDisplayed()
     }
 
-    private fun getMockBankHolidayResponse(): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val testDate = LocalDate.now().plusYears(1).format(formatter)
-        return """
-    {
-        "england-and-wales": {
-            "division": "england-and-wales",
-            "events": [
-                {"title": "Test England Holiday", "date": "$testDate", "notes": "", "bunting": false}
-            ]
-        },
-        "scotland": {
-            "division": "scotland",
-            "events": [
-                {"title": "Test Scotland Holiday", "date": "$testDate", "notes": "", "bunting": false}
-            ]
-        }, 
-        "northern-ireland": {
-            "division": "northern-ireland",
-            "events": [
-                {"title": "Test NI Holiday", "date": "$testDate", "notes": "", "bunting": false}
-            ]
+    @Test
+    fun bankHolidayScreenContent_emptyList_showsNothing() {
+        composeTestRule.setContent {
+            BankHolidayScreenContent(bankHolidays = listOf())
         }
-    }
-    """.trimIndent()
+        composeTestRule.onAllNodesWithText("2025").assertCountEquals(0)
     }
 }
