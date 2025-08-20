@@ -16,7 +16,7 @@
     <shortcut
         android:shortcutId="shortcut_bank_holiday"
         android:enabled="true"
-        android:icon="@drawable/outline_luggage_24"
+        android:icon="@drawable/outline_event_24"
         android:shortcutShortLabel="@string/shortcut_bank_holiday_short_label"
         android:shortcutLongLabel="@string/shortcut_bank_holiday_long_label">
         <intent

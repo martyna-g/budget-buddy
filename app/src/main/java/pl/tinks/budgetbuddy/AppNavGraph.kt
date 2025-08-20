@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import pl.tinks.budgetbuddy.bankholiday.BankHolidayTabs
 import pl.tinks.budgetbuddy.payment.history.PaymentHistoryScreen
 import pl.tinks.budgetbuddy.payment.list.PaymentDetailsScreen
@@ -35,11 +36,17 @@ fun AppNavGraph(
                 onHistoryClick = { navController.navigate(Routes.PaymentHistory) },
                 onErrorDialogDismiss = { navController.popBackStack() })
         }
-        composable(BottomNavScreen.Shopping.route) {
+        composable(
+            BottomNavScreen.Shopping.route,
+            deepLinks = listOf(navDeepLink { uriPattern = "budgetbuddy://shoppinglist" })
+        ) {
             ShoppingListScreen(viewModel = hiltViewModel(),
                 onErrorDialogDismiss = { navController.popBackStack() })
         }
-        composable(BottomNavScreen.BankHolidays.route) {
+        composable(
+            BottomNavScreen.BankHolidays.route,
+            deepLinks = listOf(navDeepLink { uriPattern = "budgetbuddy://bankholiday" })
+        ) {
             BankHolidayTabs(viewModel = hiltViewModel(),
                 onErrorDialogDismiss = { navController.popBackStack() })
         }
