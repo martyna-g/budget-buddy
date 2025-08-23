@@ -43,7 +43,7 @@ fun PaymentListContent(
             when (item) {
                 is PaymentListItem.StaticHeader -> SectionHeader(stringResource(item.resId))
                 is PaymentListItem.DynamicHeader -> SectionHeader(item.headerText)
-                is PaymentListItem.PaymentEntry -> PaymentItem(payment = item.payment,
+                is PaymentListItem.PaymentEntry -> PaymentRow(payment = item.payment,
                     isExpanded = expandedPaymentId == item.payment.id,
                     onExpandClick = {
                         expandedPaymentId =

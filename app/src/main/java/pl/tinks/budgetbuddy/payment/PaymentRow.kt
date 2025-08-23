@@ -48,7 +48,7 @@ import java.util.Locale
 import java.util.UUID
 
 @Composable
-fun PaymentItem(
+fun PaymentRow(
     payment: Payment,
     isExpanded: Boolean,
     onExpandClick: () -> Unit,
@@ -232,8 +232,8 @@ fun PaymentCompletedActionsRow(
 @Preview(apiLevel = 33, showBackground = true)
 @Preview(apiLevel = 33, uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun PaymentItemPreview() {
-    PaymentItem(
+fun PaymentRowPreview() {
+    PaymentRow(
         previewPayment,
         isExpanded = true,
         onExpandClick = {},
