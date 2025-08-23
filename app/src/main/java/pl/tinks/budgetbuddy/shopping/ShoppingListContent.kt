@@ -21,7 +21,7 @@ fun ShoppingListContent(
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         items(items, key = { it.id }) { item ->
-            ShoppingListItem(
+            ShoppingRow(
                 shoppingItem = item,
                 isSelected = selectedItems.contains(item.id),
                 onClick = { onItemClick(item) }

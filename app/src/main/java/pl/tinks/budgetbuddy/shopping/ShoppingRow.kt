@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import java.util.UUID
 
 @Composable
-fun ShoppingListItem(
+fun ShoppingRow(
     shoppingItem: ShoppingItem,
     isSelected: Boolean = false,
     onClick: () -> Unit,
@@ -59,8 +59,8 @@ fun ShoppingListItem(
 
 @Preview(apiLevel = 33, showBackground = true)
 @Composable
-fun ShoppingListItemPreview() {
-    ShoppingListItem(
+fun ShoppingRowPreview() {
+    ShoppingRow(
         ShoppingItem(UUID.randomUUID(), "Preview Item", inBasket = true),
         isSelected = false,
         onClick = { },
