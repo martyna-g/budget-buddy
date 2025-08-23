@@ -141,7 +141,7 @@ fun ShoppingListScreenContent(
             }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(16.dp)
             ) {
                 OutlinedTextField(value = newItem,
                     onValueChange = { newItem = it },
