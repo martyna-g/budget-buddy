@@ -2,7 +2,11 @@ package pl.tinks.budgetbuddy.payment.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.History
@@ -43,7 +47,7 @@ fun PaymentListScreenContent(
     onCompleteClick: (Payment) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Scaffold(topBar = {
+    Scaffold(contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top), topBar = {
         CenterAlignedTopAppBar(title = {
             Column {
                 Text(
