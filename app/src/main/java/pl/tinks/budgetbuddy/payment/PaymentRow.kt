@@ -87,7 +87,7 @@ fun PaymentRow(
             AnimatedVisibility(visible = isExpanded) {
                 when {
                     payment.paymentCompleted -> {
-                        PaymentCompletedActionsRow(
+                        PaymentCompletedActions(
                             onUndoMoveToHistoryClick = onUndoCompleteClick,
                             onDeleteClick = onDeleteClick,
                             modifier = Modifier.fillMaxWidth()
@@ -95,7 +95,7 @@ fun PaymentRow(
                     }
 
                     payment.date.toLocalDate() > LocalDate.now() -> {
-                        PaymentUpcomingActionsRow(
+                        PaymentUpcomingActions(
                             onEditClick = onEditClick,
                             onDeleteClick = onDeleteClick,
                             modifier = Modifier.fillMaxWidth()
@@ -103,7 +103,7 @@ fun PaymentRow(
                     }
 
                     else -> {
-                        PaymentDueActionsRow(
+                        PaymentDueActions(
                             onMoveToHistoryClick = onCompleteClick,
                             onDeleteClick = onDeleteClick,
                             modifier = Modifier.fillMaxWidth()
@@ -136,7 +136,7 @@ private fun PaymentDateBadge(date: LocalDateTime, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun PaymentUpcomingActionsRow(
+fun PaymentUpcomingActions(
     onEditClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
@@ -166,7 +166,7 @@ fun PaymentUpcomingActionsRow(
 }
 
 @Composable
-fun PaymentDueActionsRow(
+fun PaymentDueActions(
     onMoveToHistoryClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
@@ -198,7 +198,7 @@ fun PaymentDueActionsRow(
 }
 
 @Composable
-fun PaymentCompletedActionsRow(
+fun PaymentCompletedActions(
     onUndoMoveToHistoryClick: () -> Unit, onDeleteClick: () -> Unit, modifier: Modifier = Modifier
 ) {
     Row(
