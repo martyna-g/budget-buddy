@@ -78,7 +78,7 @@ fun PaymentRow(
                 trailingContent = {
                     Text(
                         text = payment.amount.displayString(),
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent)
