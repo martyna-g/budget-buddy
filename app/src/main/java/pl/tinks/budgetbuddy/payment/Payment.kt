@@ -15,7 +15,7 @@ data class Payment(
     val amount: Money,
     val date: LocalDateTime,
     val frequency: PaymentFrequency,
-    @ColumnInfo(name = "payment_completed") var paymentCompleted: Boolean = false,
-    @ColumnInfo(name = "notification_enabled") var notificationEnabled: Boolean = false,
-    @ColumnInfo(name = "is_next_payment_scheduled") var isNextPaymentScheduled: Boolean = false,
-    )
+    @ColumnInfo(name = "payment_completed") val paymentCompleted: Boolean = false,
+    @ColumnInfo(name = "notification_enabled") val notificationEnabled: Boolean = false,
+    @ColumnInfo(name = "is_next_payment_scheduled") val isNextPaymentScheduled: Boolean = false,
+)
