@@ -12,6 +12,16 @@ Built with Kotlin and Jetpack Compose.
 * Automatically schedule recurring payments
 * Navigate quickly via deep links and app shortcuts
 
+## Screenshots
+
+| Payment List (dark mode)                                   | Payment List (light mode)                                    | Add Payment                                 |
+|------------------------------------------------------------|--------------------------------------------------------------|---------------------------------------------|
+| ![Payment List (dark mode)](screenshots/payments-dark.png) | ![Payment List (light mode)](screenshots/payments-light.png) | ![Add Payment](screenshots/add-payment.png) |
+
+| Shopping List                                   | Shopping List (multi-select)                                         | Bank Holidays                                   |
+|-------------------------------------------------|----------------------------------------------------------------------|-------------------------------------------------|
+| ![Shopping List](screenshots/shopping-list.png) | ![Shopping List (multi-select)](screenshots/shopping-list-multi.png) | ![Bank Holidays](screenshots/bank-holidays.png) |
+
 ## Tech Stack
 
 * Kotlin, Jetpack Compose
