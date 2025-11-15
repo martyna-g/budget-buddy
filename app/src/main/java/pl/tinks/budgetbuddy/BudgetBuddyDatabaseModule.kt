@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import pl.tinks.budgetbuddy.security.DatabasePassphraseProvider
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -15,9 +16,13 @@ object BudgetBuddyDatabaseModule {
 
     @Singleton
     @Provides
-    fun provideBudgetDatabase(@ApplicationContext context: Context): BudgetBuddyDatabase {
-        return Room.databaseBuilder(
-            context, BudgetBuddyDatabase::class.java, "budget_buddy_database"
-        ).build()
-    }
+    fun provideEncryptedDatabaseFactory(
+        provider: DatabasePassphraseProvider
+    ): EncryptedDatabaseFactory = EncryptedDatabaseFactory(provider)
+
+    @Singleton
+    @Provides
+    fun provideBudgetDatabase(
+        @ApplicationContext context: Context, factory: EncryptedDatabaseFactory
+    ): BudgetBuddyDatabase = factory.create(context)
 }

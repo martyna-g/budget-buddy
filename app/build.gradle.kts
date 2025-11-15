@@ -119,6 +119,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("com.google.accompanist:accompanist-permissions:0.37.3")
     implementation("com.google.crypto.tink:tink-android:1.18.0")
+    implementation("net.zetetic:android-database-sqlcipher:4.5.4")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$roomVersion")
