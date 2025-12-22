@@ -31,7 +31,7 @@ Built with Kotlin and Jetpack Compose.
 * Room
 * Retrofit & Gson
 * Coroutines & Flow
-* WorkManager (recurring payments & notifications)
+* WorkManager (recurring payments and notifications)
 * Testing: JUnit, Mockito, Hilt Testing, Compose UI Tests
 
 ## Architecture
@@ -47,35 +47,38 @@ presentation  -->  domain  <--  data
 
 ### Structure
 
-This repo uses a feature-first package layout. Each feature keeps its Compose UI, ViewModel, and the concrete data access it needs (repositories, DAOs or API clients).
+This project follows a feature-first package layout. Each feature contains its Compose UI, ViewModel, and the required data access (repositories, DAOs, or API clients).
 
-* `payment/` — screens, ViewModel, use cases; `PaymentRepository`, `PaymentDao`; schedulers/workers for recurring payments & notifications
-* `shopping/` — screens, ViewModel; `ShoppingRepository`, `ShoppingDao`
-* `bankholiday/` — screens, ViewModel; Retrofit `ApiService`, mapper, `BankHolidayRetriever`
-* `ui/theme/` — theming and small UI utilities (e.g., `BudgetBuddyTheme`, `StatusBarBackground`)
-* **Root:** App entry & navigation (`MainActivity`, `MainScreen`, `AppNavGraph`/`BottomNav`) · Shared UI (`ErrorScreen`, `LoadingScreen`, `SectionHeader`) · App setup (`BudgetBuddyApplication`, `Room DB` & `RoomTypeConverter`) · `Result`
-* **Hilt modules** (e.g., `NetworkModule`, `BankHolidayRetrieverModule`) live next to the feature they wire up
+* `payment/`: screens, ViewModel, and use cases.
+  Contains `PaymentRepository`, `PaymentDao`, and WorkManager schedulers for recurring payments and notifications.
+* `shopping/`: screens and ViewModel.
+  Contains `ShoppingRepository` and `ShoppingDao`.
+* `bankholiday/`: screens and ViewModel.
+  Backed by Retrofit `ApiService`, mapper, and `BankHolidayRetriever`.
+* `ui/theme/`: theming and small UI utilities (e.g., `BudgetBuddyTheme`, `StatusBarBackground`)
+* **Root:** app entry and navigation (`MainActivity`, `MainScreen`, `AppNavGraph`/`BottomNav`); shared UI (`ErrorScreen`, `LoadingScreen`, `SectionHeader`); app setup (`BudgetBuddyApplication`, `Room DB`, `RoomTypeConverter`); `Result`
+* **Hilt modules** (e.g., `NetworkModule`, `BankHolidayRetrieverModule`): live next to the feature they wire up
 
 ### Dependency Rules
 
-* Inward only: `presentation → domain`, `data → domain`
+* Dependencies point inward only: `presentation → domain`, `data → domain`
 * `domain` stays Android-free (no Retrofit/Room/Hilt/Compose imports)
-* Repository contracts live in `domain`; implementations live next to features and are bound via Hilt
+* Repository interfaces live in `domain`; implementations live next to features and are bound via Hilt
 
 ## Key Design Decisions
 
 * MVVM in presentation; one ViewModel per screen; state exposed as `StateFlow<UiState>`
 * Single-purpose use cases (one intent per operation)
 * WorkManager schedules the next payment and reminder notifications
-* Deep links & app shortcuts to Shopping List and Bank Holidays
+* Deep links and app shortcuts to Shopping List and Bank Holidays
 * Edge-to-edge system bars with automatic icon contrast
 * Material 3 components and theming
 
 ## Architecture Layers
 
-* **Domain** — pure Kotlin use cases; no Android/IO; depends only on interfaces
-* **Data** — repository & background-work implementations; adapts Room/Retrofit/WorkManager; mapping & streams
-* **Presentation** — Compose UI & ViewModels; navigation (deep links, app shortcuts); no direct DB/network
+* **Domain**: pure Kotlin use cases; no Android/IO; depends only on interfaces
+* **Data**: repository and background-work implementations; adapts Room/Retrofit/WorkManager; mapping and streams
+* **Presentation**: Compose UI and ViewModels; navigation (deep links, app shortcuts); no direct DB/network access
 
 ## Models
 
